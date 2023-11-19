@@ -1,7 +1,7 @@
 package com.example.internapp;
 
 import android.content.Context;
-import android.provider.ContactsContract;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class ContactsRecViewAdapter extends RecyclerView.Adapter<ContactsRecViewAdapter.ViewHolder>{
 
     private ArrayList<Contact> contacts = new ArrayList<>();
-    private Context context;
+    private final Context context;
     public ContactsRecViewAdapter(Context context) {
         this.context = context;
     }
@@ -37,12 +37,7 @@ public class ContactsRecViewAdapter extends RecyclerView.Adapter<ContactsRecView
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.txtName.setText(contacts.get(position).getName());
         holder.txtEmail.setText(contacts.get(position).getEmail());
-        holder.parent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, contacts.get(holder.getAdapterPosition()).getName() + " selected", Toast.LENGTH_SHORT).show();
-            }
-        });
+        holder.parent.setOnClickListener(v -> Toast.makeText(context, contacts.get(holder.getAdapterPosition()).getName() + " selected", Toast.LENGTH_SHORT).show());
 
         Glide.with(context).asBitmap().load(contacts.get(position).getImageurl()).into(holder.image);
     }
@@ -58,9 +53,10 @@ public class ContactsRecViewAdapter extends RecyclerView.Adapter<ContactsRecView
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView txtName, txtEmail;
-        private CardView parent;
-        private ImageView image;
+        private final TextView txtName;
+        private final TextView txtEmail;
+        private final CardView parent;
+        private final ImageView image;
 
 
         public ViewHolder(View itemView){

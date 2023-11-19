@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1084322055281",
+    "project_id": "internapp-a014b",
+    "storage_bucket": "internapp-a014b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084322055281:android:e69545e7d070a4302e07d0",
+        "android_client_info": {
+          "package_name": "com.example.internapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeyzHLfM2QyrdHljLuE7UzqypgppeybZw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
