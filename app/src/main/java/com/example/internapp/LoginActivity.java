@@ -24,12 +24,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
     private EditText usernameEdt;
     private EditText passwordEdt;
     private Button loginBtn;
-
-    private Button signUp;
 
     private GoogleSignInClient client;
 
@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        signUp = findViewById(R.id.googleSignIn);
+        Button signUp = findViewById(R.id.googleSignIn);
         GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken("1084322055281-vcbs746k7ngmscl4duk8uun0uu04jgmg.apps.googleusercontent.com").requestEmail().build();
 
         client = GoogleSignIn.getClient(this, options);
@@ -63,10 +63,10 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
+                            Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
                             startActivity(intent);
                         } else {
-                            Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            Intent intent = new Intent(this, MainActivity2.class);
+            Intent intent = new Intent(this, HomepageActivity.class);
             startActivity(intent);
         }
     }
