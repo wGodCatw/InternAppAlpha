@@ -66,11 +66,11 @@
         android:id="@+id/studentTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginBottom="64dp"
         android:text="Last viewed students"
         app:layout_constraintBottom_toTopOf="@+id/studentImg1"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/favoritesBtn" />
 
     <ImageView
         android:id="@+id/studentImg1"

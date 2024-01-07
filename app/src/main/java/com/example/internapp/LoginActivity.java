@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         Button signUp = findViewById(R.id.googleSignIn);
-        GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken("1084322055281-vcbs746k7ngmscl4duk8uun0uu04jgmg.apps.googleusercontent.com").requestEmail().build();
+        GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
 
         client = GoogleSignIn.getClient(this, options);
         signUp.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1234) {
