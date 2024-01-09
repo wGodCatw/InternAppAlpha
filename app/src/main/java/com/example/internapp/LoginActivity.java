@@ -30,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText usernameEdt;
     private EditText passwordEdt;
     private Button loginBtn;
+    private Button toRegister;
 
     private GoogleSignInClient client;
 
@@ -38,6 +39,17 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+        toRegister = findViewById(R.id.ToRegister);
+
+        toRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SignUp.class);
+                startActivity(intent);
+            }
+        });
 
         Button signUp = findViewById(R.id.googleSignIn);
         GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
