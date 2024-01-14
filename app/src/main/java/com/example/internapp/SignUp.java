@@ -25,12 +25,22 @@ public class SignUp extends AppCompatActivity {
     private Button logInTo;
     private Button register;
 
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        emailEdt = findViewById(R.id.usernameEdt);
-        passwordEdt = findViewById(R.id.passwordEdt);
+        emailEdt = findViewById(R.id.usrRegtxt);
+        passwordEdt = findViewById(R.id.passwordRegTxt);
         mAuth = FirebaseAuth.getInstance();
         register = findViewById(R.id.registerBtn);
         register.setOnClickListener(new View.OnClickListener() {

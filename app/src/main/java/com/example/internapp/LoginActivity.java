@@ -2,6 +2,7 @@ package com.example.internapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,12 +28,23 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
+    FirebaseAuth mAuth;
     private EditText usernameEdt;
     private EditText passwordEdt;
     private Button loginBtn;
+    private Button signUp;
     private Button toRegister;
-
     private GoogleSignInClient client;
+
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
 
 
     @Override
@@ -40,14 +52,53 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        mAuth = FirebaseAuth.getInstance();
 
         toRegister = findViewById(R.id.ToRegister);
+        loginBtn = findViewById(R.id.loginBtn);
+        usernameEdt = findViewById(R.id.usernameEdt);
+        passwordEdt = findViewById(R.id.passwordEdt);
 
         toRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SignUp.class);
                 startActivity(intent);
+            }
+        });
+
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email, password;
+                email = String.valueOf(usernameEdt.getText());
+                password = String.valueOf(passwordEdt.getText());
+
+                if (TextUtils.isEmpty(email)) {
+                    Toast.makeText(LoginActivity.this, "No Email broski", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (TextUtils.isEmpty(password)) {
+                    Toast.makeText(LoginActivity.this, "No Password broski", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(getApplicationContext(), "Login successful Brother", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
         });
 
@@ -63,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -88,12 +140,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            Intent intent = new Intent(this, HomepageActivity.class);
-            startActivity(intent);
-        }
-    }
+//    protected void onStart() {
+//        super.onStart();
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        if (user != null) {
+//            Intent intent = new Intent(this, HomepageActivity.class);
+//            startActivity(intent);
+//        }
+//    }
 }
