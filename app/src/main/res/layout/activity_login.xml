@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="108dp"
         android:ems="10"
-        android:hint="Username"
+        android:hint="Email"
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/passwordEdt"
         app:layout_constraintEnd_toEndOf="parent"
