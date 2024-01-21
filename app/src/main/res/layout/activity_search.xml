@@ -6,24 +6,64 @@
     android:layout_height="match_parent"
     tools:context=".SearchActivity">
 
-    <com.google.android.material.chip.ChipGroup
+
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10sp"
-        android:id="@+id/chipGroup"/>
+        android:layout_marginBottom="72dp"
+        android:text="Universities"
+        app:layout_constraintBottom_toTopOf="@+id/UniversitiesRecView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent" />
 
-<!--    <com.google.android.material.chip.Chip-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        style="@style/Widget.MaterialComponents.Chip.Entry"-->
-<!--        android:id="@+id/chip"-->
-<!--        android:checkable="false"-->
-<!--        android:text="Kyiv Polytech"-->
-<!--        app:chipIconTint="@color/black"-->
-<!--        app:chipIcon="@drawable/ic_university">-->
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:text="Faculties"
+        app:layout_constraintBottom_toTopOf="@+id/FacultiesRecView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
-<!--    </com.google.android.material.chip.Chip>-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/UniversitiesRecView"
+        android:layout_width="413dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/FacultiesRecView"
+        android:layout_width="413dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="128dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <HorizontalScrollView
+        android:layout_width="0dp"
+        android:layout_height="61dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroup"
+            android:layout_width="0dp"
+            android:layout_height="100dp" />
+    </HorizontalScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

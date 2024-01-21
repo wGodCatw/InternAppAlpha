@@ -1,13 +1,11 @@
 package com.example.internapp;
 
-public class FavoriteStudent {
+public class University {
     private String name;
-    private String email;
     private String imageUrl;
 
-    public FavoriteStudent(String name, String email, String imageUrl) {
+    public University(String name, String imageUrl) {
         this.name = name;
-        this.email = email;
         this.imageUrl = imageUrl;
     }
 
@@ -17,14 +15,6 @@ public class FavoriteStudent {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getImageUrl() {
@@ -37,9 +27,8 @@ public class FavoriteStudent {
 
     @Override
     public String toString() {
-        return "Favorite{" +
+        return "University{" +
                 "name='" + name + '\'' +
-                ", email='" + email + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }

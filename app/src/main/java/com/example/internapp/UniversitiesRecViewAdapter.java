@@ -18,43 +18,47 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-public class FavoritesRecViewAdapter extends RecyclerView.Adapter<FavoritesRecViewAdapter.ViewHolder>{
+public class UniversitiesRecViewAdapter extends RecyclerView.Adapter<UniversitiesRecViewAdapter.ViewHolder>{
 
-    private ArrayList<FavoriteStudent> favoriteStudents = new ArrayList<>();
+    private ArrayList<University> universities = new ArrayList<>();
     private final Context context;
-    public FavoritesRecViewAdapter(Context context) {
+    public UniversitiesRecViewAdapter(Context context) {
         this.context = context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.favorites_list_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.university_list_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        holder.txtName.setText(favoriteStudents.get(position).getName());
-        holder.txtEmail.setText(favoriteStudents.get(position).getEmail());
-        holder.parent.setOnClickListener(v -> Toast.makeText(context, favoriteStudents.get(holder.getAdapterPosition()).getName() + " selected", Toast.LENGTH_SHORT).show());
-
-        Glide.with(context).asBitmap().load(favoriteStudents.get(position).getImageUrl()).into(holder.image);
+        holder.txtName.setText(universities.get(position).getName());
+//        holder.parent.setOnClickListener(v -> Toast.makeText(context, universities.get(holder.getAdapterPosition()).getName() + " selected", Toast.LENGTH_SHORT).show());
+        holder.parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = universities.get(holder.getAdapterPosition()).getName();
+                SearchActivity.createChip(text, v);
+            }
+        });
+        Glide.with(context).asBitmap().load(universities.get(position).getImageUrl()).into(holder.image);
     }
 
     @Override
     public int getItemCount() {
-        return favoriteStudents.size();
+        return universities.size();
     }
 
-    public void setFavoriteStudents(ArrayList<FavoriteStudent> favoriteStudents) {
-        this.favoriteStudents = favoriteStudents;
+    public void setUniversities(ArrayList<University> universities) {
+        this.universities = universities;
         notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView txtName;
-        private final TextView txtEmail;
         private final CardView parent;
         private final ImageView image;
 
@@ -64,7 +68,6 @@ public class FavoritesRecViewAdapter extends RecyclerView.Adapter<FavoritesRecVi
             txtName = itemView.findViewById(R.id.txtName);
             image = itemView.findViewById(R.id.universityImg);
             parent = itemView.findViewById(R.id.parent);
-            txtEmail = itemView.findViewById(R.id.txtEmail);
         }
     }
 }
