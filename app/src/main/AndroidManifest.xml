@@ -16,18 +16,23 @@
         tools:targetApi="34">
         <activity
             android:name=".SearchActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".SignUp"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".FavoritesActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".HomepageActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
