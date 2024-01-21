@@ -1,11 +1,11 @@
 package com.example.internapp;
 
-public class Contact {
+public class FavoriteStudent {
     private String name;
     private String email;
     private String imageurl;
 
-    public Contact(String name, String email, String imageurl) {
+    public FavoriteStudent(String name, String email, String imageurl) {
         this.name = name;
         this.email = email;
         this.imageurl = imageurl;
@@ -37,7 +37,7 @@ public class Contact {
 
     @Override
     public String toString() {
-        return "Contact{" +
+        return "Favorite{" +
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", imageurl='" + imageurl + '\'' +

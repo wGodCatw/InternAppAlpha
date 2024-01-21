@@ -18,37 +18,37 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-public class ContactsRecViewAdapter extends RecyclerView.Adapter<ContactsRecViewAdapter.ViewHolder>{
+public class FavoritesRecViewAdapter extends RecyclerView.Adapter<FavoritesRecViewAdapter.ViewHolder>{
 
-    private ArrayList<Contact> contacts = new ArrayList<>();
+    private ArrayList<FavoriteStudent> favoriteStudents = new ArrayList<>();
     private final Context context;
-    public ContactsRecViewAdapter(Context context) {
+    public FavoritesRecViewAdapter(Context context) {
         this.context = context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contacts_list_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.favorites_list_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        holder.txtName.setText(contacts.get(position).getName());
-        holder.txtEmail.setText(contacts.get(position).getEmail());
-        holder.parent.setOnClickListener(v -> Toast.makeText(context, contacts.get(holder.getAdapterPosition()).getName() + " selected", Toast.LENGTH_SHORT).show());
+        holder.txtName.setText(favoriteStudents.get(position).getName());
+        holder.txtEmail.setText(favoriteStudents.get(position).getEmail());
+        holder.parent.setOnClickListener(v -> Toast.makeText(context, favoriteStudents.get(holder.getAdapterPosition()).getName() + " selected", Toast.LENGTH_SHORT).show());
 
-        Glide.with(context).asBitmap().load(contacts.get(position).getImageurl()).into(holder.image);
+        Glide.with(context).asBitmap().load(favoriteStudents.get(position).getImageurl()).into(holder.image);
     }
 
     @Override
     public int getItemCount() {
-        return contacts.size();
+        return favoriteStudents.size();
     }
 
-    public void setContacts(ArrayList<Contact> contacts) {
-        this.contacts = contacts;
+    public void setFavoriteStudents(ArrayList<FavoriteStudent> favoriteStudents) {
+        this.favoriteStudents = favoriteStudents;
         notifyDataSetChanged();
     }
 

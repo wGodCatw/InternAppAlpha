@@ -15,10 +15,13 @@
         android:theme="@style/Theme.InternApp"
         tools:targetApi="34">
         <activity
+            android:name=".SearchActivity"
+            android:exported="false" />
+        <activity
             android:name=".SignUp"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".FavoritesActivity"
             android:exported="false" />
         <activity
             android:name=".HomepageActivity"

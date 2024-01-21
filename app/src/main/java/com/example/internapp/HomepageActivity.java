@@ -16,6 +16,9 @@ public class HomepageActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseUser user;
     Button logoutBtn;
+
+    Button searchBtn;
+    Button favoritesBtn;
     TextView welcomeText;
 
     @Override
@@ -25,16 +28,18 @@ public class HomepageActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         logoutBtn = findViewById(R.id.logoutBtn);
+        searchBtn = findViewById(R.id.searchBtn);
+        favoritesBtn = findViewById(R.id.favoritesBtn);
         welcomeText = findViewById(R.id.welcomeText);
 
         user = auth.getCurrentUser();
 
-        if(user == null){
+        if (user == null) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
-        } else{
-            if(user.getDisplayName() != null)
+        } else {
+            if (user.getDisplayName() != null)
                 welcomeText.setText("Hello, " + user.getDisplayName());
         }
 
@@ -45,6 +50,24 @@ public class HomepageActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        favoritesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), FavoritesActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+                startActivity(intent);
             }
         });
     }
