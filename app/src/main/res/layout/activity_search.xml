@@ -50,6 +50,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
         android:layout_width="0dp"
         android:layout_height="61dp"
         android:scrollbars="none"
@@ -64,6 +65,18 @@
             android:layout_width="0dp"
             android:layout_height="100dp" />
     </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/filtersTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filters:"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
+        app:layout_constraintVertical_bias="0.546" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

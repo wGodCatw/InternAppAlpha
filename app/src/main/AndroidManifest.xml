@@ -15,30 +15,35 @@
         android:theme="@style/Theme.InternApp"
         tools:targetApi="34">
         <activity
-            android:name=".SearchActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
-        <activity
-            android:name=".SignUp"
-            android:screenOrientation="portrait"
-            android:exported="false" />
-        <activity
-            android:name=".FavoritesActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
-        <activity
-            android:name=".HomepageActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
-            android:screenOrientation="portrait"
-            android:exported="true">
+            android:name=".StartActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".SearchActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SignUp"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FavoritesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HomepageActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 
