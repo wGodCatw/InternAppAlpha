@@ -8,10 +8,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/FavoriteStudentsRecView"
-        android:layout_width="387dp"
-        android:layout_height="869dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="384dp"
+        android:layout_height="766dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/FavoritesTitle" />
 
