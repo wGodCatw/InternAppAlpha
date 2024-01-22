@@ -15,6 +15,9 @@
         android:theme="@style/Theme.InternApp"
         tools:targetApi="34">
         <activity
+            android:name=".SearchStudents"
+            android:exported="false" />
+        <activity
             android:name=".StartActivity"
             android:exported="true"
             android:screenOrientation="portrait">
@@ -43,8 +46,7 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

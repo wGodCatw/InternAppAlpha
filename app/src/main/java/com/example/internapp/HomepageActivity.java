@@ -56,7 +56,6 @@ public class HomepageActivity extends AppCompatActivity {
         favoritesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(), FavoritesActivity.class);
                 startActivity(intent);
             }
@@ -65,7 +64,6 @@ public class HomepageActivity extends AppCompatActivity {
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
                 startActivity(intent);
             }
