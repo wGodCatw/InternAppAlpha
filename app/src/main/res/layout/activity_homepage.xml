@@ -2,15 +2,22 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomepageActivity">
+
+    <com.leinardi.android.speeddial.SpeedDialOverlayLayout
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/welcomeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="76dp"
+        android:textColor="@color/black"
         android:text="Hello, Username"
         app:layout_constraintEnd_toStartOf="@+id/userIcon"
         app:layout_constraintHorizontal_bias="0.444"
@@ -27,6 +34,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <com.leinardi.android.speeddial.SpeedDialView
+        android:id="@+id/speedDialView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="24dp"
+        app:layout_wrapBehaviorInParent="horizontal_only"
+        android:animateLayoutChanges="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:sdMainFabClosedBackgroundColor="@color/orange"
+        app:sdMainFabOpenedBackgroundColor="@color/orange"
+        app:sdMainFabClosedIconColor="@color/white"
+        app:sdMainFabOpenedIconColor="@color/white"
+        app:sdMainFabClosedSrc="@drawable/ic_sdclosednew"
+        app:sdOverlayLayout="@id/overlay">
+
+    </com.leinardi.android.speeddial.SpeedDialView>
+
     <EditText
         android:id="@+id/searchBoxText"
         android:layout_width="240dp"
@@ -34,6 +62,7 @@
         android:layout_marginTop="212dp"
         android:ems="10"
         android:hint="Search for students"
+        android:textColor="@color/black"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -46,6 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="352dp"
         android:text="Favorites"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/scheduleBtn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,6 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="352dp"
         android:text="Schedule"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/favoritesBtn"
@@ -66,6 +97,7 @@
         android:id="@+id/studentTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
         android:text="Last viewed students"
         app:layout_constraintBottom_toTopOf="@+id/studentImg1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,6 +129,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="128dp"
+        android:textColor="@color/black"
         android:layout_marginBottom="68dp"
         android:text="Juan Maccaroni"
         app:layout_constraintBottom_toTopOf="@+id/student1faculty"
@@ -106,6 +139,7 @@
         android:id="@+id/student2name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
         android:layout_marginEnd="84dp"
         android:layout_marginBottom="68dp"
         android:text="Ekateryna Kuznetsova"
@@ -119,6 +153,7 @@
         android:layout_marginEnd="112dp"
         android:layout_marginBottom="28dp"
         android:text="Computer Science"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/student2name"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -127,6 +162,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="144dp"
+        android:textColor="@color/black"
         android:layout_marginBottom="140dp"
         android:text="Microbiology"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -140,6 +176,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.837"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.956" />
@@ -150,6 +187,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
         android:text="Search!"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/logoutBtn"
         app:layout_constraintHorizontal_bias="0.357"
         app:layout_constraintStart_toStartOf="parent"
