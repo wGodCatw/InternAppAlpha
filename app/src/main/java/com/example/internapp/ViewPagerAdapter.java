@@ -1,6 +1,10 @@
 package com.example.internapp;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +22,12 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
 
     ArrayList<ViewPagerItem> viewPagerItemArrayList;
     private final Context context;
+    private Activity a;
 
 
-    public ViewPagerAdapter(ArrayList<ViewPagerItem> viewPagerItemArrayList, Context context) {
+    public ViewPagerAdapter(Activity a, ArrayList<ViewPagerItem> viewPagerItemArrayList, Context context) {
         this.viewPagerItemArrayList = viewPagerItemArrayList;
+        this.a = a;
         this.context = context;
     }
 
@@ -41,6 +47,21 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
         holder.txtName.setText(viewPagerItem.name);
         holder.txtFaculty.setText(viewPagerItem.faculty);
         holder.txtLocation.setText(viewPagerItem.location);
+        holder.whatsappLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "https://api.whatsapp.com/send?phone=" + viewPagerItem.getWhatsappNumber();
+                try {
+                    PackageManager pm = context.getApplicationContext().getPackageManager();
+                    pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    a.startActivity(i);
+                } catch (PackageManager.NameNotFoundException e){
+                    a.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                }
+            }
+        });
 
 
         Glide.with(context).asBitmap().load(viewPagerItemArrayList.get(position).getImageUrl()).into(holder.imgStudentSearch);
@@ -53,12 +74,13 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView imgStudentSearch;
+        ImageView imgStudentSearch, whatsappLink;
         TextView txtName, txtFaculty, txtLocation;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            whatsappLink = itemView.findViewById(R.id.whatsappLink);
             imgStudentSearch = itemView.findViewById(R.id.studentPicSearch);
             txtName = itemView.findViewById(R.id.studentNameSearch);
             txtFaculty = itemView.findViewById(R.id.studentFacultySearch);

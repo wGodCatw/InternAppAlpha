@@ -7,7 +7,7 @@
 
     <ImageView
         android:id="@+id/studentPicSearch"
-        android:layout_width="465dp"
+        android:layout_width="0dp"
         android:layout_height="626dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,4 +50,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.155"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/whatsappLink"
+        android:layout_width="74dp"
+        android:layout_height="71dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="72dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/studentFacultySearch"
+        app:layout_constraintTop_toBottomOf="@+id/studentPicSearch"
+        app:srcCompat="@drawable/ic_whatsapp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
