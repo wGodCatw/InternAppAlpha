@@ -40,6 +40,7 @@ public class SpeedDialinit {
         fab.setExpansionMode(SpeedDialView.ExpansionMode.LEFT);
         fab.setUseReverseAnimationOnClose(true);
         fab.getMainFab().setCustomSize(200);
+        fab.setMainFabAnimationRotateAngle(270f);
         fab.setOrientation(LinearLayout.VERTICAL);
         fab.setOnActionSelectedListener(new SpeedDialView.OnActionSelectedListener() {
             @Override
