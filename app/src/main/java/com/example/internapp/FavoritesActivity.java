@@ -6,12 +6,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.leinardi.android.speeddial.SpeedDialView;
+
 import java.util.ArrayList;
 
 public class FavoritesActivity extends AppCompatActivity {
 
 
     private RecyclerView FavoriteStudentsRecView;
+
+    SpeedDialView speedDialView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,9 @@ public class FavoritesActivity extends AppCompatActivity {
         FavoriteStudentsRecView.setAdapter(adapter);
         FavoriteStudentsRecView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
+
+        speedDialView = findViewById(R.id.speedDialView);
+        SpeedDialinit.fab_init(speedDialView, getApplicationContext(), FavoritesActivity.this);
 
     }
 }

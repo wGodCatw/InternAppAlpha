@@ -10,11 +10,15 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.leinardi.android.speeddial.SpeedDialView;
+
 import java.util.ArrayList;
 
 public class SearchStudents extends AppCompatActivity {
 
     ViewPager2 viewPager2;
+
+    SpeedDialView speedDialView;
 
     String whatsappPhone = "+972504828406";
     String whatsappPhone2 = "+972504828405";
@@ -59,5 +63,8 @@ public class SearchStudents extends AppCompatActivity {
         viewPager2.setOffscreenPageLimit(2);
         viewPager2.setClipChildren(false);
         viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+        speedDialView = findViewById(R.id.speedDialView);
+        SpeedDialinit.fab_init(speedDialView, getApplicationContext(), SearchStudents.this);
     }
 }

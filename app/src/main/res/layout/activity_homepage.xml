@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".HomepageActivity">
 
     <com.leinardi.android.speeddial.SpeedDialOverlayLayout
@@ -17,40 +17,41 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="76dp"
-        android:textColor="@color/black"
         android:text="Hello, Username"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/userIcon"
         app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <ImageView
         android:id="@+id/userIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="48dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="52dp"
         android:src="@drawable/ic_launcher_foreground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <com.leinardi.android.speeddial.SpeedDialView
         android:id="@+id/speedDialView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="24dp"
-        app:layout_wrapBehaviorInParent="horizontal_only"
+        android:layout_marginBottom="28dp"
         android:animateLayoutChanges="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.906"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_wrapBehaviorInParent="horizontal_only"
         app:sdMainFabClosedBackgroundColor="@color/orange"
-        app:sdMainFabOpenedBackgroundColor="@color/orange"
         app:sdMainFabClosedIconColor="@color/white"
-        app:sdMainFabOpenedIconColor="@color/white"
         app:sdMainFabClosedSrc="@drawable/ic_sdclosednew"
+        app:sdMainFabOpenedBackgroundColor="@color/orange"
+        app:sdMainFabOpenedIconColor="@color/white"
         app:sdOverlayLayout="@id/overlay">
 
     </com.leinardi.android.speeddial.SpeedDialView>
@@ -59,67 +60,43 @@
         android:id="@+id/searchBoxText"
         android:layout_width="240dp"
         android:layout_height="63dp"
-        android:layout_marginTop="212dp"
+        android:layout_marginTop="184dp"
         android:ems="10"
         android:hint="Search for students"
-        android:textColor="@color/black"
         android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/favoritesBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="352dp"
-        android:text="Favorites"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/scheduleBtn"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/scheduleBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="352dp"
-        android:text="Schedule"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/favoritesBtn"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/studentTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:layout_marginTop="20dp"
         android:text="Last viewed students"
-        app:layout_constraintBottom_toTopOf="@+id/studentImg1"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/favoritesBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/searchBoxText" />
 
     <ImageView
         android:id="@+id/studentImg1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginBottom="28dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginBottom="48dp"
         android:src="@drawable/ic_launcher_foreground"
         app:layout_constraintBottom_toTopOf="@+id/studentImg2"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/studentImg2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginBottom="140dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginBottom="196dp"
         android:src="@drawable/ic_launcher_foreground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -128,68 +105,74 @@
         android:id="@+id/student1name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="128dp"
-        android:textColor="@color/black"
-        android:layout_marginBottom="68dp"
         android:text="Juan Maccaroni"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/student1faculty"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.201"
+        app:layout_constraintStart_toEndOf="@+id/studentImg1"
+        app:layout_constraintTop_toBottomOf="@+id/studentTitle"
+        app:layout_constraintVertical_bias="0.426" />
 
     <TextView
         android:id="@+id/student2name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:layout_marginEnd="84dp"
-        android:layout_marginBottom="68dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="100dp"
         android:text="Ekateryna Kuznetsova"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/student2faculty"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/studentImg2" />
 
     <TextView
         android:id="@+id/student1faculty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="112dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="48dp"
         android:text="Computer Science"
         android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/student2name"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.23"
+        app:layout_constraintStart_toEndOf="@+id/studentImg1" />
 
     <TextView
         android:id="@+id/student2faculty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="144dp"
-        android:textColor="@color/black"
-        android:layout_marginBottom="140dp"
+        android:layout_marginEnd="84dp"
+        android:layout_marginBottom="196dp"
         android:text="Microbiology"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.433"
+        app:layout_constraintStart_toEndOf="@+id/studentImg2" />
 
     <Button
         android:id="@+id/logoutBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Log out"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.837"
-        android:textColor="@color/black"
+        app:layout_constraintHorizontal_bias="0.165"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.956" />
+        app:layout_constraintVertical_bias="0.943" />
 
-    <Button
-        android:id="@+id/searchBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:text="Search!"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/logoutBtn"
-        app:layout_constraintHorizontal_bias="0.357"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/studentImg2" />
+    <!--    <Button-->
+    <!--        android:id="@+id/searchBtn"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="52dp"-->
+    <!--        android:text="Search!"-->
+    <!--        android:textColor="@color/black"-->
+    <!--        app:layout_constraintEnd_toStartOf="@+id/logoutBtn"-->
+    <!--        app:layout_constraintHorizontal_bias="0.357"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/studentImg2" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

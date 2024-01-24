@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.leinardi.android.speeddial.SpeedDialView;
 
 import java.util.ArrayList;
 
@@ -23,6 +24,7 @@ public class SearchActivity extends AppCompatActivity {
     private static ChipGroup chipGroup;
     private RecyclerView UniversitiesRecView;
     private RecyclerView FacultiesRecView;
+    SpeedDialView speedDialView;
     private Button goToSearchBtn;
 
     public static void createChip(String text, View view) {
@@ -97,19 +99,8 @@ public class SearchActivity extends AppCompatActivity {
 
         chipGroup = findViewById(R.id.chipGroup);
 
-//        ArrayList<String> arrayList = new ArrayList<>();
-//        arrayList.add("Technion");
-//        arrayList.add("Technion");
-//        arrayList.add("Technion");
-//        arrayList.add("Technion");
-//        arrayList.add("Technion");
-//        arrayList.add("Technion");
-//
-//        for (String s: arrayList){
-//            Chip chip = (Chip) LayoutInflater.from(SearchActivity.this).inflate(R.layout.chip_layout, null);
-//            chip.setText(s);
-//            chip.setId(ViewCompat.generateViewId());
-//            chipGroup.addView(chip);
-//        }
+        speedDialView = findViewById(R.id.speedDialView);
+        SpeedDialinit.fab_init(speedDialView, getApplicationContext(), SearchActivity.this);
+
     }
 }
