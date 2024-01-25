@@ -87,8 +87,13 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult o) {
                         if (o.getResultCode() == Activity.RESULT_OK) {
+                            Log.d("true", String.valueOf(true));
+
+
                             try {
                                 SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(o.getData());
+                                Log.d("sign in", String.valueOf(String.valueOf(oneTapClient.getSignInCredentialFromIntent(o.getData()))));
+
                                 String idToken = credential.getGoogleIdToken();
                                 String username = credential.getId();
                                 String password = credential.getPassword();
@@ -97,9 +102,17 @@ public class LoginActivity extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<AuthResult> task) {
                                                 currentUser = mAuth.getCurrentUser();
-                                                Intent intent = o.getData();
-                                                startActivity(intent);
-                                                finish();
+                                                Log.d("blyat", String.valueOf(currentUser));
+
+                                                if (currentUser != null) {
+                                                    Log.d("inside", String.valueOf(currentUser));
+
+                                                    Intent intent = o.getData();
+                                                    startActivity(intent);
+                                                    finish();
+                                                } else {
+                                                    Toast.makeText(getApplicationContext(), "Fuck!", Toast.LENGTH_LONG).show();
+                                                }
                                             }
                                         });
 
@@ -130,6 +143,8 @@ public class LoginActivity extends AppCompatActivity {
                             public void onSuccess(BeginSignInResult result) {
 //                                try {
                                 currentUser = mAuth.getCurrentUser();
+                                Log.d("blyatyyyyy", String.valueOf(currentUser));
+
                                 activityResultLauncher.launch(new Intent(getApplicationContext(), HomepageActivity.class));
 //                                    startIntentSenderForResult(
 //                                            result.getPendingIntent().getIntentSender(), REQ_ONE_TAP,
