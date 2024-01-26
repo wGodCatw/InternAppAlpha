@@ -2,7 +2,6 @@ package com.example.internapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -41,17 +40,14 @@ public class HomepageActivity extends AppCompatActivity {
         welcomeText = findViewById(R.id.welcomeText);
 
         user = auth.getCurrentUser();
-        Log.d("blyat", String.valueOf(user));
 
         if (user == null) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
         } else {
-            if (user.getDisplayName() != null) {
+            if (user.getDisplayName() != null)
                 welcomeText.setText("Hello, " + user.getDisplayName());
-
-            }
         }
 
         userIcon = findViewById(R.id.userIcon);

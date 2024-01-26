@@ -1,0 +1,141 @@
+package com.example.internapp;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Patterns;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+public class RegisterActivityV2 extends AppCompatActivity {
+    private EditText editTextRegisterFullName, editTextRegisterEmail, editTextDateOfBirth,
+            editTextRegisterPhone, editTextRegisterPwd, editTextRegisterConfirmPwd;
+
+    private ProgressBar progressBar;
+    private RadioGroup radioGroupRegisterRole;
+
+    private RadioButton radioButtonRegisterRoleSelected;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_register_v2);
+
+        editTextRegisterFullName = findViewById(R.id.edt_register_full_name);
+        editTextRegisterEmail = findViewById(R.id.edt_register_email);
+        editTextRegisterPwd = findViewById(R.id.edt_register_password);
+        editTextDateOfBirth = findViewById(R.id.edt_register_dob);
+        editTextRegisterConfirmPwd = findViewById(R.id.edt_register_confirm_password);
+        editTextRegisterPhone = findViewById(R.id.edt_register_mobile);
+
+        progressBar = findViewById(R.id.progress_bar);
+
+        radioGroupRegisterRole = findViewById(R.id.radioGroup_registerRole);
+        radioGroupRegisterRole.clearCheck();
+
+        Button buttonRegister = findViewById(R.id.button_register);
+        buttonRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int selectedRoleId = radioGroupRegisterRole.getCheckedRadioButtonId();
+                radioButtonRegisterRoleSelected = findViewById(selectedRoleId);
+
+
+                String textFullName = editTextRegisterFullName.getText().toString();
+                String textEmail = editTextRegisterFullName.getText().toString();
+                String textDoB = editTextRegisterFullName.getText().toString();
+                String textMobile = editTextRegisterFullName.getText().toString();
+                String textPassword = editTextRegisterFullName.getText().toString();
+                String textConfirmPassword = editTextRegisterFullName.getText().toString();
+                String textRole;
+
+                if (TextUtils.isEmpty(textFullName)) {
+                    Toast.makeText(RegisterActivityV2.this, "Please enter your full name", Toast.LENGTH_LONG).show();
+                    editTextRegisterFullName.setError("Full name is required");
+                    editTextRegisterFullName.requestFocus();
+                } else if (TextUtils.isEmpty(textEmail)){
+                    Toast.makeText(RegisterActivityV2.this, "Please enter your email", Toast.LENGTH_LONG).show();
+                    editTextRegisterEmail.setError("Email is required");
+                    editTextRegisterEmail.requestFocus();
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()) {
+                    Toast.makeText(RegisterActivityV2.this, "Please re-enter your email", Toast.LENGTH_LONG).show();
+                    editTextRegisterEmail.setError("Valid email is required");
+                    editTextRegisterEmail.requestFocus();
+                } else if (TextUtils.isEmpty(textDoB)){
+                    Toast.makeText(RegisterActivityV2.this, "Please enter your date of birth", Toast.LENGTH_LONG).show();
+                    editTextDateOfBirth.setError("Email is required");
+                    editTextDateOfBirth.requestFocus();
+                } else if (radioGroupRegisterRole.getCheckedRadioButtonId() == -1){
+                    Toast.makeText(RegisterActivityV2.this, "Please select your role", Toast.LENGTH_LONG).show();
+                    radioButtonRegisterRoleSelected.setError("Role is required");
+                    radioButtonRegisterRoleSelected.requestFocus();
+                } else if (TextUtils.isEmpty(textMobile)){
+                    Toast.makeText(RegisterActivityV2.this, "Please enter your phone number", Toast.LENGTH_LONG).show();
+                    editTextRegisterPhone.setError("Phone number is required");
+                    editTextRegisterPhone.requestFocus();
+                } else if (textMobile.length() != 10){
+                    Toast.makeText(RegisterActivityV2.this, "Please re-enter your phone number", Toast.LENGTH_LONG).show();
+                    editTextRegisterPhone.setError("Email is required");
+                    editTextRegisterPhone.requestFocus();
+                } else if (TextUtils.isEmpty(textPassword)){
+                    Toast.makeText(RegisterActivityV2.this, "Please enter your password", Toast.LENGTH_LONG).show();
+                    editTextRegisterPwd.setError("Email is required");
+                    editTextRegisterPwd.requestFocus();
+                } else if (textPassword.length() < 6){
+                    Toast.makeText(RegisterActivityV2.this, "Password has to be at least 6 digits", Toast.LENGTH_LONG).show();
+                    editTextRegisterPwd.setError("Password is to weak");
+                    editTextRegisterPwd.requestFocus();
+                } else if (TextUtils.isEmpty(textConfirmPassword)){
+                    Toast.makeText(RegisterActivityV2.this, "Please confirm your password", Toast.LENGTH_LONG).show();
+                    editTextRegisterConfirmPwd.setError("Password confirmation is required");
+                    editTextRegisterConfirmPwd.requestFocus();
+                } else if (!textPassword.equals(textConfirmPassword)){
+                    Toast.makeText(RegisterActivityV2.this, "Password and confirm password doesn't match", Toast.LENGTH_LONG).show();
+                    editTextRegisterConfirmPwd.setError("Password confirmation is required");
+                    editTextRegisterConfirmPwd.requestFocus();
+                    editTextRegisterPwd.clearComposingText();
+                    editTextRegisterConfirmPwd.clearComposingText();
+                } else{
+                    textRole  = radioButtonRegisterRoleSelected.getText().toString();
+                    progressBar.setVisibility(View.VISIBLE);
+                    registerUser(textFullName, textEmail, textDoB, textRole, textMobile, textPassword);
+                }
+            }
+        });
+
+    }
+
+    private void registerUser(String textFullName, String textEmail, String textDoB, String textRole, String textMobile, String textPassword) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.createUserWithEmailAndPassword(textEmail, textPassword).addOnCompleteListener(RegisterActivityV2.this,
+                new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(RegisterActivityV2.this, "Registration successful!", Toast.LENGTH_LONG).show();
+                    FirebaseUser firebaseUser = auth.getCurrentUser();
+
+                    firebaseUser.sendEmailVerification();
+                    Intent intent = new Intent(RegisterActivityV2.this, UserProfile.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
+    }
+}

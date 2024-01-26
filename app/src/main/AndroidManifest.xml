@@ -15,6 +15,12 @@
         android:theme="@style/Theme.InternApp"
         tools:targetApi="34">
         <activity
+            android:name=".RegisterActivityV2"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivityV2"
+            android:exported="false" />
+        <activity
             android:name=".SearchStudents"
             android:exported="false" />
         <activity
@@ -46,7 +52,7 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
