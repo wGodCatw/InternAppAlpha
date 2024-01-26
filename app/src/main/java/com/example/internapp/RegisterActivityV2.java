@@ -3,6 +3,7 @@ package com.example.internapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -19,15 +20,21 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Objects;
 
 public class RegisterActivityV2 extends AppCompatActivity {
+    private static final String TAG = "RegisterActivity";
     private EditText editTextRegisterFullName, editTextRegisterEmail, editTextDateOfBirth,
             editTextRegisterPhone, editTextRegisterPwd, editTextRegisterConfirmPwd;
-
     private ProgressBar progressBar;
     private RadioGroup radioGroupRegisterRole;
-
     private RadioButton radioButtonRegisterRoleSelected;
 
     @Override
@@ -67,7 +74,7 @@ public class RegisterActivityV2 extends AppCompatActivity {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your full name", Toast.LENGTH_LONG).show();
                     editTextRegisterFullName.setError("Full name is required");
                     editTextRegisterFullName.requestFocus();
-                } else if (TextUtils.isEmpty(textEmail)){
+                } else if (TextUtils.isEmpty(textEmail)) {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your email", Toast.LENGTH_LONG).show();
                     editTextRegisterEmail.setError("Email is required");
                     editTextRegisterEmail.requestFocus();
@@ -75,42 +82,42 @@ public class RegisterActivityV2 extends AppCompatActivity {
                     Toast.makeText(RegisterActivityV2.this, "Please re-enter your email", Toast.LENGTH_LONG).show();
                     editTextRegisterEmail.setError("Valid email is required");
                     editTextRegisterEmail.requestFocus();
-                } else if (TextUtils.isEmpty(textDoB)){
+                } else if (TextUtils.isEmpty(textDoB)) {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your date of birth", Toast.LENGTH_LONG).show();
                     editTextDateOfBirth.setError("Email is required");
                     editTextDateOfBirth.requestFocus();
-                } else if (radioGroupRegisterRole.getCheckedRadioButtonId() == -1){
+                } else if (radioGroupRegisterRole.getCheckedRadioButtonId() == -1) {
                     Toast.makeText(RegisterActivityV2.this, "Please select your role", Toast.LENGTH_LONG).show();
                     radioButtonRegisterRoleSelected.setError("Role is required");
                     radioButtonRegisterRoleSelected.requestFocus();
-                } else if (TextUtils.isEmpty(textMobile)){
+                } else if (TextUtils.isEmpty(textMobile)) {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your phone number", Toast.LENGTH_LONG).show();
                     editTextRegisterPhone.setError("Phone number is required");
                     editTextRegisterPhone.requestFocus();
-                } else if (textMobile.length() != 10){
+                } else if (textMobile.length() != 10) {
                     Toast.makeText(RegisterActivityV2.this, "Please re-enter your phone number", Toast.LENGTH_LONG).show();
                     editTextRegisterPhone.setError("Email is required");
                     editTextRegisterPhone.requestFocus();
-                } else if (TextUtils.isEmpty(textPassword)){
+                } else if (TextUtils.isEmpty(textPassword)) {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your password", Toast.LENGTH_LONG).show();
                     editTextRegisterPwd.setError("Email is required");
                     editTextRegisterPwd.requestFocus();
-                } else if (textPassword.length() < 6){
+                } else if (textPassword.length() < 6) {
                     Toast.makeText(RegisterActivityV2.this, "Password has to be at least 6 digits", Toast.LENGTH_LONG).show();
                     editTextRegisterPwd.setError("Password is to weak");
                     editTextRegisterPwd.requestFocus();
-                } else if (TextUtils.isEmpty(textConfirmPassword)){
+                } else if (TextUtils.isEmpty(textConfirmPassword)) {
                     Toast.makeText(RegisterActivityV2.this, "Please confirm your password", Toast.LENGTH_LONG).show();
                     editTextRegisterConfirmPwd.setError("Password confirmation is required");
                     editTextRegisterConfirmPwd.requestFocus();
-                } else if (!textPassword.equals(textConfirmPassword)){
+                } else if (!textPassword.equals(textConfirmPassword)) {
                     Toast.makeText(RegisterActivityV2.this, "Password and confirm password doesn't match", Toast.LENGTH_LONG).show();
                     editTextRegisterConfirmPwd.setError("Password confirmation is required");
                     editTextRegisterConfirmPwd.requestFocus();
                     editTextRegisterPwd.clearComposingText();
                     editTextRegisterConfirmPwd.clearComposingText();
-                } else{
-                    textRole  = radioButtonRegisterRoleSelected.getText().toString();
+                } else {
+                    textRole = radioButtonRegisterRoleSelected.getText().toString();
                     progressBar.setVisibility(View.VISIBLE);
                     registerUser(textFullName, textEmail, textDoB, textRole, textMobile, textPassword);
                 }
@@ -123,19 +130,55 @@ public class RegisterActivityV2 extends AppCompatActivity {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         auth.createUserWithEmailAndPassword(textEmail, textPassword).addOnCompleteListener(RegisterActivityV2.this,
                 new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(RegisterActivityV2.this, "Registration successful!", Toast.LENGTH_LONG).show();
-                    FirebaseUser firebaseUser = auth.getCurrentUser();
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(RegisterActivityV2.this, "Registration successful!", Toast.LENGTH_LONG).show();
+                            FirebaseUser firebaseUser = auth.getCurrentUser();
 
-                    firebaseUser.sendEmailVerification();
-                    Intent intent = new Intent(RegisterActivityV2.this, UserProfile.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        });
+                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(textFullName).build();
+                            firebaseUser.updateProfile(profileChangeRequest);
+
+                            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textDoB, textRole, textMobile);
+
+                            DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users");
+
+                            referenceProfile.child(firebaseUser.getUid()).setValue(writeUserDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    if (task.isSuccessful()) {
+                                        firebaseUser.sendEmailVerification();
+
+                                        Toast.makeText(RegisterActivityV2.this, "Registration successful. Please verify your email", Toast.LENGTH_LONG).show();
+
+                                        Intent intent = new Intent(RegisterActivityV2.this, UserProfile.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        Toast.makeText(RegisterActivityV2.this, "Registration failed, try again", Toast.LENGTH_LONG).show();
+                                    }
+                                    progressBar.setVisibility(View.GONE);
+
+                                }
+                            });
+
+
+                        } else {
+                            try {
+                                throw Objects.requireNonNull(task.getException());
+                            } catch (FirebaseAuthInvalidCredentialsException e) {
+                                editTextRegisterEmail.setError("Your email is invalid or already in use, re-enter your email");
+                            } catch (FirebaseAuthUserCollisionException e) {
+                                editTextRegisterEmail.setError("User already registered, Log in or use a different email");
+                            } catch (Exception e) {
+                                Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+
+                            }
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    }
+                });
     }
 }
