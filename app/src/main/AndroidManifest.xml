@@ -15,6 +15,9 @@
         android:theme="@style/Theme.InternApp"
         tools:targetApi="34">
         <activity
+            android:name=".UserProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".RegisterActivityV2"
             android:exported="false" />
         <activity

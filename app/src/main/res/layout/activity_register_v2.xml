@@ -80,6 +80,8 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edt_register_mobile"
+                android:drawableStart="@drawable/ic_phonecode_txt"
+                android:drawablePadding="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Your phone number without code"
@@ -146,11 +148,12 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/text_register_dob"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20sp"
+            android:focusable="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layout_register_doB">
 
@@ -158,6 +161,7 @@
                 android:id="@+id/result_dob_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:cursorVisible="false"
                 android:focusable="false"
                 android:hint="Here will be your date of birth"
                 android:textColor="@color/black" />

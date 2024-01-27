@@ -1,5 +1,6 @@
 package com.example.internapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,12 +22,24 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivityV2 extends AppCompatActivity {
     private static final String TAG = "LoginActivityV2";
     FirebaseAuth authProfile;
     private TextInputEditText emailField, pwdField;
     private ProgressBar progressBar;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (authProfile.getCurrentUser() != null) {
+            Toast.makeText(LoginActivityV2.this, "You're already logged in", Toast.LENGTH_SHORT).show();
+
+            startActivity(new Intent(LoginActivityV2.this, UserProfileActivity.class));
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +95,18 @@ public class LoginActivityV2 extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(LoginActivityV2.this, "Log in successful!", Toast.LENGTH_LONG).show();
+                    FirebaseUser firebaseUser = authProfile.getCurrentUser();
+
+                    if (firebaseUser.isEmailVerified()) {
+                        Toast.makeText(LoginActivityV2.this, "Log in successful!", Toast.LENGTH_LONG).show();
+
+                        startActivity(new Intent(LoginActivityV2.this, UserProfileActivity.class));
+                        finish();
+                    } else {
+                        firebaseUser.sendEmailVerification();
+                        authProfile.signOut();
+                        showAlerDialog();
+                    }
                 } else {
                     try {
                         throw task.getException();
@@ -99,5 +124,24 @@ public class LoginActivityV2 extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void showAlerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivityV2.this);
+        builder.setTitle("Email not verified");
+        builder.setMessage("Please verify your email now. You can not login without email verification");
+
+        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

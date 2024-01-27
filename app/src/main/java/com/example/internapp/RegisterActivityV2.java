@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -38,6 +39,7 @@ import java.util.regex.Pattern;
 public class RegisterActivityV2 extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
     Button login;
+    private TextInputLayout dateLayoutText;
     private TextInputEditText editTextRegisterFullName, editTextRegisterEmail, text_register_dob,
             editTextRegisterPhone, editTextRegisterPwd, editTextRegisterConfirmPwd;
     private ImageView editTextDateOfBirth;
@@ -58,6 +60,8 @@ public class RegisterActivityV2 extends AppCompatActivity {
         editTextDateOfBirth = findViewById(R.id.edt_register_doB);
         editTextRegisterPhone = findViewById(R.id.edt_register_mobile);
         text_register_dob = findViewById(R.id.result_dob_register);
+
+        dateLayoutText = findViewById(R.id.text_register_dob);
 
         progressBar = findViewById(R.id.progress_bar);
 
@@ -86,6 +90,7 @@ public class RegisterActivityV2 extends AppCompatActivity {
                 picker = new DatePickerDialog(RegisterActivityV2.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        dateLayoutText.setVisibility(View.VISIBLE);
                         text_register_dob.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
                     }
                 }, year, month, day);
@@ -109,7 +114,7 @@ public class RegisterActivityV2 extends AppCompatActivity {
                 String textConfirmPassword = editTextRegisterConfirmPwd.getText().toString();
                 String textRole;
 
-                String mobileRegex = "[0][5][02347][0-9]{6}";
+                String mobileRegex = "[5][02347][0-9]{6}";
                 Matcher mobileMatcher;
                 Pattern mobilePattern = Pattern.compile(mobileRegex);
                 mobileMatcher = mobilePattern.matcher(textMobile);
@@ -135,7 +140,7 @@ public class RegisterActivityV2 extends AppCompatActivity {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your phone number", Toast.LENGTH_LONG).show();
                     editTextRegisterPhone.setError("Phone number is required");
                     editTextRegisterPhone.requestFocus();
-                } else if (textMobile.length() != 10) {
+                } else if (textMobile.length() != 9) {
                     Toast.makeText(RegisterActivityV2.this, "Please re-enter your phone number", Toast.LENGTH_LONG).show();
                     editTextRegisterPhone.setError("Please enter valid phone number");
                     editTextRegisterPhone.requestFocus();
@@ -200,10 +205,10 @@ public class RegisterActivityV2 extends AppCompatActivity {
 
                                         Toast.makeText(RegisterActivityV2.this, "Registration successful. Please verify your email", Toast.LENGTH_LONG).show();
 
-//                                        Intent intent = new Intent(RegisterActivityV2.this, UserProfile.class);
-//                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                        startActivity(intent);
-//                                        finish();
+                                        Intent intent = new Intent(RegisterActivityV2.this, UserProfileActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                        finish();
                                     } else {
                                         Toast.makeText(RegisterActivityV2.this, "Registration failed, try again", Toast.LENGTH_LONG).show();
                                     }
