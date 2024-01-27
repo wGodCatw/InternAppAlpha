@@ -1,5 +1,6 @@
 package com.example.internapp;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -27,7 +29,10 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Calendar;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegisterActivityV2 extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
@@ -35,6 +40,7 @@ public class RegisterActivityV2 extends AppCompatActivity {
             editTextRegisterPhone, editTextRegisterPwd, editTextRegisterConfirmPwd;
     private ProgressBar progressBar;
     private RadioGroup radioGroupRegisterRole;
+    private DatePickerDialog picker;
     private RadioButton radioButtonRegisterRoleSelected;
 
     @Override
@@ -54,6 +60,24 @@ public class RegisterActivityV2 extends AppCompatActivity {
         radioGroupRegisterRole = findViewById(R.id.radioGroup_registerRole);
         radioGroupRegisterRole.clearCheck();
 
+        editTextDateOfBirth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar calendar = Calendar.getInstance();
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH);
+                int year = calendar.get(Calendar.YEAR);
+
+                picker = new DatePickerDialog(RegisterActivityV2.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        editTextDateOfBirth.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                    }
+                }, year, month, day);
+                picker.show();
+            }
+        });
+
         Button buttonRegister = findViewById(R.id.button_register);
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,12 +87,18 @@ public class RegisterActivityV2 extends AppCompatActivity {
 
 
                 String textFullName = editTextRegisterFullName.getText().toString();
-                String textEmail = editTextRegisterFullName.getText().toString();
-                String textDoB = editTextRegisterFullName.getText().toString();
-                String textMobile = editTextRegisterFullName.getText().toString();
-                String textPassword = editTextRegisterFullName.getText().toString();
-                String textConfirmPassword = editTextRegisterFullName.getText().toString();
+                String textEmail = editTextRegisterEmail.getText().toString();
+                String textDoB = editTextDateOfBirth.getText().toString();
+                String textMobile = editTextRegisterPhone.getText().toString();
+                String textPassword = editTextRegisterPwd.getText().toString();
+                String textConfirmPassword = editTextRegisterConfirmPwd.getText().toString();
                 String textRole;
+
+                String mobileRegex = "[0][5][0247][0-9]{6}";
+                Matcher mobileMatcher;
+                Pattern mobilePattern = Pattern.compile(mobileRegex);
+                mobileMatcher = mobilePattern.matcher(textMobile);
+
 
                 if (TextUtils.isEmpty(textFullName)) {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your full name", Toast.LENGTH_LONG).show();
@@ -84,12 +114,11 @@ public class RegisterActivityV2 extends AppCompatActivity {
                     editTextRegisterEmail.requestFocus();
                 } else if (TextUtils.isEmpty(textDoB)) {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your date of birth", Toast.LENGTH_LONG).show();
-                    editTextDateOfBirth.setError("Email is required");
+                    editTextDateOfBirth.setError("Date of birth is required");
                     editTextDateOfBirth.requestFocus();
                 } else if (radioGroupRegisterRole.getCheckedRadioButtonId() == -1) {
                     Toast.makeText(RegisterActivityV2.this, "Please select your role", Toast.LENGTH_LONG).show();
-                    radioButtonRegisterRoleSelected.setError("Role is required");
-                    radioButtonRegisterRoleSelected.requestFocus();
+                    radioGroupRegisterRole.requestFocus();
                 } else if (TextUtils.isEmpty(textMobile)) {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your phone number", Toast.LENGTH_LONG).show();
                     editTextRegisterPhone.setError("Phone number is required");
@@ -97,6 +126,10 @@ public class RegisterActivityV2 extends AppCompatActivity {
                 } else if (textMobile.length() != 10) {
                     Toast.makeText(RegisterActivityV2.this, "Please re-enter your phone number", Toast.LENGTH_LONG).show();
                     editTextRegisterPhone.setError("Email is required");
+                    editTextRegisterPhone.requestFocus();
+                }else if (!mobileMatcher.find()) {
+                    Toast.makeText(RegisterActivityV2.this, "Phone number is not valid", Toast.LENGTH_LONG).show();
+                    editTextRegisterPhone.setError("Not a valid phone number");
                     editTextRegisterPhone.requestFocus();
                 } else if (TextUtils.isEmpty(textPassword)) {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your password", Toast.LENGTH_LONG).show();
@@ -152,10 +185,10 @@ public class RegisterActivityV2 extends AppCompatActivity {
 
                                         Toast.makeText(RegisterActivityV2.this, "Registration successful. Please verify your email", Toast.LENGTH_LONG).show();
 
-                                        Intent intent = new Intent(RegisterActivityV2.this, UserProfile.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                        finish();
+//                                        Intent intent = new Intent(RegisterActivityV2.this, UserProfile.class);
+//                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                        startActivity(intent);
+//                                        finish();
                                     } else {
                                         Toast.makeText(RegisterActivityV2.this, "Registration failed, try again", Toast.LENGTH_LONG).show();
                                     }
