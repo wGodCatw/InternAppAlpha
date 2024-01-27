@@ -9,7 +9,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -36,12 +37,12 @@ import java.util.regex.Pattern;
 
 public class RegisterActivityV2 extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
-    private EditText editTextRegisterFullName, editTextRegisterEmail, editTextDateOfBirth,
+    Button login;
+    private TextInputEditText editTextRegisterFullName, editTextRegisterEmail, text_register_dob,
             editTextRegisterPhone, editTextRegisterPwd, editTextRegisterConfirmPwd;
+    private ImageView editTextDateOfBirth;
     private ProgressBar progressBar;
     private RadioGroup radioGroupRegisterRole;
-
-    Button login;
     private DatePickerDialog picker;
     private RadioButton radioButtonRegisterRoleSelected;
 
@@ -52,10 +53,11 @@ public class RegisterActivityV2 extends AppCompatActivity {
 
         editTextRegisterFullName = findViewById(R.id.edt_register_full_name);
         editTextRegisterEmail = findViewById(R.id.edt_register_email);
-        editTextRegisterPwd = findViewById(R.id.edt_register_password);
-        editTextDateOfBirth = findViewById(R.id.edt_register_dob);
-        editTextRegisterConfirmPwd = findViewById(R.id.edt_register_confirm_password);
+        editTextRegisterPwd = findViewById(R.id.edt_register_pwd);
+        editTextRegisterConfirmPwd = findViewById(R.id.edt_register_confirm_pwd);
+        editTextDateOfBirth = findViewById(R.id.edt_register_doB);
         editTextRegisterPhone = findViewById(R.id.edt_register_mobile);
+        text_register_dob = findViewById(R.id.result_dob_register);
 
         progressBar = findViewById(R.id.progress_bar);
 
@@ -71,6 +73,8 @@ public class RegisterActivityV2 extends AppCompatActivity {
                 finish();
             }
         });
+
+
         editTextDateOfBirth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +86,7 @@ public class RegisterActivityV2 extends AppCompatActivity {
                 picker = new DatePickerDialog(RegisterActivityV2.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        editTextDateOfBirth.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                        text_register_dob.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
                     }
                 }, year, month, day);
                 picker.show();
@@ -99,19 +103,16 @@ public class RegisterActivityV2 extends AppCompatActivity {
 
                 String textFullName = editTextRegisterFullName.getText().toString();
                 String textEmail = editTextRegisterEmail.getText().toString();
-                String textDoB = editTextDateOfBirth.getText().toString();
+                String textDoB = text_register_dob.getText().toString();
                 String textMobile = editTextRegisterPhone.getText().toString();
                 String textPassword = editTextRegisterPwd.getText().toString();
                 String textConfirmPassword = editTextRegisterConfirmPwd.getText().toString();
                 String textRole;
 
-                String mobileRegex = "[0][5][0247][0-9]{6}";
+                String mobileRegex = "[0][5][02347][0-9]{6}";
                 Matcher mobileMatcher;
                 Pattern mobilePattern = Pattern.compile(mobileRegex);
                 mobileMatcher = mobilePattern.matcher(textMobile);
-
-
-
 
 
                 if (TextUtils.isEmpty(textFullName)) {
@@ -128,7 +129,7 @@ public class RegisterActivityV2 extends AppCompatActivity {
                     editTextRegisterEmail.requestFocus();
                 } else if (TextUtils.isEmpty(textDoB)) {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your date of birth", Toast.LENGTH_LONG).show();
-                    editTextDateOfBirth.setError("Date of birth is required");
+                    text_register_dob.setError("Date of birth is required");
                     editTextDateOfBirth.requestFocus();
                 } else if (TextUtils.isEmpty(textMobile)) {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your phone number", Toast.LENGTH_LONG).show();

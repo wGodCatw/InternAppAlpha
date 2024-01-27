@@ -3,10 +3,10 @@ package com.example.internapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -15,12 +15,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 public class LoginActivityV2 extends AppCompatActivity {
+    private static final String TAG = "LoginActivityV2";
     FirebaseAuth authProfile;
-    private EditText edt_login_email, edt_login_password;
+    private TextInputEditText emailField, pwdField;
     private ProgressBar progressBar;
 
     @Override
@@ -28,8 +32,8 @@ public class LoginActivityV2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_v2);
 
-        edt_login_email = findViewById(R.id.edt_login_email);
-        edt_login_password = findViewById(R.id.edt_login_password);
+        emailField = findViewById(R.id.txtFieldEmail);
+        pwdField = findViewById(R.id.txtFieldPassword);
         progressBar = findViewById(R.id.progress_bar_login);
 
 
@@ -39,21 +43,21 @@ public class LoginActivityV2 extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String textEmail = edt_login_email.getText().toString();
-                String textPwd = edt_login_password.getText().toString();
+                String textEmail = emailField.getText().toString();
+                String textPwd = pwdField.getText().toString();
 
                 if (TextUtils.isEmpty(textEmail)) {
                     Toast.makeText(LoginActivityV2.this, "Please enter your email", Toast.LENGTH_LONG).show();
-                    edt_login_email.setError("Email is required");
-                    edt_login_email.requestFocus();
+                    emailField.setError("Email is required");
+                    emailField.requestFocus();
                 } else if (!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()) {
                     Toast.makeText(LoginActivityV2.this, "Email is not valid", Toast.LENGTH_LONG).show();
-                    edt_login_email.setError("Valid email is required");
-                    edt_login_email.requestFocus();
+                    emailField.setError("Valid email is required");
+                    emailField.requestFocus();
                 } else if (TextUtils.isEmpty(textPwd)) {
                     Toast.makeText(LoginActivityV2.this, "Please enter your password", Toast.LENGTH_LONG).show();
-                    edt_login_email.setError("Password is required");
-                    edt_login_email.requestFocus();
+                    pwdField.setError("Password is required");
+                    pwdField.requestFocus();
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
                     loginUser(textEmail, textPwd);
@@ -79,6 +83,17 @@ public class LoginActivityV2 extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Toast.makeText(LoginActivityV2.this, "Log in successful!", Toast.LENGTH_LONG).show();
                 } else {
+                    try {
+                        throw task.getException();
+                    } catch (FirebaseAuthInvalidUserException e) {
+                        emailField.setError("User doesn't exist or is no longer valid. Please register again");
+                        emailField.requestFocus();
+                    } catch (FirebaseAuthInvalidCredentialsException e) {
+                        emailField.setError("Invalid credentials, re-enter and try to login again");
+                        emailField.requestFocus();
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage());
+                    }
                     Toast.makeText(LoginActivityV2.this, "Log in failed", Toast.LENGTH_LONG).show();
                 }
                 progressBar.setVisibility(View.GONE);
