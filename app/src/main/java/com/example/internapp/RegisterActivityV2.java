@@ -40,6 +40,8 @@ public class RegisterActivityV2 extends AppCompatActivity {
             editTextRegisterPhone, editTextRegisterPwd, editTextRegisterConfirmPwd;
     private ProgressBar progressBar;
     private RadioGroup radioGroupRegisterRole;
+
+    Button login;
     private DatePickerDialog picker;
     private RadioButton radioButtonRegisterRoleSelected;
 
@@ -60,6 +62,15 @@ public class RegisterActivityV2 extends AppCompatActivity {
         radioGroupRegisterRole = findViewById(R.id.radioGroup_registerRole);
         radioGroupRegisterRole.clearCheck();
 
+        login = findViewById(R.id.loginFromRegister);
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegisterActivityV2.this, LoginActivityV2.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         editTextDateOfBirth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,6 +111,9 @@ public class RegisterActivityV2 extends AppCompatActivity {
                 mobileMatcher = mobilePattern.matcher(textMobile);
 
 
+
+
+
                 if (TextUtils.isEmpty(textFullName)) {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your full name", Toast.LENGTH_LONG).show();
                     editTextRegisterFullName.setError("Full name is required");
@@ -116,24 +130,21 @@ public class RegisterActivityV2 extends AppCompatActivity {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your date of birth", Toast.LENGTH_LONG).show();
                     editTextDateOfBirth.setError("Date of birth is required");
                     editTextDateOfBirth.requestFocus();
-                } else if (radioGroupRegisterRole.getCheckedRadioButtonId() == -1) {
-                    Toast.makeText(RegisterActivityV2.this, "Please select your role", Toast.LENGTH_LONG).show();
-                    radioGroupRegisterRole.requestFocus();
                 } else if (TextUtils.isEmpty(textMobile)) {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your phone number", Toast.LENGTH_LONG).show();
                     editTextRegisterPhone.setError("Phone number is required");
                     editTextRegisterPhone.requestFocus();
                 } else if (textMobile.length() != 10) {
                     Toast.makeText(RegisterActivityV2.this, "Please re-enter your phone number", Toast.LENGTH_LONG).show();
-                    editTextRegisterPhone.setError("Email is required");
+                    editTextRegisterPhone.setError("Please enter valid phone number");
                     editTextRegisterPhone.requestFocus();
-                }else if (!mobileMatcher.find()) {
+                } else if (!mobileMatcher.find()) {
                     Toast.makeText(RegisterActivityV2.this, "Phone number is not valid", Toast.LENGTH_LONG).show();
                     editTextRegisterPhone.setError("Not a valid phone number");
                     editTextRegisterPhone.requestFocus();
                 } else if (TextUtils.isEmpty(textPassword)) {
                     Toast.makeText(RegisterActivityV2.this, "Please enter your password", Toast.LENGTH_LONG).show();
-                    editTextRegisterPwd.setError("Email is required");
+                    editTextRegisterPwd.setError("Password is required");
                     editTextRegisterPwd.requestFocus();
                 } else if (textPassword.length() < 6) {
                     Toast.makeText(RegisterActivityV2.this, "Password has to be at least 6 digits", Toast.LENGTH_LONG).show();
@@ -149,6 +160,9 @@ public class RegisterActivityV2 extends AppCompatActivity {
                     editTextRegisterConfirmPwd.requestFocus();
                     editTextRegisterPwd.clearComposingText();
                     editTextRegisterConfirmPwd.clearComposingText();
+                } else if (radioGroupRegisterRole.getCheckedRadioButtonId() == -1) {
+                    Toast.makeText(RegisterActivityV2.this, "Please select your role", Toast.LENGTH_LONG).show();
+                    radioGroupRegisterRole.requestFocus();
                 } else {
                     textRole = radioButtonRegisterRoleSelected.getText().toString();
                     progressBar.setVisibility(View.VISIBLE);
@@ -203,8 +217,10 @@ public class RegisterActivityV2 extends AppCompatActivity {
                                 throw Objects.requireNonNull(task.getException());
                             } catch (FirebaseAuthInvalidCredentialsException e) {
                                 editTextRegisterEmail.setError("Your email is invalid or already in use, re-enter your email");
+                                editTextRegisterEmail.requestFocus();
                             } catch (FirebaseAuthUserCollisionException e) {
                                 editTextRegisterEmail.setError("User already registered, Log in or use a different email");
+                                editTextRegisterEmail.requestFocus();
                             } catch (Exception e) {
                                 Log.e(TAG, Objects.requireNonNull(e.getMessage()));
 

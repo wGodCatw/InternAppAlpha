@@ -17,9 +17,9 @@
             android:id="@+id/welcomeLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="15dp"
             android:adjustViewBounds="true"
             android:maxWidth="300dp"
-            android:layout_margin="15dp"
             android:padding="15dp"
             android:src="@drawable/ic_welcome"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,30 +29,84 @@
 
         <Button
             android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20sp"
+            android:padding="15dp"
+            android:text="Login"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/register"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.725"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edt_login_password"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <Button
+            android:id="@+id/register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_marginTop="20sp"
             android:padding="15dp"
-            android:textColor="@color/black"
-            android:text="Login"
-            app:layout_constraintBottom_toTopOf="@+id/button2"
+            android:text="Not a user? Register"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/edt_login_email"
+            android:layout_width="match_parent"
+            style="@style/Widget.Material3.TextInputEditText.OutlinedBox.Dense"
+            android:layout_height="wrap_content"
+            android:hint="Enter your email"
+            android:inputType="textEmailAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textLoginTitle"/>
+
+        <EditText
+            android:id="@+id/edt_login_password"
+            android:layout_width="match_parent"
+            style="@style/Widget.Material3.TextInputEditText.OutlinedBox.Dense"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:inputType="textPassword"
+            android:hint="Enter your password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edt_login_email"/>
+
+        <TextView
+            android:id="@+id/textLoginTitle"
+            style="@style/MaterialAlertDialog.Material3.Title.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="35dp"
+            android:padding="20dp"
+            android:text="Log in"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/welcomeLogo" />
 
-        <Button
-            android:id="@+id/button2"
+
+        <ProgressBar
+            style="@style/Widget.Material3.CircularProgressIndicator.Medium"
             android:layout_width="wrap_content"
+            android:id="@+id/progress_bar_login"
             android:layout_height="wrap_content"
-            android:text="Register"
-            android:padding="15dp"
-            android:textColor="@color/black"
-            android:layout_margin="15dp"
+            android:elevation="10dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
