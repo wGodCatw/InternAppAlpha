@@ -41,8 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button login;
     String UniCompany, Faculty;
     private TextInputLayout dateLayoutText, layout_uni_company, layout_faculty;
-    private TextInputEditText editTextRegisterFullName, editTextRegisterEmail, text_register_dob,
-            editTextRegisterPhone, editTextRegisterPwd, editTextRegisterConfirmPwd, textUniCompany, textFaculty;
+    private TextInputEditText editTextRegisterFullName, editTextRegisterEmail, text_register_dob, editTextRegisterPhone, editTextRegisterPwd, editTextRegisterConfirmPwd, textUniCompany, textFaculty;
     private ImageView editTextDateOfBirth;
     private ProgressBar progressBar;
     private RadioGroup radioGroupRegisterRole;
@@ -218,123 +217,121 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void registerUser(String textFullName, String textEmail, String textDoB, String textRole, String textMobile, String textPassword, String UniCompany) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        auth.createUserWithEmailAndPassword(textEmail, textPassword).addOnCompleteListener(RegisterActivity.this,
-                new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this, "Registration successful!", Toast.LENGTH_LONG).show();
-                            FirebaseUser firebaseUser = auth.getCurrentUser();
+        auth.createUserWithEmailAndPassword(textEmail, textPassword).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(RegisterActivity.this, "Registration successful!", Toast.LENGTH_LONG).show();
+                    FirebaseUser firebaseUser = auth.getCurrentUser();
 
-                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(textFullName).build();
-                            firebaseUser.updateProfile(profileChangeRequest);
+                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(textFullName).build();
+                    firebaseUser.updateProfile(profileChangeRequest);
 
-                            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textDoB, textRole, textMobile, UniCompany);
-                            DatabaseReference referenceProfile;
-
-
-                            referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
+                    ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textDoB, textRole, textMobile, UniCompany);
+                    DatabaseReference referenceProfile;
 
 
-                            referenceProfile.child(firebaseUser.getUid()).setValue(writeUserDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                    if (task.isSuccessful()) {
-                                        firebaseUser.sendEmailVerification();
-
-                                        Toast.makeText(RegisterActivity.this, "Registration successful. Please verify your email", Toast.LENGTH_LONG).show();
-
-                                        Intent intent = new Intent(RegisterActivity.this, UserProfileActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                        finish();
-                                    } else {
-                                        Toast.makeText(RegisterActivity.this, "Registration failed, try again", Toast.LENGTH_LONG).show();
-                                    }
-                                    progressBar.setVisibility(View.GONE);
-
-                                }
-                            });
+                    referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
 
 
-                        } else {
-                            try {
-                                throw Objects.requireNonNull(task.getException());
-                            } catch (FirebaseAuthInvalidCredentialsException e) {
-                                editTextRegisterEmail.setError("Your email is invalid or already in use, re-enter your email");
-                                editTextRegisterEmail.requestFocus();
-                            } catch (FirebaseAuthUserCollisionException e) {
-                                editTextRegisterEmail.setError("User already registered, Log in or use a different email");
-                                editTextRegisterEmail.requestFocus();
-                            } catch (Exception e) {
-                                Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+                    referenceProfile.child(firebaseUser.getUid()).setValue(writeUserDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
 
+                            if (task.isSuccessful()) {
+                                firebaseUser.sendEmailVerification();
+
+                                Toast.makeText(RegisterActivity.this, "Registration successful. Please verify your email", Toast.LENGTH_LONG).show();
+
+                                Intent intent = new Intent(RegisterActivity.this, UserProfileActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(RegisterActivity.this, "Registration failed, try again", Toast.LENGTH_LONG).show();
                             }
                             progressBar.setVisibility(View.GONE);
+
                         }
+                    });
+
+
+                } else {
+                    try {
+                        throw Objects.requireNonNull(task.getException());
+                    } catch (FirebaseAuthInvalidCredentialsException e) {
+                        editTextRegisterEmail.setError("Your email is invalid or already in use, re-enter your email");
+                        editTextRegisterEmail.requestFocus();
+                    } catch (FirebaseAuthUserCollisionException e) {
+                        editTextRegisterEmail.setError("User already registered, Log in or use a different email");
+                        editTextRegisterEmail.requestFocus();
+                    } catch (Exception e) {
+                        Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+
                     }
-                });
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void registerUser(String textFullName, String textEmail, String textDoB, String textRole, String textMobile, String textPassword, String UniCompany, String Faculty) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        auth.createUserWithEmailAndPassword(textEmail, textPassword).addOnCompleteListener(RegisterActivity.this,
-                new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(RegisterActivity.this, "Registration successful!", Toast.LENGTH_LONG).show();
-                            FirebaseUser firebaseUser = auth.getCurrentUser();
+        auth.createUserWithEmailAndPassword(textEmail, textPassword).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(RegisterActivity.this, "Registration successful!", Toast.LENGTH_LONG).show();
+                    FirebaseUser firebaseUser = auth.getCurrentUser();
 
-                            UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(textFullName).build();
-                            firebaseUser.updateProfile(profileChangeRequest);
-
-
-                            ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textDoB, textRole, textMobile, UniCompany, Faculty);
+                    UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(textFullName).build();
+                    firebaseUser.updateProfile(profileChangeRequest);
 
 
-
-                            DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-
-                            referenceProfile.child(firebaseUser.getUid()).setValue(writeUserDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                    if (task.isSuccessful()) {
-                                        firebaseUser.sendEmailVerification();
-
-                                        Toast.makeText(RegisterActivity.this, "Registration successful. Please verify your email", Toast.LENGTH_LONG).show();
-
-                                        Intent intent = new Intent(RegisterActivity.this, UserProfileActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                        finish();
-                                    } else {
-                                        Toast.makeText(RegisterActivity.this, "Registration failed, try again", Toast.LENGTH_LONG).show();
-                                    }
-                                    progressBar.setVisibility(View.GONE);
-
-                                }
-                            });
+                    ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textDoB, textRole, textMobile, UniCompany, Faculty);
 
 
-                        } else {
-                            try {
-                                throw Objects.requireNonNull(task.getException());
-                            } catch (FirebaseAuthInvalidCredentialsException e) {
-                                editTextRegisterEmail.setError("Your email is invalid or already in use, re-enter your email");
-                                editTextRegisterEmail.requestFocus();
-                            } catch (FirebaseAuthUserCollisionException e) {
-                                editTextRegisterEmail.setError("User already registered, Log in or use a different email");
-                                editTextRegisterEmail.requestFocus();
-                            } catch (Exception e) {
-                                Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+                    DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
 
+
+                    referenceProfile.child(firebaseUser.getUid()).setValue(writeUserDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                            if (task.isSuccessful()) {
+                                firebaseUser.sendEmailVerification();
+
+                                Toast.makeText(RegisterActivity.this, "Registration successful. Please verify your email", Toast.LENGTH_LONG).show();
+
+                                Intent intent = new Intent(RegisterActivity.this, UserProfileActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(RegisterActivity.this, "Registration failed, try again", Toast.LENGTH_LONG).show();
                             }
                             progressBar.setVisibility(View.GONE);
+
                         }
+                    });
+
+
+                } else {
+                    try {
+                        throw Objects.requireNonNull(task.getException());
+                    } catch (FirebaseAuthInvalidCredentialsException e) {
+                        editTextRegisterEmail.setError("Your email is invalid or already in use, re-enter your email");
+                        editTextRegisterEmail.requestFocus();
+                    } catch (FirebaseAuthUserCollisionException e) {
+                        editTextRegisterEmail.setError("User already registered, Log in or use a different email");
+                        editTextRegisterEmail.requestFocus();
+                    } catch (Exception e) {
+                        Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+
                     }
-                });
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 }
