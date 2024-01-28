@@ -22,10 +22,10 @@
             android:name=".UserProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivityV2"
+            android:name=".RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivityV2"
+            android:name=".LoginActivity"
             android:exported="false" />
         <activity
             android:name=".SearchStudents"
@@ -45,19 +45,11 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SignUp"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".FavoritesActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".HomepageActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".LoginActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
     </application>

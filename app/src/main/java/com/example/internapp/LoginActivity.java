@@ -1,145 +1,147 @@
 package com.example.internapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.auth.api.identity.BeginSignInRequest;
-import com.google.android.gms.auth.api.identity.SignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-
-import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
-    FirebaseAuth mAuth;
-    private EditText usernameEdt;
-    private EditText passwordEdt;
-    private Button loginBtn;
-    private Button signUp;
-    private Button toRegister;
-    private GoogleSignInClient client;
+    private static final String TAG = "LoginActivityV2";
+    FirebaseAuth authProfile;
+    private TextInputEditText emailField, pwdField;
+    private ProgressBar progressBar;
 
-    public void onStart() {
+    @Override
+    protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
-            startActivity(intent);
+        if (authProfile.getCurrentUser() != null) {
+            Toast.makeText(LoginActivity.this, "You're already logged in", Toast.LENGTH_SHORT).show();
+
+            startActivity(new Intent(LoginActivity.this, UserProfileActivity.class));
             finish();
         }
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        emailField = findViewById(R.id.txtFieldEmail);
+        pwdField = findViewById(R.id.txtFieldPassword);
+        progressBar = findViewById(R.id.progress_bar_login);
 
-        mAuth = FirebaseAuth.getInstance();
 
-        toRegister = findViewById(R.id.ToRegister);
-        loginBtn = findViewById(R.id.loginBtn);
-        usernameEdt = findViewById(R.id.usernameEdt);
-        passwordEdt = findViewById(R.id.passwordEdt);
+        authProfile = FirebaseAuth.getInstance();
 
-        toRegister.setOnClickListener(new View.OnClickListener() {
+        Button login = findViewById(R.id.login);
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SignUp.class);
+                String textEmail = emailField.getText().toString();
+                String textPwd = pwdField.getText().toString();
+
+                if (TextUtils.isEmpty(textEmail)) {
+                    Toast.makeText(LoginActivity.this, "Please enter your email", Toast.LENGTH_LONG).show();
+                    emailField.setError("Email is required");
+                    emailField.requestFocus();
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()) {
+                    Toast.makeText(LoginActivity.this, "Email is not valid", Toast.LENGTH_LONG).show();
+                    emailField.setError("Valid email is required");
+                    emailField.requestFocus();
+                } else if (TextUtils.isEmpty(textPwd)) {
+                    Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_LONG).show();
+                    pwdField.setError("Password is required");
+                    pwdField.requestFocus();
+                } else {
+                    progressBar.setVisibility(View.VISIBLE);
+                    loginUser(textEmail, textPwd);
+                }
+            }
+        });
+
+        Button register = findViewById(R.id.register);
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
-            }
-        });
-
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email, password;
-                email = String.valueOf(usernameEdt.getText());
-                password = String.valueOf(passwordEdt.getText());
-
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(LoginActivity.this, "No Email broski", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(LoginActivity.this, "No Password broski", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), "Login successful Brother", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-        });
-
-        Button signUp = findViewById(R.id.googleSignIn);
-        GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-
-        client = GoogleSignIn.getClient(this, options);
-        signUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = client.getSignInIntent();
-                startActivityForResult(i, 1234);
+                finish();
             }
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1234) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-                FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Intent intent = new Intent(getApplicationContext(), HomepageActivity.class);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(LoginActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+    private void loginUser(String textEmail, String textPwd) {
+        authProfile.signInWithEmailAndPassword(textEmail, textPwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    FirebaseUser firebaseUser = authProfile.getCurrentUser();
+
+                    if (firebaseUser.isEmailVerified()) {
+                        Toast.makeText(LoginActivity.this, "Log in successful!", Toast.LENGTH_LONG).show();
+
+                        startActivity(new Intent(LoginActivity.this, UserProfileActivity.class));
+                        finish();
+                    } else {
+                        firebaseUser.sendEmailVerification();
+                        authProfile.signOut();
+                        showAlerDialog();
                     }
-                });
-            } catch (ApiException e) {
-                e.printStackTrace();
+                } else {
+                    try {
+                        throw task.getException();
+                    } catch (FirebaseAuthInvalidUserException e) {
+                        emailField.setError("User doesn't exist or is no longer valid. Please register again");
+                        emailField.requestFocus();
+                    } catch (FirebaseAuthInvalidCredentialsException e) {
+                        emailField.setError("Invalid credentials, re-enter and try to login again");
+                        emailField.requestFocus();
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage());
+                    }
+                    Toast.makeText(LoginActivity.this, "Log in failed", Toast.LENGTH_LONG).show();
+                }
+                progressBar.setVisibility(View.GONE);
             }
-        }
+        });
+    }
+
+    private void showAlerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+        builder.setTitle("Email not verified");
+        builder.setMessage("Please verify your email now. You can not login without email verification");
+
+        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

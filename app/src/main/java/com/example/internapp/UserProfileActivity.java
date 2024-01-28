@@ -1,9 +1,5 @@
 package com.example.internapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,6 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,26 +29,23 @@ import com.leinardi.android.speeddial.SpeedDialView;
 
 public class UserProfileActivity extends AppCompatActivity {
 
+    BroadcastReceiver broadcastReceiverWifi = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int wifiStateExtra = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
+            if (wifiStateExtra == WifiManager.WIFI_STATE_ENABLED) {
+                wifiState.setImageResource(R.drawable.ic_wifi_enabled);
+            } else if (wifiStateExtra == WifiManager.WIFI_STATE_DISABLED) {
+                wifiState.setImageResource(R.drawable.ic_wifi_disabled);
+            }
+        }
+    };
     private TextInputEditText edt_fullName, edt_email, edt_phone, edt_role, edt_dob;
     private ProgressBar progressBar;
     private SpeedDialView speedDialView;
     private ImageView profilePic, wifiState, refresh;
     private String fullName, email, phone, role, dob;
     private FirebaseAuth authProfile;
-
-
-    BroadcastReceiver broadcastReceiverWifi = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int wifiStateExtra = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
-            if(wifiStateExtra == WifiManager.WIFI_STATE_ENABLED){
-                wifiState.setImageResource(R.drawable.ic_wifi_enabled);
-            } else if(wifiStateExtra == WifiManager.WIFI_STATE_DISABLED){
-                wifiState.setImageResource(R.drawable.ic_wifi_disabled);
-            }
-        }
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +64,9 @@ public class UserProfileActivity extends AppCompatActivity {
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    startActivity(getIntent());
-                    finish();
-                    overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                finish();
+                overridePendingTransition(0, 0);
             }
         });
 
@@ -81,7 +78,7 @@ public class UserProfileActivity extends AppCompatActivity {
         authProfile = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = authProfile.getCurrentUser();
 
-        if(firebaseUser == null){
+        if (firebaseUser == null) {
             Toast.makeText(UserProfileActivity.this, "Something went wrong, user details are not available", Toast.LENGTH_LONG).show();
         } else {
             checkEmailVerified(firebaseUser);
@@ -92,7 +89,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void checkEmailVerified(FirebaseUser firebaseUser) {
-        if(!firebaseUser.isEmailVerified()){
+        if (!firebaseUser.isEmailVerified()) {
             showAlertDialog();
         }
     }
@@ -118,12 +115,13 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void showUserProfile(FirebaseUser firebaseUser) {
         String userID = firebaseUser.getUid();
-        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users");
+        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+
         referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
-                if(readUserDetails != null){
+                if (readUserDetails != null) {
                     fullName = firebaseUser.getDisplayName();
                     email = firebaseUser.getEmail();
                     dob = readUserDetails.doB;
