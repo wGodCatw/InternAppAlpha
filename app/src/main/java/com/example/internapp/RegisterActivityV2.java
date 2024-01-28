@@ -114,7 +114,7 @@ public class RegisterActivityV2 extends AppCompatActivity {
                 String textConfirmPassword = editTextRegisterConfirmPwd.getText().toString();
                 String textRole;
 
-                String mobileRegex = "[5][02347][0-9]{6}";
+                String mobileRegex = "[5][0-9]{7}";
                 Matcher mobileMatcher;
                 Pattern mobilePattern = Pattern.compile(mobileRegex);
                 mobileMatcher = mobilePattern.matcher(textMobile);
@@ -172,7 +172,7 @@ public class RegisterActivityV2 extends AppCompatActivity {
                 } else {
                     textRole = radioButtonRegisterRoleSelected.getText().toString();
                     progressBar.setVisibility(View.VISIBLE);
-                    registerUser(textFullName, textEmail, textDoB, textRole, textMobile, textPassword);
+                    registerUser(textFullName, textEmail, textDoB, textRole, "+972" + textMobile, textPassword);
                 }
             }
         });

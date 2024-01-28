@@ -17,6 +17,7 @@ public class FavoritesActivity extends AppCompatActivity {
 
     SpeedDialView speedDialView;
 
+    //TODO if HR put you as favorite send notification to the student
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
