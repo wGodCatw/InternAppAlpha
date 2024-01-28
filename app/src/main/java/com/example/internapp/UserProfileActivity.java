@@ -114,27 +114,61 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void showUserProfile(FirebaseUser firebaseUser) {
+        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
         String userID = firebaseUser.getUid();
-        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
 
         referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
-                if (readUserDetails != null) {
-                    fullName = firebaseUser.getDisplayName();
-                    email = firebaseUser.getEmail();
-                    dob = readUserDetails.doB;
-                    role = readUserDetails.role;
-                    phone = readUserDetails.mobile;
+                if(snapshot.exists()){
+                    ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
 
-                    edt_fullName.setText(fullName);
-                    edt_email.setText(email);
-                    edt_dob.setText(dob);
-                    edt_role.setText(role);
-                    edt_phone.setText(phone);
+                    if (readUserDetails != null) {
+                        fullName = firebaseUser.getDisplayName();
+                        email = firebaseUser.getEmail();
+                        dob = readUserDetails.doB;
+                        role = readUserDetails.role;
+                        phone = readUserDetails.mobile;
+
+                        edt_fullName.setText(fullName);
+                        edt_email.setText(email);
+                        edt_dob.setText(dob);
+                        edt_role.setText(role);
+                        edt_phone.setText(phone);
+                    }
+                    progressBar.setVisibility(View.GONE);
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
                 progressBar.setVisibility(View.GONE);
+            }
+        });
+
+        referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+        referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
+
+                    if (readUserDetails != null) {
+                        fullName = firebaseUser.getDisplayName();
+                        email = firebaseUser.getEmail();
+                        dob = readUserDetails.doB;
+                        role = readUserDetails.role;
+                        phone = readUserDetails.mobile;
+
+                        edt_fullName.setText(fullName);
+                        edt_email.setText(email);
+                        edt_dob.setText(dob);
+                        edt_role.setText(role);
+                        edt_phone.setText(phone);
+                    }
+                    progressBar.setVisibility(View.GONE);
+                }
             }
 
             @Override

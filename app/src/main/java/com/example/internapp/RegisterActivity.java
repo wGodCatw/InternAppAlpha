@@ -199,7 +199,6 @@ public class RegisterActivity extends AppCompatActivity {
                     radioGroupRegisterRole.requestFocus();
                 } else {
                     textRole = radioButtonRegisterRoleSelected.getText().toString();
-
                     progressBar.setVisibility(View.VISIBLE);
                     if (textRole.equals("Student")) {
                         UniCompany = textUniCompany.getText().toString();
@@ -293,6 +292,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
                             ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textDoB, textRole, textMobile, UniCompany, Faculty);
+
 
 
                             DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
