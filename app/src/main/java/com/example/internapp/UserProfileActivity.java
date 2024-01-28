@@ -1,6 +1,5 @@
 package com.example.internapp;
 
-import android.app.usage.NetworkStatsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,11 +44,12 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         }
     };
-    private TextInputEditText edt_fullName, edt_email, edt_phone, edt_role, edt_dob;
+    private TextInputEditText edt_fullName, edt_email, edt_phone, edt_role, edt_dob, edt_uniCompany, edt_faculty;
     private ProgressBar progressBar;
     private SpeedDialView speedDialView;
+    private TextInputLayout layout_faculty, layout_uniCompany;
     private ImageView profilePic, wifiState, refresh;
-    private String fullName, email, phone, role, dob;
+    private String fullName, email, phone, role, dob, uniCompany, faculty;
     private FirebaseAuth authProfile;
 
     @Override
@@ -64,7 +65,10 @@ public class UserProfileActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         refresh = findViewById(R.id.refresh);
         wifiState = findViewById(R.id.wifi_state);
-
+        edt_uniCompany = findViewById(R.id.uni_company);
+        edt_faculty = findViewById(R.id.faculty);
+        layout_faculty = findViewById(R.id.layout_faculty);
+        layout_uniCompany = findViewById(R.id.layout_uni_company);
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +128,7 @@ public class UserProfileActivity extends AppCompatActivity {
         referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
+                if (snapshot.exists()) {
                     ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
 
                     if (readUserDetails != null) {
@@ -133,7 +137,10 @@ public class UserProfileActivity extends AppCompatActivity {
                         dob = readUserDetails.doB;
                         role = readUserDetails.role;
                         phone = readUserDetails.mobile;
+                        uniCompany = readUserDetails.company;
 
+                        layout_uniCompany.setHint("Company");
+                        edt_uniCompany.setText(uniCompany);
                         edt_fullName.setText(fullName);
                         edt_email.setText(email);
                         edt_dob.setText(dob);
@@ -155,7 +162,7 @@ public class UserProfileActivity extends AppCompatActivity {
         referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
+                if (snapshot.exists()) {
                     ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
 
                     if (readUserDetails != null) {
@@ -164,7 +171,13 @@ public class UserProfileActivity extends AppCompatActivity {
                         dob = readUserDetails.doB;
                         role = readUserDetails.role;
                         phone = readUserDetails.mobile;
+                        uniCompany = readUserDetails.university;
+                        faculty = readUserDetails.faculty;
 
+                        edt_uniCompany.setText(uniCompany);
+                        layout_uniCompany.setHint("University");
+                        layout_faculty.setVisibility(View.VISIBLE);
+                        edt_faculty.setText(faculty);
                         edt_fullName.setText(fullName);
                         edt_email.setText(email);
                         edt_dob.setText(dob);
