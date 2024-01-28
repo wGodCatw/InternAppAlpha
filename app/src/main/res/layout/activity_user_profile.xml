@@ -8,6 +8,7 @@
     android:orientation="vertical"
     tools:context=".UserProfileActivity">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,8 +58,20 @@
                 app:layout_constraintHorizontal_bias="0.134"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.168"
+                app:layout_constraintVertical_bias="0.21"
                 app:srcCompat="@drawable/ic_wifi_enabled" />
+
+            <ImageView
+                android:id="@+id/refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.85"
+                app:layout_constraintStart_toEndOf="@+id/profilePicture"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.21"
+                app:srcCompat="@drawable/ic_refresh" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -71,6 +84,33 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_header">
+
+            <com.leinardi.android.speeddial.SpeedDialOverlayLayout
+                android:id="@+id/overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.leinardi.android.speeddial.SpeedDialView
+                android:id="@+id/speedDialView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:animateLayoutChanges="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.913"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_role"
+                app:layout_constraintVertical_bias="1.0"
+                app:layout_wrapBehaviorInParent="horizontal_only"
+                app:sdMainFabClosedBackgroundColor="@color/orange"
+                app:sdMainFabClosedIconColor="@color/white"
+                app:sdMainFabClosedSrc="@drawable/ic_sdclosednew"
+                app:sdMainFabOpenedBackgroundColor="@color/orange"
+                app:sdMainFabOpenedIconColor="@color/white"
+                app:sdOverlayLayout="@id/overlay">
+
+            </com.leinardi.android.speeddial.SpeedDialView>
 
 
             <com.google.android.material.textfield.TextInputLayout

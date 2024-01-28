@@ -1,16 +1,19 @@
 package com.example.internapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -22,12 +25,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.leinardi.android.speeddial.SpeedDialView;
 
 public class UserProfileActivity extends AppCompatActivity {
 
     private TextInputEditText edt_fullName, edt_email, edt_phone, edt_role, edt_dob;
     private ProgressBar progressBar;
-    private ImageView profilePic, wifiState;
+    private SpeedDialView speedDialView;
+    private ImageView profilePic, wifiState, refresh;
     private String fullName, email, phone, role, dob;
     private FirebaseAuth authProfile;
 
@@ -38,10 +43,8 @@ public class UserProfileActivity extends AppCompatActivity {
             int wifiStateExtra = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
             if(wifiStateExtra == WifiManager.WIFI_STATE_ENABLED){
                 wifiState.setImageResource(R.drawable.ic_wifi_enabled);
-                Toast.makeText(getApplicationContext(), "Wifi is enabled, you are able to update your profile", Toast.LENGTH_LONG).show();
             } else if(wifiStateExtra == WifiManager.WIFI_STATE_DISABLED){
                 wifiState.setImageResource(R.drawable.ic_wifi_disabled);
-                Toast.makeText(getApplicationContext(), "Wifi is disabled, you are not able to update your profile", Toast.LENGTH_LONG).show();
             }
         }
     };
@@ -58,8 +61,21 @@ public class UserProfileActivity extends AppCompatActivity {
         edt_role = findViewById(R.id.role);
         edt_dob = findViewById(R.id.dateOfBirth);
         progressBar = findViewById(R.id.progressBar);
+        refresh = findViewById(R.id.refresh);
         wifiState = findViewById(R.id.wifi_state);
 
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    startActivity(getIntent());
+                    finish();
+                    overridePendingTransition(0, 0);
+            }
+        });
+
+        speedDialView = findViewById(R.id.speedDialView);
+        SpeedDialinit.fab_init(speedDialView, getApplicationContext(), UserProfileActivity.this);
+        speedDialView.setOrientation(LinearLayout.HORIZONTAL);
 
 
         authProfile = FirebaseAuth.getInstance();
@@ -68,10 +84,36 @@ public class UserProfileActivity extends AppCompatActivity {
         if(firebaseUser == null){
             Toast.makeText(UserProfileActivity.this, "Something went wrong, user details are not available", Toast.LENGTH_LONG).show();
         } else {
+            checkEmailVerified(firebaseUser);
             progressBar.setVisibility(View.VISIBLE);
             showUserProfile(firebaseUser);
         }
 
+    }
+
+    private void checkEmailVerified(FirebaseUser firebaseUser) {
+        if(!firebaseUser.isEmailVerified()){
+            showAlertDialog();
+        }
+    }
+
+    private void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
+        builder.setTitle("Email not verified");
+        builder.setMessage("Please verify your email now. You can not login without email verification next time");
+
+        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void showUserProfile(FirebaseUser firebaseUser) {
