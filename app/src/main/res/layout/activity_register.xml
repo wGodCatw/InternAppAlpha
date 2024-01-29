@@ -89,6 +89,95 @@
                 android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_choose_constraint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup_registerRole">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_register_uni_company"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text_register_uni"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:id="@+id/layout_coordinator_faculty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20sp"
+                android:background="@color/white"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/layout_coordinator_uni"
+                tools:layout_editor_absoluteX="15dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_facultySelect"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    app:endIconMode="dropdown_menu">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/facultySelect"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:defaultFocusHighlightEnabled="false"
+                        android:focusable="false"
+                        android:focusedSearchResultHighlightColor="@color/white"
+                        android:inputType="none" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:id="@+id/layout_coordinator_uni"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20sp"
+                android:background="@color/white"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_uniSelect"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    app:endIconMode="dropdown_menu">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/uniSelect"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:defaultFocusHighlightEnabled="false"
+                        android:focusable="false"
+                        android:focusedSearchResultHighlightColor="@color/white"
+                        android:inputType="none" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_register_pwd"
@@ -224,42 +313,6 @@
 
         </RadioGroup>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_register_uni_company"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20sp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/radioGroup_registerRole">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/text_register_uni"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layout_register_faculty"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20sp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layout_register_uni_company">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/text_register_faculty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black" />
-        </com.google.android.material.textfield.TextInputLayout>
-
 
         <Button
             android:id="@+id/button_register"
@@ -271,7 +324,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layout_register_faculty" />
+            app:layout_constraintTop_toBottomOf="@+id/layout_choose_constraint" />
 
 
         <ProgressBar

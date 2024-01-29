@@ -7,6 +7,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -17,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -38,12 +42,17 @@ import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
+    private final String[] universities = {"Tel Aviv", "Bar-Ilan", "Ben Gurion", "Technion", "Haifa", "Weizmann", "Reichman", "Hebrew", "Open University", "Ariel"};
+    private final String[] faculties = {"Business", "Health", "Social sciences", "Engineering", "Psychology", "Computer science", "Education", "Journalism", "Biology", "Visual arts"};
     Button login;
     String UniCompany, Faculty;
-    private TextInputLayout dateLayoutText, layout_uni_company, layout_faculty;
-    private TextInputEditText editTextRegisterFullName, editTextRegisterEmail, text_register_dob, editTextRegisterPhone, editTextRegisterPwd, editTextRegisterConfirmPwd, textUniCompany, textFaculty;
+    private TextInputLayout dateLayoutText, layout_uni_company;
+    private TextInputEditText editTextRegisterFullName, editTextRegisterEmail, text_register_dob, editTextRegisterPhone, editTextRegisterPwd, editTextRegisterConfirmPwd, textUniCompany;
     private ImageView editTextDateOfBirth;
     private ProgressBar progressBar;
+    private AutoCompleteTextView autoUniversity, autoFaculty;
+    private CoordinatorLayout layout_autoUni, layout_autoFaculty;
+    private ArrayAdapter<String> adapterUnis, adapterFaculties;
     private RadioGroup radioGroupRegisterRole;
     private DatePickerDialog picker;
     private RadioButton radioButtonRegisterRoleSelected;
@@ -61,6 +70,9 @@ public class RegisterActivity extends AppCompatActivity {
         editTextRegisterPhone = findViewById(R.id.edt_register_mobile);
         text_register_dob = findViewById(R.id.result_dob_register);
 
+        layout_autoUni = findViewById(R.id.layout_coordinator_uni);
+        layout_autoFaculty = findViewById(R.id.layout_coordinator_faculty);
+
         dateLayoutText = findViewById(R.id.text_register_dob);
 
         progressBar = findViewById(R.id.progress_bar);
@@ -69,9 +81,30 @@ public class RegisterActivity extends AppCompatActivity {
         radioGroupRegisterRole.clearCheck();
 
         layout_uni_company = findViewById(R.id.layout_register_uni_company);
-        textFaculty = findViewById(R.id.text_register_faculty);
         textUniCompany = findViewById(R.id.text_register_uni);
-        layout_faculty = findViewById(R.id.layout_register_faculty);
+
+        autoUniversity = findViewById(R.id.uniSelect);
+        autoFaculty = findViewById(R.id.facultySelect);
+
+        adapterUnis = new ArrayAdapter<String>(this, R.layout.faculty_item, universities);
+        adapterFaculties = new ArrayAdapter<String>(this, R.layout.faculty_item, faculties);
+
+        autoUniversity.setAdapter(adapterUnis);
+        autoFaculty.setAdapter(adapterFaculties);
+
+        autoUniversity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String uni = parent.getItemAtPosition(position).toString();
+            }
+        });
+
+        autoFaculty.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String faculty = parent.getItemAtPosition(position).toString();
+            }
+        });
 
         login = findViewById(R.id.loginFromRegister);
         login.setOnClickListener(new View.OnClickListener() {
@@ -91,15 +124,18 @@ public class RegisterActivity extends AppCompatActivity {
                 textUniCompany.clearComposingText();
                 Objects.requireNonNull(textUniCompany.getText()).clear();
                 if (radioButtonRegisterRoleSelected.getText().toString().equals("Student")) {
-                    textUniCompany.setHint("Write your university name");
-                    layout_faculty.setVisibility(View.VISIBLE);
-                    textFaculty.clearComposingText();
-                    Objects.requireNonNull(textFaculty.getText()).clear();
-                    textFaculty.setHint("Enter a faculty you're studying on");
+                    layout_uni_company.setVisibility(View.GONE);
+                    layout_autoUni.setVisibility(View.VISIBLE);
+                    layout_autoFaculty.setVisibility(View.VISIBLE);
+                    layout_uni_company.setVisibility(View.GONE);
+                    autoUniversity.setHint("Write your university name");
+                    layout_autoUni.setVisibility(View.VISIBLE);
+                    layout_autoFaculty.setVisibility(View.VISIBLE);
+                    autoFaculty.setHint("Enter a faculty you're studying on");
                 } else if (radioButtonRegisterRoleSelected.getText().toString().equals("HR Specialist")) {
-                    layout_faculty.setVisibility(View.GONE);
-                    textFaculty.clearComposingText();
-                    Objects.requireNonNull(textFaculty.getText()).clear();
+                    layout_autoFaculty.setVisibility(View.GONE);
+                    layout_autoUni.setVisibility(View.GONE);
+                    layout_uni_company.setVisibility(View.VISIBLE);
                     textUniCompany.setHint("Write a company you're working in");
                 }
             }
@@ -200,8 +236,8 @@ public class RegisterActivity extends AppCompatActivity {
                     textRole = radioButtonRegisterRoleSelected.getText().toString();
                     progressBar.setVisibility(View.VISIBLE);
                     if (textRole.equals("Student")) {
-                        UniCompany = textUniCompany.getText().toString();
-                        Faculty = textFaculty.getText().toString();
+                        UniCompany = autoUniversity.getText().toString();
+                        Faculty = autoFaculty.getText().toString();
                         registerUser(textFullName, textEmail, textDoB, textRole, "+972" + textMobile, textPassword, UniCompany, Faculty);
                     } else if (textRole.equals("HR Specialist")) {
                         UniCompany = textUniCompany.getText().toString();
