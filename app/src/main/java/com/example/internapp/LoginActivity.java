@@ -50,6 +50,16 @@ public class LoginActivity extends AppCompatActivity {
         pwdField = findViewById(R.id.txtFieldPassword);
         progressBar = findViewById(R.id.progress_bar_login);
 
+        Button btnForgotPassword = findViewById(R.id.button_forgot_password);
+
+        btnForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(LoginActivity.this, "You can now reset your password", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+            }
+        });
+
 
         authProfile = FirebaseAuth.getInstance();
 

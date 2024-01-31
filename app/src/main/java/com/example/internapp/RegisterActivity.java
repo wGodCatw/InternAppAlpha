@@ -236,13 +236,28 @@ public class RegisterActivity extends AppCompatActivity {
                     textRole = radioButtonRegisterRoleSelected.getText().toString();
                     progressBar.setVisibility(View.VISIBLE);
                     if (textRole.equals("Student")) {
-                        UniCompany = autoUniversity.getText().toString();
-                        Faculty = autoFaculty.getText().toString();
-                        registerUser(textFullName, textEmail, textDoB, textRole, "+972" + textMobile, textPassword, UniCompany, Faculty);
+                        if (TextUtils.isEmpty(autoUniversity.getText())) {
+                            Toast.makeText(RegisterActivity.this, "Please specify which university you're studying in", Toast.LENGTH_LONG).show();
+                            autoUniversity.requestFocus();
+                            autoUniversity.setError("University not specified");
+                        } else if (TextUtils.isEmpty(autoFaculty.getText())) {
+                            Toast.makeText(RegisterActivity.this, "Please specify which faculty you're studying in", Toast.LENGTH_LONG).show();
+                            autoFaculty.requestFocus();
+                            autoFaculty.setError("Faculty not specified");
+                        } else {
+                            UniCompany = autoUniversity.getText().toString();
+                            Faculty = autoFaculty.getText().toString();
+                            registerUser(textFullName, textEmail, textDoB, textRole, "+972" + textMobile, textPassword, UniCompany, Faculty);
+                        }
                     } else if (textRole.equals("HR Specialist")) {
-                        UniCompany = textUniCompany.getText().toString();
-                        registerUser(textFullName, textEmail, textDoB, textRole, "+972" + textMobile, textPassword, UniCompany);
-
+                        if (textUniCompany.getText() == null) {
+                            Toast.makeText(RegisterActivity.this, "Please specify which company you're working in", Toast.LENGTH_LONG).show();
+                            textUniCompany.requestFocus();
+                            textUniCompany.setError("Company not specified");
+                        } else {
+                            UniCompany = textUniCompany.getText().toString();
+                            registerUser(textFullName, textEmail, textDoB, textRole, "+972" + textMobile, textPassword, UniCompany);
+                        }
                     }
                 }
             }
