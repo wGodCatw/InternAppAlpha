@@ -5,9 +5,13 @@ import static androidx.core.content.ContextCompat.startActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ActionMenuView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.leinardi.android.speeddial.SpeedDialActionItem;
@@ -17,31 +21,31 @@ public class SpeedDialinit {
     public static void fab_init(SpeedDialView fab, Context context, Activity activity) {
 
         fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_settings, R.drawable.ic_settings)
-                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.lightblue, context.getTheme()))
+                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.blue, context.getTheme()))
                 .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme())).create());
 
         fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_home, R.drawable.ic_home)
-                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.lightblue, context.getTheme()))
+                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.blue, context.getTheme()))
                 .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme())).create());
 
         fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_favorites, R.drawable.ic_favorites)
-                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.lightblue, context.getTheme()))
+                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.blue, context.getTheme()))
                 .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme())).create());
 
         fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_schedule, R.drawable.ic_schedule)
-                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.lightblue, context.getTheme()))
+                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.blue, context.getTheme()))
                 .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme())).create());
 
         fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_search, R.drawable.ic_search)
-                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.lightblue, context.getTheme()))
+                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.blue, context.getTheme()))
                 .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme())).create());
 
 
-        //TODO ActionMenuView
-//        MenuInflater inflater = new MenuInflater(context);
-//        inflater.inflate(R.menu.main_menu);
+        ActionMenuView actionMenuView = (ActionMenuView) activity.findViewById(R.id.amv);
+        Menu amv_menu = actionMenuView.getMenu();
+        activity.getMenuInflater().inflate(R.menu.main_menu, amv_menu);
 
-        fab.inflate(R.menu.main_menu);
+
         fab.setExpansionMode(SpeedDialView.ExpansionMode.LEFT);
         fab.setUseReverseAnimationOnClose(true);
         fab.getMainFab().setCustomSize(200);

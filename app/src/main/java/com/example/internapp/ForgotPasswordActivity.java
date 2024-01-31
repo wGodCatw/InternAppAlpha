@@ -18,11 +18,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.leinardi.android.speeddial.SpeedDialView;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
     private final static String TAG = "ForgotPasswordActivity";
     private Button btnReset;
     private TextInputEditText edtResetPassword;
+    private SpeedDialView speedDialView;
     private ProgressBar progressBar;
     private FirebaseAuth authProfile;
 
@@ -34,6 +36,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         btnReset = findViewById(R.id.btnReset);
         edtResetPassword = findViewById(R.id.text_reset_email);
         progressBar = findViewById(R.id.progress_bar_reset);
+
+        speedDialView = findViewById(R.id.speedDialView);
+        SpeedDialinit.fab_init(speedDialView, getApplicationContext(), ForgotPasswordActivity.this);
 
 
         btnReset.setOnClickListener(new View.OnClickListener() {
