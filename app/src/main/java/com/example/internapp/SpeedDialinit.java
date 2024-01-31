@@ -36,6 +36,11 @@ public class SpeedDialinit {
                 .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.lightblue, context.getTheme()))
                 .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme())).create());
 
+
+        //TODO ActionMenuView
+//        MenuInflater inflater = new MenuInflater(context);
+//        inflater.inflate(R.menu.main_menu);
+
         fab.inflate(R.menu.main_menu);
         fab.setExpansionMode(SpeedDialView.ExpansionMode.LEFT);
         fab.setUseReverseAnimationOnClose(true);
@@ -46,17 +51,21 @@ public class SpeedDialinit {
             @Override
             public boolean onActionSelected(SpeedDialActionItem actionItem) {
                 if (actionItem.getId() == R.id.action_settings) {
-                    fab.close(true);
-                    Intent intent = new Intent(context, SettingsActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(context, intent, null);
-                    activity.finish();
-                } else if (actionItem.getId() == R.id.action_home) {
-                    if (activity.getClass() == HomepageActivity.class)
+                    if (activity.getClass() == SettingsActivity.class)
                         Toast.makeText(context, "You're here already!", Toast.LENGTH_SHORT).show();
                     else {
                         fab.close(true);
-                        Intent intent = new Intent(context, HomepageActivity.class);
+                        Intent intent = new Intent(context, SettingsActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(context, intent, null);
+                        activity.finish();
+                    }
+                } else if (actionItem.getId() == R.id.action_home) {
+                    if (activity.getClass() == UserProfileActivity.class)
+                        Toast.makeText(context, "You're here already!", Toast.LENGTH_SHORT).show();
+                    else {
+                        fab.close(true);
+                        Intent intent = new Intent(context, UserProfileActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(context, intent, null);
                         activity.finish();
