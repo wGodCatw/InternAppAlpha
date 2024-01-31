@@ -14,6 +14,11 @@
         android:layout_height="wrap_content"
         android:background="@color/white">
 
+        <com.leinardi.android.speeddial.SpeedDialOverlayLayout
+            android:id="@+id/overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <ActionMenuView
             android:id="@+id/amv"
             android:visibility="gone"
@@ -97,10 +102,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_header">
 
-            <com.leinardi.android.speeddial.SpeedDialOverlayLayout
-                android:id="@+id/overlay"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+
 
             <com.leinardi.android.speeddial.SpeedDialView
                 android:id="@+id/speedDialView"

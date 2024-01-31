@@ -137,10 +137,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:defaultFocusHighlightEnabled="false"
-                        android:textColor="@color/black"
                         android:focusable="false"
                         android:focusedSearchResultHighlightColor="@color/white"
-                        android:inputType="none" />
+                        android:inputType="none"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black" />
 
                 </com.google.android.material.textfield.TextInputLayout>
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
@@ -167,10 +168,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:defaultFocusHighlightEnabled="false"
-                        android:textColor="@color/black"
                         android:focusable="false"
                         android:focusedSearchResultHighlightColor="@color/white"
-                        android:inputType="none" />
+                        android:inputType="none"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black" />
 
                 </com.google.android.material.textfield.TextInputLayout>
             </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -249,8 +249,9 @@ public class RegisterActivity extends AppCompatActivity {
                             Faculty = autoFaculty.getText().toString();
                             registerUser(textFullName, textEmail, textDoB, textRole, "+972" + textMobile, textPassword, UniCompany, Faculty);
                         }
-                    } else if (textRole.equals("HR Specialist")) {
-                        if (textUniCompany.getText() == null) {
+                    }
+                    if (textRole.equals("HR Specialist")) {
+                        if (TextUtils.isEmpty(textUniCompany.getText())) {
                             Toast.makeText(RegisterActivity.this, "Please specify which company you're working in", Toast.LENGTH_LONG).show();
                             textUniCompany.requestFocus();
                             textUniCompany.setError("Company not specified");
