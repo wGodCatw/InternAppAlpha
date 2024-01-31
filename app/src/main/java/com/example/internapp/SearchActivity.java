@@ -36,12 +36,12 @@ public class SearchActivity extends AppCompatActivity {
             public void onClick(View v) {
                 chipGroup.removeView(v);
                 filters.remove(text);
-                filtersTxt.setText("Filters: " + filters.toString());
+//                filtersTxt.setText("Filters: " + filters.toString());
             }
         });
         chipGroup.addView(chip);
         filters.add(text);
-        filtersTxt.setText("Filters: " + filters.toString());
+//        filtersTxt.setText("Filters: " + filters.toString());
     }
 
     @Override

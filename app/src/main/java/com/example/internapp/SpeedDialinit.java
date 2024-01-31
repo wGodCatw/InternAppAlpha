@@ -6,12 +6,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ActionMenuView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.leinardi.android.speeddial.SpeedDialActionItem;
@@ -21,30 +19,29 @@ public class SpeedDialinit {
     public static void fab_init(SpeedDialView fab, Context context, Activity activity) {
 
         fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_settings, R.drawable.ic_settings)
-                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.blue, context.getTheme()))
-                .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme())).create());
+                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
+                .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
 
         fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_home, R.drawable.ic_home)
-                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.blue, context.getTheme()))
-                .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme())).create());
+                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
+                .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
 
         fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_favorites, R.drawable.ic_favorites)
-                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.blue, context.getTheme()))
-                .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme())).create());
+                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
+                .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
 
         fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_schedule, R.drawable.ic_schedule)
-                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.blue, context.getTheme()))
-                .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme())).create());
+                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
+                .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
 
         fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_search, R.drawable.ic_search)
-                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.blue, context.getTheme()))
-                .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme())).create());
+                .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
+                .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
 
 
         ActionMenuView actionMenuView = (ActionMenuView) activity.findViewById(R.id.amv);
         Menu amv_menu = actionMenuView.getMenu();
         activity.getMenuInflater().inflate(R.menu.main_menu, amv_menu);
-
 
         fab.setExpansionMode(SpeedDialView.ExpansionMode.LEFT);
         fab.setUseReverseAnimationOnClose(true);
@@ -84,7 +81,7 @@ public class SpeedDialinit {
                         startActivity(context, intent, null);
                     }
                 } else if (actionItem.getId() == R.id.action_schedule) {
-                    Toast.makeText(context, "You clicked: " + actionItem.getLabel(context), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "You clicked Schedule!", Toast.LENGTH_SHORT).show();
                     fab.close(true);
                 } else if (actionItem.getId() == R.id.action_search) {
                     if (activity.getClass() == SearchActivity.class)

@@ -46,20 +46,22 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/FavoriteStudentsRecView"
-        android:layout_width="384dp"
-        android:layout_height="766dp"
+        android:layout_width="388dp"
+        android:layout_height="791dp"
         android:layout_margin="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.484"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/FavoritesTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/FavoritesTitle"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/FavoritesTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
+        android:textSize="20sp"
         android:text="Your Favorite students"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
