@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.Menu;
@@ -32,6 +33,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.leinardi.android.speeddial.SpeedDialView;
+import com.squareup.picasso.Picasso;
 
 public class UserProfileActivity extends AppCompatActivity {
 
@@ -72,6 +74,18 @@ public class UserProfileActivity extends AppCompatActivity {
         edt_faculty = findViewById(R.id.faculty);
         layout_faculty = findViewById(R.id.layout_faculty);
         layout_uniCompany = findViewById(R.id.layout_uni_company);
+        profilePic = findViewById(R.id.profilePicture);
+
+
+        profilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserProfileActivity.this, UploadUserPicActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,6 +159,9 @@ public class UserProfileActivity extends AppCompatActivity {
                         phone = readUserDetails.mobile;
                         uniCompany = readUserDetails.company;
 
+                        Uri uri = firebaseUser.getPhotoUrl();
+                        Picasso.get().load(uri).into(profilePic);
+
                         layout_uniCompany.setHint("Company");
                         edt_uniCompany.setText(uniCompany);
                         edt_fullName.setText(fullName);
@@ -152,6 +169,8 @@ public class UserProfileActivity extends AppCompatActivity {
                         edt_dob.setText(dob);
                         edt_role.setText(role);
                         edt_phone.setText(phone);
+                    } else{
+                        Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
                     }
                     progressBar.setVisibility(View.GONE);
                 }

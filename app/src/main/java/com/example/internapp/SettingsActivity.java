@@ -14,7 +14,7 @@ public class SettingsActivity extends AppCompatActivity {
     private SpeedDialView speedDialView;
     FirebaseAuth authProfile;
 
-    private Button logOut, updateProfile;
+    private Button logOut, updateProfile, updatePicture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +27,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         logOut = findViewById(R.id.log_out);
         updateProfile = findViewById(R.id.update_profile);
+        updatePicture = findViewById(R.id.update_picture);
+
+
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,6 +37,15 @@ public class SettingsActivity extends AppCompatActivity {
                 authProfile.signOut();
                 Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        updatePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, UploadUserPicActivity.class);
                 startActivity(intent);
                 finish();
             }

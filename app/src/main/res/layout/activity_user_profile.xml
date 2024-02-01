@@ -56,38 +56,37 @@
 
             <ImageView
                 android:id="@+id/profilePicture"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="400dp"
+                android:layout_height="400dp"
                 android:layout_margin="20dp"
                 android:padding="10dp"
                 android:src="@drawable/ic_profile"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/wifi_state" />
 
             <ImageView
                 android:id="@+id/wifi_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/profilePicture"
-                app:layout_constraintHorizontal_bias="0.134"
+                app:layout_constraintEnd_toStartOf="@+id/refresh"
+                app:layout_constraintHorizontal_bias="0.123"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.21"
+                app:layout_constraintVertical_bias="0.068"
                 app:srcCompat="@drawable/ic_wifi_enabled" />
 
             <ImageView
                 android:id="@+id/refresh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.85"
-                app:layout_constraintStart_toEndOf="@+id/profilePicture"
+                app:layout_constraintHorizontal_bias="0.913"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.21"
                 app:srcCompat="@drawable/ic_refresh" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
