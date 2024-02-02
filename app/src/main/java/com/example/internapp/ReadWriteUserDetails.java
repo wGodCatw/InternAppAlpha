@@ -6,6 +6,8 @@ public class ReadWriteUserDetails {
     public ReadWriteUserDetails() {
     }
 
+
+
     public ReadWriteUserDetails(String doB, String role, String mobile, String university, String faculty) {
         this.doB = doB;
         this.role = role;
