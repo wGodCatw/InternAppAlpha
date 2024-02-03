@@ -1,7 +1,12 @@
 package com.example.internapp;
 
 public class ReadWriteUserDetails {
-    public String doB, role, mobile, university, faculty, company;
+    public String doB;
+    public String role;
+    public String mobile;
+    public String university;
+    public String faculty;
+    public String company;
 
     public ReadWriteUserDetails() {
     }

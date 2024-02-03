@@ -1,5 +1,6 @@
 package com.example.internapp;
 
+import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +13,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -36,6 +38,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.leinardi.android.speeddial.SpeedDialView;
 import com.squareup.picasso.Picasso;
 
+import java.util.Calendar;
+
 public class UserProfileActivity extends AppCompatActivity {
 
     BroadcastReceiver broadcastReceiverWifi = new BroadcastReceiver() {
@@ -53,9 +57,11 @@ public class UserProfileActivity extends AppCompatActivity {
     private TextInputEditText edt_fullName, edt_email, edt_phone, edt_role, edt_dob, edt_uniCompany, edt_faculty;
     private ProgressBar progressBar;
     private SpeedDialView speedDialView;
-    private TextInputLayout layout_faculty, layout_uniCompany, layout_fullName;
+    private DatePickerDialog picker;
+    private TextInputLayout layout_faculty, layout_uniCompany, layout_fullName, layout_dateOfBirth;
     private ImageView profilePic, wifiState, refresh;
     private String fullName, email, phone, role, dob, uniCompany, faculty;
+    private String dateBirth;
     private FirebaseAuth authProfile;
 
     @Override
@@ -77,6 +83,7 @@ public class UserProfileActivity extends AppCompatActivity {
         layout_uniCompany = findViewById(R.id.layout_uni_company);
         profilePic = findViewById(R.id.profilePicture);
         layout_fullName = findViewById(R.id.layout_fullName);
+        layout_dateOfBirth = findViewById(R.id.layout_dateOfBirth);
 
 
         profilePic.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +142,66 @@ public class UserProfileActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                 }
             }
+        });
+        edt_dob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar calendar = Calendar.getInstance();
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH);
+                int year = calendar.get(Calendar.YEAR);
+
+                picker = new DatePickerDialog(UserProfileActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        edt_dob.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+
+                    }
+                }, year, month, day);
+                picker.show();
+            }
+        });
+
+        layout_dateOfBirth.setEndIconOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (TextUtils.isEmpty(edt_dob.getText().toString())) {
+                    Toast.makeText(UserProfileActivity.this, "Please enter your date of birth", Toast.LENGTH_LONG).show();
+                    edt_dob.setError("Date of birth is required");
+                    edt_dob.requestFocus();
+                } else {
+                    dateBirth = edt_dob.getText().toString();
+                    DatabaseReference referenceProfile;
+                    Toast.makeText(UserProfileActivity.this, edt_role.getText().toString(), Toast.LENGTH_LONG).show();
+
+                    if (TextUtils.equals(edt_role.getText().toString(), "HR Specialist")) {
+                        referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid() + "/doB");
+                    } else {
+                        referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid() + "/doB");
+                    }
+                    progressBar.setVisibility(View.VISIBLE);
+
+                    referenceProfile.setValue(dateBirth).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(edt_fullName.getText().toString()).build();
+                                firebaseUser.updateProfile(userProfileChangeRequest);
+                                Toast.makeText(UserProfileActivity.this, "Date of birth updated", Toast.LENGTH_LONG).show();
+                            } else {
+                                try {
+                                    throw task.getException();
+                                }catch (Exception e){
+                                    Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            }
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
+                }
+            }
+
         });
     }
 
