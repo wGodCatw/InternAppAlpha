@@ -58,7 +58,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private SpeedDialView speedDialView;
     private DatePickerDialog picker;
-    private TextInputLayout layout_faculty, layout_uniCompany, layout_fullName, layout_dateOfBirth;
+    private TextInputLayout layout_faculty, layout_uniCompany, layout_fullName, layout_dateOfBirth, layout_email;
     private ImageView profilePic, wifiState, refresh;
     private String fullName, email, phone, role, dob, uniCompany, faculty;
     private String dateBirth;
@@ -84,6 +84,7 @@ public class UserProfileActivity extends AppCompatActivity {
         profilePic = findViewById(R.id.profilePicture);
         layout_fullName = findViewById(R.id.layout_fullName);
         layout_dateOfBirth = findViewById(R.id.layout_dateOfBirth);
+        layout_email = findViewById(R.id.layout_email);
 
 
         profilePic.setOnClickListener(new View.OnClickListener() {
@@ -202,6 +203,14 @@ public class UserProfileActivity extends AppCompatActivity {
                 }
             }
 
+        });
+
+        edt_email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserProfileActivity.this, UpdateEmailActivity.class);
+                startActivity(intent);
+            }
         });
     }
 

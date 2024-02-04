@@ -17,6 +17,9 @@
         android:theme="@style/Theme.InternApp"
         tools:targetApi="34">
         <activity
+            android:name=".UpdateEmailActivity"
+            android:exported="false" />
+        <activity
             android:name=".UploadUserPicActivity"
             android:exported="false" />
         <activity
