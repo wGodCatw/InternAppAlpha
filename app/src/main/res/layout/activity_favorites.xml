@@ -61,6 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
+        android:fontFamily="@font/montserrat"
         android:textSize="20sp"
         android:text="Your Favorite students"
         app:layout_constraintEnd_toEndOf="parent"

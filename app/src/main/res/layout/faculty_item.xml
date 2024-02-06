@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:textSize="20sp"
+    android:fontFamily="@font/montserrat"
     android:padding="16dp"
     android:ellipsize="end"
     android:maxLines="1"
