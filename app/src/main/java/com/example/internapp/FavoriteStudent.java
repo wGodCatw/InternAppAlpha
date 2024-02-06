@@ -1,5 +1,7 @@
 package com.example.internapp;
 
+import androidx.annotation.NonNull;
+
 public class FavoriteStudent {
     private String name;
     private String email;
@@ -35,6 +37,7 @@ public class FavoriteStudent {
         this.imageUrl = imageUrl;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Favorite{" +

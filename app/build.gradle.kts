@@ -55,6 +55,7 @@ dependencies {
     implementation("com.leinardi.android:speed-dial:3.3.0")
 
     implementation("com.squareup.picasso:picasso:2.8")
+    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
 }

@@ -1,5 +1,7 @@
 package com.example.internapp;
 
+import androidx.annotation.NonNull;
+
 public class University {
     private String name;
     private String imageUrl;
@@ -25,6 +27,7 @@ public class University {
         this.imageUrl = imageUrl;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "University{" +

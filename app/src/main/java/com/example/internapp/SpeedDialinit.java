@@ -39,7 +39,7 @@ public class SpeedDialinit {
                 .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
 
 
-        ActionMenuView actionMenuView = (ActionMenuView) activity.findViewById(R.id.amv);
+        ActionMenuView actionMenuView = activity.findViewById(R.id.amv);
         Menu amv_menu = actionMenuView.getMenu();
         activity.getMenuInflater().inflate(R.menu.main_menu, amv_menu);
 
@@ -48,53 +48,50 @@ public class SpeedDialinit {
         fab.getMainFab().setCustomSize(200);
         fab.setMainFabAnimationRotateAngle(270f);
         fab.setOrientation(LinearLayout.VERTICAL);
-        fab.setOnActionSelectedListener(new SpeedDialView.OnActionSelectedListener() {
-            @Override
-            public boolean onActionSelected(SpeedDialActionItem actionItem) {
-                if (actionItem.getId() == R.id.action_settings) {
-                    if (activity.getClass() == SettingsActivity.class)
-                        Toast.makeText(context, "You're here already!", Toast.LENGTH_SHORT).show();
-                    else {
-                        fab.close(true);
-                        Intent intent = new Intent(context, SettingsActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(context, intent, null);
-                        activity.finish();
-                    }
-                } else if (actionItem.getId() == R.id.action_home) {
-                    if (activity.getClass() == UserProfileActivity.class)
-                        Toast.makeText(context, "You're here already!", Toast.LENGTH_SHORT).show();
-                    else {
-                        fab.close(true);
-                        Intent intent = new Intent(context, UserProfileActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(context, intent, null);
-                        activity.finish();
-                    }
-                } else if (actionItem.getId() == R.id.action_favorites) {
-                    if (activity.getClass() == FavoritesActivity.class)
-                        Toast.makeText(context, "You're here already!", Toast.LENGTH_SHORT).show();
-                    else {
-                        fab.close(true);
-                        Intent intent = new Intent(context, FavoritesActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(context, intent, null);
-                    }
-                } else if (actionItem.getId() == R.id.action_schedule) {
-                    Toast.makeText(context, "You clicked Schedule!", Toast.LENGTH_SHORT).show();
+        fab.setOnActionSelectedListener(actionItem -> {
+            if (actionItem.getId() == R.id.action_settings) {
+                if (activity.getClass() == SettingsActivity.class)
+                    Toast.makeText(context, "You're here already!", Toast.LENGTH_SHORT).show();
+                else {
                     fab.close(true);
-                } else if (actionItem.getId() == R.id.action_search) {
-                    if (activity.getClass() == SearchActivity.class)
-                        Toast.makeText(context, "You're here already!", Toast.LENGTH_SHORT).show();
-                    else {
-                        fab.close(true);
-                        Intent intent = new Intent(context, SearchActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(context, intent, null);
-                    }
+                    Intent intent = new Intent(context, SettingsActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(context, intent, null);
+                    activity.finish();
                 }
-                return true;
+            } else if (actionItem.getId() == R.id.action_home) {
+                if (activity.getClass() == UserProfileActivity.class)
+                    Toast.makeText(context, "You're here already!", Toast.LENGTH_SHORT).show();
+                else {
+                    fab.close(true);
+                    Intent intent = new Intent(context, UserProfileActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(context, intent, null);
+                    activity.finish();
+                }
+            } else if (actionItem.getId() == R.id.action_favorites) {
+                if (activity.getClass() == FavoritesActivity.class)
+                    Toast.makeText(context, "You're here already!", Toast.LENGTH_SHORT).show();
+                else {
+                    fab.close(true);
+                    Intent intent = new Intent(context, FavoritesActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(context, intent, null);
+                }
+            } else if (actionItem.getId() == R.id.action_schedule) {
+                Toast.makeText(context, "You clicked Schedule!", Toast.LENGTH_SHORT).show();
+                fab.close(true);
+            } else if (actionItem.getId() == R.id.action_search) {
+                if (activity.getClass() == SearchActivity.class)
+                    Toast.makeText(context, "You're here already!", Toast.LENGTH_SHORT).show();
+                else {
+                    fab.close(true);
+                    Intent intent = new Intent(context, SearchActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(context, intent, null);
+                }
             }
+            return true;
         });
     }
 }

@@ -22,22 +22,16 @@ public class SearchActivity extends AppCompatActivity {
     public static TextView filtersTxt;
     public static ArrayList<String> filters;
     private static ChipGroup chipGroup;
-    private RecyclerView UniversitiesRecView;
-    private RecyclerView FacultiesRecView;
     SpeedDialView speedDialView;
-    private Button goToSearchBtn;
 
     public static void createChip(String text, View view) {
         Chip chip = (Chip) LayoutInflater.from(view.getContext()).inflate(R.layout.chip_layout, null);
         chip.setText(text);
         chip.setId(ViewCompat.generateViewId());
-        chip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chipGroup.removeView(v);
-                filters.remove(text);
+        chip.setOnClickListener(v -> {
+            chipGroup.removeView(v);
+            filters.remove(text);
 //                filtersTxt.setText("Filters: " + filters.toString());
-            }
         });
         chipGroup.addView(chip);
         filters.add(text);
@@ -50,8 +44,8 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         filtersTxt = findViewById(R.id.filtersTxt);
-        FacultiesRecView = findViewById(R.id.FacultiesRecView);
-        UniversitiesRecView = findViewById(R.id.UniversitiesRecView);
+        RecyclerView facultiesRecView = findViewById(R.id.FacultiesRecView);
+        RecyclerView universitiesRecView = findViewById(R.id.UniversitiesRecView);
 
 
         ArrayList<University> universities = new ArrayList<>();
@@ -80,21 +74,18 @@ public class SearchActivity extends AppCompatActivity {
 
         UniversitiesRecViewAdapter uniAdapter = new UniversitiesRecViewAdapter(this);
         uniAdapter.setUniversities(universities);
-        UniversitiesRecView.setAdapter(uniAdapter);
-        UniversitiesRecView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        universitiesRecView.setAdapter(uniAdapter);
+        universitiesRecView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         UniversitiesRecViewAdapter facultyAdapter = new UniversitiesRecViewAdapter(this);
         facultyAdapter.setUniversities(faculties);
-        FacultiesRecView.setAdapter(facultyAdapter);
-        FacultiesRecView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        facultiesRecView.setAdapter(facultyAdapter);
+        facultiesRecView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        goToSearchBtn = findViewById(R.id.goToSearchBtn);
-        goToSearchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SearchStudents.class);
-                startActivity(intent);
-            }
+        Button goToSearchBtn = findViewById(R.id.goToSearchBtn);
+        goToSearchBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), SearchStudents.class);
+            startActivity(intent);
         });
 
         chipGroup = findViewById(R.id.chipGroup);

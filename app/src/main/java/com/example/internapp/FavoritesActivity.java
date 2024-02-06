@@ -13,8 +13,6 @@ import java.util.ArrayList;
 public class FavoritesActivity extends AppCompatActivity {
 
 
-    private RecyclerView FavoriteStudentsRecView;
-
     SpeedDialView speedDialView;
 
     //TODO if HR put you as favorite send notification to the student
@@ -23,7 +21,7 @@ public class FavoritesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
 
-        FavoriteStudentsRecView = findViewById(R.id.FavoriteStudentsRecView);
+        RecyclerView favoriteStudentsRecView = findViewById(R.id.FavoriteStudentsRecView);
 
         ArrayList<FavoriteStudent> contacts = new ArrayList<>();
         contacts.add(new FavoriteStudent("Ryan GOD Gosling", "RyanTheBest@gmail.com", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
@@ -38,8 +36,8 @@ public class FavoritesActivity extends AppCompatActivity {
 
         FavoritesRecViewAdapter adapter = new FavoritesRecViewAdapter(this);
         adapter.setFavoriteStudents(contacts);
-        FavoriteStudentsRecView.setAdapter(adapter);
-        FavoriteStudentsRecView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        favoriteStudentsRecView.setAdapter(adapter);
+        favoriteStudentsRecView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
 
         speedDialView = findViewById(R.id.speedDialView);

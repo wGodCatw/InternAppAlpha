@@ -1,17 +1,14 @@
 package com.example.internapp;
 
 import android.content.Context;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -37,12 +34,9 @@ public class UniversitiesRecViewAdapter extends RecyclerView.Adapter<Universitie
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.txtName.setText(universities.get(position).getName());
 //        holder.parent.setOnClickListener(v -> Toast.makeText(context, universities.get(holder.getAdapterPosition()).getName() + " selected", Toast.LENGTH_SHORT).show());
-        holder.parent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = universities.get(holder.getAdapterPosition()).getName();
-                SearchActivity.createChip(text, v);
-            }
+        holder.parent.setOnClickListener(v -> {
+            String text = universities.get(holder.getAdapterPosition()).getName();
+            SearchActivity.createChip(text, v);
         });
         Glide.with(context).asBitmap().load(universities.get(position).getImageUrl()).into(holder.image);
     }

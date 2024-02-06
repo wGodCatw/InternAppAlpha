@@ -47,19 +47,16 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
         holder.txtName.setText(viewPagerItem.name);
         holder.txtFaculty.setText(viewPagerItem.faculty);
         holder.txtLocation.setText(viewPagerItem.location);
-        holder.whatsappLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = "https://api.whatsapp.com/send?phone=" + viewPagerItem.getWhatsappNumber();
-                try {
-                    PackageManager pm = context.getApplicationContext().getPackageManager();
-                    pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
-                    a.startActivity(i);
-                } catch (PackageManager.NameNotFoundException e){
-                    a.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                }
+        holder.whatsappLink.setOnClickListener(v -> {
+            String url = "https://api.whatsapp.com/send?phone=" + viewPagerItem.getWhatsappNumber();
+            try {
+                PackageManager pm = context.getApplicationContext().getPackageManager();
+                pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                a.startActivity(i);
+            } catch (PackageManager.NameNotFoundException e){
+                a.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             }
         });
 
