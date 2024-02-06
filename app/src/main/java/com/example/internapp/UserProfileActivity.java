@@ -297,6 +297,9 @@ public class UserProfileActivity extends AppCompatActivity {
                         uniCompany = readUserDetails.university;
                         faculty = readUserDetails.faculty;
 
+                        Uri uri = firebaseUser.getPhotoUrl();
+                        Picasso.get().load(uri).into(profilePic);
+
                         edt_uniCompany.setText(uniCompany);
                         layout_uniCompany.setHint("University");
                         layout_faculty.setVisibility(View.VISIBLE);

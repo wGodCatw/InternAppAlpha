@@ -14,7 +14,7 @@ public class SettingsActivity extends AppCompatActivity {
     private SpeedDialView speedDialView;
     FirebaseAuth authProfile;
 
-    private Button logOut, updateProfile, updatePicture;
+    private Button logOut, updateProfile, updatePicture, changePassword, deleteProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,17 @@ public class SettingsActivity extends AppCompatActivity {
         updateProfile = findViewById(R.id.update_profile);
         updatePicture = findViewById(R.id.update_picture);
 
+        changePassword = findViewById(R.id.change_password);
 
+        deleteProfile = findViewById(R.id.delete_profile);
+
+        deleteProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, DeleteUserActivity.class);
+                startActivity(intent);
+            }
+        });
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +57,6 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(SettingsActivity.this, UploadUserPicActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -56,10 +65,15 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(SettingsActivity.this, UserProfileActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
 
-
+        changePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, ChangePasswordActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

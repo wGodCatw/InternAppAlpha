@@ -103,6 +103,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20sp"
+                android:hint="Employment company"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -113,7 +114,8 @@
                     android:id="@+id/text_register_uni"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -129,6 +131,7 @@
                     android:id="@+id/layout_facultySelect"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
+                    android:hint="Faculty name"
                     android:layout_height="wrap_content"
                     app:endIconMode="dropdown_menu">
 
@@ -160,6 +163,7 @@
                     android:id="@+id/layout_uniSelect"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
+                    android:hint="University name"
                     android:layout_height="wrap_content"
                     app:endIconMode="dropdown_menu">
 

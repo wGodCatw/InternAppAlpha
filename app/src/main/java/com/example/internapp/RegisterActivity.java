@@ -128,15 +128,12 @@ public class RegisterActivity extends AppCompatActivity {
                     layout_autoUni.setVisibility(View.VISIBLE);
                     layout_autoFaculty.setVisibility(View.VISIBLE);
                     layout_uni_company.setVisibility(View.GONE);
-                    autoUniversity.setHint("Write your university name");
                     layout_autoUni.setVisibility(View.VISIBLE);
                     layout_autoFaculty.setVisibility(View.VISIBLE);
-                    autoFaculty.setHint("Enter a faculty you're studying on");
                 } else if (radioButtonRegisterRoleSelected.getText().toString().equals("HR Specialist")) {
                     layout_autoFaculty.setVisibility(View.GONE);
                     layout_autoUni.setVisibility(View.GONE);
                     layout_uni_company.setVisibility(View.VISIBLE);
-                    textUniCompany.setHint("Write a company you're working in");
                 }
             }
         });
