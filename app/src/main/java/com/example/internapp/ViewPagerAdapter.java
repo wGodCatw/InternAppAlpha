@@ -5,17 +5,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -50,7 +57,6 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
 
         holder.txtName.setText(viewPagerItem.name);
         holder.txtFaculty.setText(viewPagerItem.faculty);
-        holder.txtLocation.setText(viewPagerItem.location);
         holder.whatsappLink.setOnClickListener(v -> {
             String url = "https://api.whatsapp.com/send?phone=" + viewPagerItem.getWhatsappNumber();
             try {
@@ -88,8 +94,6 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
             txtName = itemView.findViewById(R.id.studentNameSearch);
             txtFaculty = itemView.findViewById(R.id.studentFacultySearch);
             txtLocation = itemView.findViewById(R.id.studentLocationSearch);
-
-
 
 
             UniversitiesRecViewAdapter projectsAdapter = new UniversitiesRecViewAdapter(a.getApplicationContext());

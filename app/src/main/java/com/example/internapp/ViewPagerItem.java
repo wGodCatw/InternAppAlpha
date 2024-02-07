@@ -1,12 +1,17 @@
 package com.example.internapp;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 public class ViewPagerItem {
     String imageUrl;
-    RecyclerView recyclerview;
     String whatsappNumber;
-    String name, faculty, location;
+    String name, faculty;
+
+    public ViewPagerItem(Student student) {
+        this.name = student.name;
+        this.whatsappNumber = student.phone;
+        this.imageUrl = student.uri;
+        this.faculty = student.faculty;
+
+    }
 
     public String getWhatsappNumber() {
         return whatsappNumber;
@@ -14,14 +19,6 @@ public class ViewPagerItem {
 
     public void setWhatsappNumber(String whatsappNumber) {
         this.whatsappNumber = whatsappNumber;
-    }
-
-    public ViewPagerItem(String imageUrl, String whatsappNumber, String name, String faculty, String location) {
-        this.name = name;
-        this.whatsappNumber = whatsappNumber;
-        this.imageUrl = imageUrl;
-        this.faculty = faculty;
-        this.location = location;
     }
 
     public String getImageUrl() {

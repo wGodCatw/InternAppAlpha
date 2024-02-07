@@ -44,6 +44,7 @@ public class SearchStudents extends AppCompatActivity {
     String whatsappPhone9 = "+972585606865";
     String whatsappPhone10 = "+972533753237";
     ArrayList<ViewPagerItem> viewPagerItemArrayList;
+    ArrayList<Student> students = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +60,13 @@ public class SearchStudents extends AppCompatActivity {
                 if(snapshot.hasChildren()){
                     for (DataSnapshot snap : snapshot.getChildren()) {
                         String nodId = snap.getKey();
+                        String name = (String) snap.child("name").getValue();
                         String mobile = (String) snap.child("mobile").getValue();
                         String userPic = (String) snap.child("userPic").getValue();
-                        if(!TextUtils.isEmpty(userPic)){
-                            Toast.makeText(SearchStudents.this, userPic, Toast.LENGTH_LONG).show();
-                        }
+                        String faculty = (String) snap.child("faculty").getValue();
+                        Student student = new Student(userPic, name, faculty, mobile);
+                        students.add(student);
+                        Toast.makeText(getApplicationContext(), student.phone, Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -75,17 +78,6 @@ public class SearchStudents extends AppCompatActivity {
         });
 
 
-        ArrayList<String> phoneNumbers = new ArrayList<>();
-        phoneNumbers.add(whatsappPhone);
-        phoneNumbers.add(whatsappPhone2);
-        phoneNumbers.add(whatsappPhone3);
-        phoneNumbers.add(whatsappPhone4);
-        phoneNumbers.add(whatsappPhone5);
-        phoneNumbers.add(whatsappPhone6);
-        phoneNumbers.add(whatsappPhone7);
-        phoneNumbers.add(whatsappPhone8);
-        phoneNumbers.add(whatsappPhone9);
-        phoneNumbers.add(whatsappPhone10);
 
         ArrayList<University> projectsNames = new ArrayList<>();
         projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
@@ -100,9 +92,9 @@ public class SearchStudents extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewpager);
         viewPagerItemArrayList = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++) {
-            ViewPagerItem viewPagerItem = new ViewPagerItem("https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large", phoneNumbers.get(i),
-                    "Kriko", "Computer Faculty", "Beer Sheva");
+        for (Student student:
+             students) {
+            ViewPagerItem viewPagerItem = new ViewPagerItem(student);
             viewPagerItemArrayList.add(viewPagerItem);
         }
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, this, projectsNames);
