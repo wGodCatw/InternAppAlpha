@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         ViewPagerItem viewPagerItem = viewPagerItemArrayList.get(position);
+        Log.e("ONBINDVIEWHOLDER", viewPagerItem.name);
 
         holder.txtName.setText(viewPagerItem.name);
         holder.txtFaculty.setText(viewPagerItem.faculty);
@@ -71,7 +73,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
         });
 
 
-        Glide.with(context).asBitmap().load(viewPagerItemArrayList.get(position).getImageUrl()).into(holder.imgStudentSearch);
+        Glide.with(context).asBitmap().load(viewPagerItemArrayList.get(position).imageUrl).into(holder.imgStudentSearch);
     }
 
     @Override
@@ -83,7 +85,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
 
         ImageView imgStudentSearch, whatsappLink;
         RecyclerView projects;
-        TextView txtName, txtFaculty, txtLocation;
+        TextView txtName, txtFaculty;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -93,7 +95,6 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
             imgStudentSearch = itemView.findViewById(R.id.studentPicSearch);
             txtName = itemView.findViewById(R.id.studentNameSearch);
             txtFaculty = itemView.findViewById(R.id.studentFacultySearch);
-            txtLocation = itemView.findViewById(R.id.studentLocationSearch);
 
 
             UniversitiesRecViewAdapter projectsAdapter = new UniversitiesRecViewAdapter(a.getApplicationContext());

@@ -4,6 +4,7 @@ package com.example.internapp;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -33,16 +34,6 @@ public class SearchStudents extends AppCompatActivity {
 
     SpeedDialView speedDialView;
 
-    String whatsappPhone = "+972504828406";
-    String whatsappPhone2 = "+972504828405";
-    String whatsappPhone3 = "+972503888193";
-    String whatsappPhone4 = "+972546132757";
-    String whatsappPhone5 = "+972539546832";
-    String whatsappPhone6 = "+380506755047";
-    String whatsappPhone7 = "+972533867971";
-    String whatsappPhone8 = "+972585290306";
-    String whatsappPhone9 = "+972585606865";
-    String whatsappPhone10 = "+972533753237";
     ArrayList<ViewPagerItem> viewPagerItemArrayList;
     ArrayList<Student> students = new ArrayList<>();
 
@@ -53,29 +44,7 @@ public class SearchStudents extends AppCompatActivity {
 
         String university = "Technion";
 
-        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.hasChildren()){
-                    for (DataSnapshot snap : snapshot.getChildren()) {
-                        String nodId = snap.getKey();
-                        String name = (String) snap.child("name").getValue();
-                        String mobile = (String) snap.child("mobile").getValue();
-                        String userPic = (String) snap.child("userPic").getValue();
-                        String faculty = (String) snap.child("faculty").getValue();
-                        Student student = new Student(userPic, name, faculty, mobile);
-                        students.add(student);
-                        Toast.makeText(getApplicationContext(), student.phone, Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
 
 
@@ -92,19 +61,51 @@ public class SearchStudents extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewpager);
         viewPagerItemArrayList = new ArrayList<>();
 
-        for (Student student:
-             students) {
-            ViewPagerItem viewPagerItem = new ViewPagerItem(student);
-            viewPagerItemArrayList.add(viewPagerItem);
-        }
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, this, projectsNames);
-        viewPager2.setAdapter(viewPagerAdapter);
+        filterStudents(university, projectsNames);
 
-        viewPager2.setOffscreenPageLimit(2);
-        viewPager2.setClipChildren(false);
-        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+
 
         speedDialView = findViewById(R.id.speedDialView);
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), SearchStudents.this);
+    }
+
+    private void filterStudents(String university, ArrayList <University> projectsNames) {
+        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+        referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.hasChildren()){
+                    for (DataSnapshot snap : snapshot.getChildren()) {
+                        String nodId = snap.getKey();
+                        String name = (String) snap.child("name").getValue();
+                        String mobile = (String) snap.child("mobile").getValue();
+                        String userPic = (String) snap.child("userPic").getValue();
+                        String faculty = (String) snap.child("faculty").getValue();
+                        Student student = new Student(userPic, name, faculty, mobile);
+                        students.add(student);
+                        Log.e("Size inside", String.valueOf(students.size()));
+
+                    }
+
+                    Log.e("Size outside", String.valueOf(students.size()));
+                    for (Student i:
+                            students) {
+                        ViewPagerItem viewPagerItem = new ViewPagerItem(i);
+                        viewPagerItemArrayList.add(viewPagerItem);
+                    }
+                    ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
+                    viewPager2.setAdapter(viewPagerAdapter);
+
+                    viewPager2.setOffscreenPageLimit(2);
+                    viewPager2.setClipChildren(false);
+                    viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
