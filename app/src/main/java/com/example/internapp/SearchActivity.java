@@ -20,22 +20,40 @@ import java.util.ArrayList;
 
 public class SearchActivity extends AppCompatActivity {
     public static TextView filtersTxt;
-    public static ArrayList<String> filters;
+    public static ArrayList<String> filtersUniversities = new ArrayList<>();
+    public static ArrayList<String> filtersFaculties = new ArrayList<>();
     private static ChipGroup chipGroup;
     SpeedDialView speedDialView;
+    public static ArrayList<University> universities = new ArrayList<>();
+    public static ArrayList<University> faculties = new ArrayList<>();
 
     public static void createChip(String text, View view) {
         Chip chip = (Chip) LayoutInflater.from(view.getContext()).inflate(R.layout.chip_layout, null);
-        chip.setText(text);
-        chip.setId(ViewCompat.generateViewId());
+
+        if (!filtersFaculties.contains(text) && !filtersUniversities.contains(text)) {
+            chip.setText(text);
+            chip.setId(ViewCompat.generateViewId());
+            chipGroup.addView(chip);
+
+            if (faculties.contains(text)) {
+                filtersFaculties.add(text);
+            } else filtersUniversities.add(text);
+        }
         chip.setOnClickListener(v -> {
             chipGroup.removeView(v);
-            filters.remove(text);
-//                filtersTxt.setText("Filters: " + filters.toString());
+            if (faculties.contains(text)) {
+                filtersFaculties.remove(text);
+            } else filtersUniversities.remove(text);
         });
-        chipGroup.addView(chip);
-        filters.add(text);
-//        filtersTxt.setText("Filters: " + filters.toString());
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        chipGroup.removeAllViews();
+        filtersUniversities.clear();
+        filtersFaculties.clear();
     }
 
     @Override
@@ -43,16 +61,14 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        chipGroup = findViewById(R.id.chipGroup);
+
+
         filtersTxt = findViewById(R.id.filtersTxt);
         RecyclerView facultiesRecView = findViewById(R.id.FacultiesRecView);
         RecyclerView universitiesRecView = findViewById(R.id.UniversitiesRecView);
 
-
-        ArrayList<University> universities = new ArrayList<>();
-        ArrayList<University> faculties = new ArrayList<>();
-        filters = new ArrayList<>();
-
-        universities.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
+        universities.add(new University("Technion", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
         universities.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
         universities.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
         universities.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
@@ -85,10 +101,12 @@ public class SearchActivity extends AppCompatActivity {
         Button goToSearchBtn = findViewById(R.id.goToSearchBtn);
         goToSearchBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), SearchStudents.class);
+            intent.putExtra("filtersFaculties", filtersFaculties);
+            intent.putExtra("filtersUniversities", filtersUniversities);
             startActivity(intent);
         });
 
-        chipGroup = findViewById(R.id.chipGroup);
+
 
         speedDialView = findViewById(R.id.speedDialView);
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), SearchActivity.this);

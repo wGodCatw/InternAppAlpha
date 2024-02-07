@@ -1,38 +1,32 @@
 package com.example.internapp;
 
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.internal.zzaa;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.leinardi.android.speeddial.SpeedDialView;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class SearchStudents extends AppCompatActivity {
 
     ViewPager2 viewPager2;
 
     SpeedDialView speedDialView;
+    TextView txtNoStudentsFound;
+    ArrayList<String> filtersFaculties = new ArrayList<>();
+    ArrayList<String> filtersUniversities = new ArrayList<>();
 
     ArrayList<ViewPagerItem> viewPagerItemArrayList;
     ArrayList<Student> students = new ArrayList<>();
@@ -41,12 +35,12 @@ public class SearchStudents extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_students);
-
-        String university = "Technion";
-
-
-
-
+        txtNoStudentsFound = findViewById(R.id.txtNoStudentsFound);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            filtersUniversities = extras.getStringArrayList("filtersUniversities");
+            filtersFaculties = extras.getStringArrayList("filtersFaculties");
+        }
 
         ArrayList<University> projectsNames = new ArrayList<>();
         projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
@@ -61,51 +55,57 @@ public class SearchStudents extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewpager);
         viewPagerItemArrayList = new ArrayList<>();
 
-        filterStudents(university, projectsNames);
-
-
-
+        filterStudents(filtersUniversities, filtersFaculties, projectsNames);
 
         speedDialView = findViewById(R.id.speedDialView);
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), SearchStudents.this);
     }
 
-    private void filterStudents(String university, ArrayList <University> projectsNames) {
+    private void filterStudents(ArrayList<String> filtersUniversities, ArrayList<String> filterFaculties, ArrayList<University> projectsNames) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.hasChildren()){
-                    for (DataSnapshot snap : snapshot.getChildren()) {
-                        String nodId = snap.getKey();
-                        String name = (String) snap.child("name").getValue();
-                        String mobile = (String) snap.child("mobile").getValue();
-                        String userPic = (String) snap.child("userPic").getValue();
-                        String faculty = (String) snap.child("faculty").getValue();
-                        Student student = new Student(userPic, name, faculty, mobile);
-                        students.add(student);
-                        Log.e("Size inside", String.valueOf(students.size()));
+        if (filtersUniversities.size() > 0) {
+            txtNoStudentsFound.setVisibility(View.GONE);
+            String university = filtersUniversities.get(0);
+            Log.e("University", university);
+            referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.hasChildren()) {
+                        for (DataSnapshot snap : snapshot.getChildren()) {
+                            String nodId = snap.getKey();
+                            String name = (String) snap.child("name").getValue();
+                            String mobile = (String) snap.child("mobile").getValue();
+                            String userPic = (String) snap.child("userPic").getValue();
+                            String faculty = (String) snap.child("faculty").getValue();
+                            Student student = new Student(userPic, name, faculty, mobile);
+                            students.add(student);
+                        }
 
-                    }
+                        for (Student i :
+                                students) {
+                            ViewPagerItem viewPagerItem = new ViewPagerItem(i);
+                            viewPagerItemArrayList.add(viewPagerItem);
+                        }
 
-                    Log.e("Size outside", String.valueOf(students.size()));
-                    for (Student i:
-                            students) {
-                        ViewPagerItem viewPagerItem = new ViewPagerItem(i);
-                        viewPagerItemArrayList.add(viewPagerItem);
-                    }
-                    ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
-                    viewPager2.setAdapter(viewPagerAdapter);
+                        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
+                        viewPager2.setAdapter(viewPagerAdapter);
 
-                    viewPager2.setOffscreenPageLimit(2);
-                    viewPager2.setClipChildren(false);
-                    viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+                        viewPager2.setOffscreenPageLimit(2);
+                        viewPager2.setClipChildren(false);
+                        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+
+
+                    } else txtNoStudentsFound.setVisibility(View.VISIBLE);
                 }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        } else {
+            txtNoStudentsFound.setVisibility(View.VISIBLE);
+        }
+
     }
 }
