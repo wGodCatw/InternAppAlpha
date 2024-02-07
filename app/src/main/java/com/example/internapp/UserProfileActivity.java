@@ -140,8 +140,6 @@ public class UserProfileActivity extends AppCompatActivity {
             } else {
                 dateBirth = edt_dob.getText().toString();
                 DatabaseReference referenceProfile;
-                Toast.makeText(UserProfileActivity.this, Objects.requireNonNull(edt_role.getText()).toString(), Toast.LENGTH_LONG).show();
-
                 if (TextUtils.equals(edt_role.getText().toString(), "HR Specialist")) {
                     assert firebaseUser != null;
                     referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid() + "/doB");
@@ -153,8 +151,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 referenceProfile.setValue(dateBirth).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
-                                .setDisplayName(Objects.requireNonNull(edt_fullName.getText()).toString()).build();
+                        UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(Objects.requireNonNull(edt_fullName.getText()).toString()).build();
                         firebaseUser.updateProfile(userProfileChangeRequest);
                         Toast.makeText(UserProfileActivity.this, "Date of birth updated", Toast.LENGTH_LONG).show();
                     } else {

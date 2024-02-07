@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,13 +22,15 @@ import java.util.ArrayList;
 public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.ViewHolder> {
 
     ArrayList<ViewPagerItem> viewPagerItemArrayList;
+    ArrayList<University> projectsNames;
     private final Context context;
     private Activity a;
 
 
-    public ViewPagerAdapter(Activity a, ArrayList<ViewPagerItem> viewPagerItemArrayList, Context context) {
+    public ViewPagerAdapter(Activity a, ArrayList<ViewPagerItem> viewPagerItemArrayList, Context context, ArrayList<University> projectsNames) {
         this.viewPagerItemArrayList = viewPagerItemArrayList;
         this.a = a;
+        this.projectsNames = projectsNames;
         this.context = context;
     }
 
@@ -44,6 +47,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         ViewPagerItem viewPagerItem = viewPagerItemArrayList.get(position);
+
         holder.txtName.setText(viewPagerItem.name);
         holder.txtFaculty.setText(viewPagerItem.faculty);
         holder.txtLocation.setText(viewPagerItem.location);
@@ -72,16 +76,26 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         ImageView imgStudentSearch, whatsappLink;
+        RecyclerView projects;
         TextView txtName, txtFaculty, txtLocation;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            projects = itemView.findViewById(R.id.ProjectsRecView);
             whatsappLink = itemView.findViewById(R.id.whatsappLink);
             imgStudentSearch = itemView.findViewById(R.id.studentPicSearch);
             txtName = itemView.findViewById(R.id.studentNameSearch);
             txtFaculty = itemView.findViewById(R.id.studentFacultySearch);
             txtLocation = itemView.findViewById(R.id.studentLocationSearch);
+
+
+
+
+            UniversitiesRecViewAdapter projectsAdapter = new UniversitiesRecViewAdapter(a.getApplicationContext());
+            projectsAdapter.setUniversities(projectsNames);
+            projects.setAdapter(projectsAdapter);
+            projects.setLayoutManager(new LinearLayoutManager(a.getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
         }
     }
 }

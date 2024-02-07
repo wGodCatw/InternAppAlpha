@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.leinardi.android.speeddial.SpeedDialView;
@@ -46,6 +48,16 @@ public class SearchStudents extends AppCompatActivity {
         phoneNumbers.add(whatsappPhone9);
         phoneNumbers.add(whatsappPhone10);
 
+        ArrayList<University> projectsNames = new ArrayList<>();
+        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
+        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
+        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
+        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
+        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
+        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
+        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
+        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
+
         viewPager2 = findViewById(R.id.viewpager);
         viewPagerItemArrayList = new ArrayList<>();
 
@@ -54,7 +66,7 @@ public class SearchStudents extends AppCompatActivity {
                     "Kriko", "Computer Faculty", "Beer Sheva");
             viewPagerItemArrayList.add(viewPagerItem);
         }
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, this);
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, this, projectsNames);
         viewPager2.setAdapter(viewPagerAdapter);
 
         viewPager2.setOffscreenPageLimit(2);

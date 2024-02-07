@@ -1,7 +1,10 @@
 package com.example.internapp;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 public class ViewPagerItem {
     String imageUrl;
+    RecyclerView recyclerview;
     String whatsappNumber;
     String name, faculty, location;
 

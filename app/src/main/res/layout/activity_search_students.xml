@@ -45,6 +45,7 @@
 
     </com.leinardi.android.speeddial.SpeedDialView>
 
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewpager"
         android:layout_width="0dp"
