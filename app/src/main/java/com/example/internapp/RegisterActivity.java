@@ -247,7 +247,8 @@ public class RegisterActivity extends AppCompatActivity {
                 assert firebaseUser != null;
                 firebaseUser.updateProfile(profileChangeRequest);
 
-                ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textDoB, textRole, textMobile, UniCompany);
+                String userPic = "";
+                ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textFullName, textDoB, textRole, textMobile, UniCompany, userPic);
                 DatabaseReference referenceProfile;
 
 
@@ -302,8 +303,9 @@ public class RegisterActivity extends AppCompatActivity {
                 assert firebaseUser != null;
                 firebaseUser.updateProfile(profileChangeRequest);
 
-
-                ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textDoB, textRole, textMobile, UniCompany, Faculty);
+                Toast.makeText(RegisterActivity.this, textFullName, Toast.LENGTH_LONG).show();
+                String userPic = "none";
+                ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textFullName, textDoB, textRole, textMobile, UniCompany, Faculty, userPic);
 
 
                 DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");

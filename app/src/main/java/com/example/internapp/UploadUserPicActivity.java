@@ -11,12 +11,18 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.leinardi.android.speeddial.SpeedDialView;
@@ -57,11 +63,10 @@ public class UploadUserPicActivity extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference("ProfilePictures");
 
         Uri uri = firebaseUser.getPhotoUrl();
-
         Picasso.get().load(uri).into(profilePic);
 
         btnPicChoose.setOnClickListener(v -> openFileChooser());
-        
+
         btnUploadPic.setOnClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
             uploadPic();
@@ -69,7 +74,7 @@ public class UploadUserPicActivity extends AppCompatActivity {
     }
 
     private void uploadPic() {
-        if(uriImage != null){
+        if (uriImage != null) {
             StorageReference fileReference = storageReference.child(Objects.requireNonNull(authProfile.getCurrentUser()).getUid()
                     + "." + getFileExtension(uriImage));
 
@@ -86,6 +91,67 @@ public class UploadUserPicActivity extends AppCompatActivity {
 
                 progressBar.setVisibility(View.GONE);
                 Toast.makeText(UploadUserPicActivity.this, "Upload successful!", Toast.LENGTH_LONG).show();
+                Uri uri = firebaseUser.getPhotoUrl();
+
+
+                DatabaseReference referenceHR = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
+                referenceHR.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            DatabaseReference referenceHRPic = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid() + "/userPic");
+                            referenceHRPic.setValue(uri.toString()).addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(firebaseUser.getDisplayName()).build();
+                                    firebaseUser.updateProfile(userProfileChangeRequest);
+                                } else {
+                                    try {
+                                        throw Objects.requireNonNull(task.getException());
+                                    } catch (Exception e) {
+                                        Toast.makeText(UploadUserPicActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                                progressBar.setVisibility(View.GONE);
+                            });
+                            ;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+                DatabaseReference referenceStudent = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+                referenceStudent.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            DatabaseReference referenceStudentPic = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid() + "/userPic");
+
+                            referenceStudentPic.setValue(uri.toString()).addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(firebaseUser.getDisplayName()).build();
+                                    firebaseUser.updateProfile(userProfileChangeRequest);
+                                } else {
+                                    try {
+                                        throw Objects.requireNonNull(task.getException());
+                                    } catch (Exception e) {
+                                        Toast.makeText(UploadUserPicActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                                progressBar.setVisibility(View.GONE);
+                            });
+                            ;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
 
                 Intent intent = new Intent(UploadUserPicActivity.this, UserProfileActivity.class);
                 startActivity(intent);

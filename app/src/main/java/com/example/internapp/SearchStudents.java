@@ -1,17 +1,31 @@
 package com.example.internapp;
 
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.internal.zzaa;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.leinardi.android.speeddial.SpeedDialView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class SearchStudents extends AppCompatActivity {
 
@@ -35,6 +49,31 @@ public class SearchStudents extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_students);
+
+        String university = "Technion";
+
+        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+        referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.hasChildren()){
+                    for (DataSnapshot snap : snapshot.getChildren()) {
+                        String nodId = snap.getKey();
+                        String mobile = (String) snap.child("mobile").getValue();
+                        String userPic = (String) snap.child("userPic").getValue();
+                        if(!TextUtils.isEmpty(userPic)){
+                            Toast.makeText(SearchStudents.this, userPic, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
         ArrayList<String> phoneNumbers = new ArrayList<>();
         phoneNumbers.add(whatsappPhone);

@@ -118,7 +118,28 @@ public class UserProfileActivity extends AppCompatActivity {
                 UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(textFullName).build();
                 assert firebaseUser != null;
                 firebaseUser.updateProfile(profileChangeRequest).addOnCompleteListener(task -> Toast.makeText(UserProfileActivity.this, "Name updated, it is now " + firebaseUser.getDisplayName(), Toast.LENGTH_LONG).show());
+                DatabaseReference referenceProfile;
+                if (TextUtils.equals(edt_role.getText().toString(), "HR Specialist")) {
+                    assert firebaseUser != null;
+                    referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid() + "/name");
+                } else {
+                    assert firebaseUser != null;
+                    referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid() + "/name");
+                }
+                progressBar.setVisibility(View.VISIBLE);
 
+                referenceProfile.setValue(textFullName).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(Objects.requireNonNull(edt_fullName.getText()).toString()).build();
+                        firebaseUser.updateProfile(userProfileChangeRequest);
+                    } else {
+                        try {
+                            throw Objects.requireNonNull(task.getException());
+                        } catch (Exception e) {
+                            Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
                 progressBar.setVisibility(View.GONE);
             }
         });
@@ -262,6 +283,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         phone = readUserDetails.mobile;
                         uniCompany = readUserDetails.university;
                         faculty = readUserDetails.faculty;
+                        String userPic = readUserDetails.userPic;
 
                         Uri uri = firebaseUser.getPhotoUrl();
                         Picasso.get().load(uri).into(profilePic);
