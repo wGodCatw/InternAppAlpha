@@ -2,6 +2,7 @@ package com.example.internapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -30,14 +31,26 @@ public class SearchActivity extends AppCompatActivity {
     public static void createChip(String text, View view) {
         Chip chip = (Chip) LayoutInflater.from(view.getContext()).inflate(R.layout.chip_layout, null);
 
+
         if (!filtersFaculties.contains(text) && !filtersUniversities.contains(text)) {
             chip.setText(text);
             chip.setId(ViewCompat.generateViewId());
             chipGroup.addView(chip);
 
-            if (faculties.contains(text)) {
-                filtersFaculties.add(text);
-            } else filtersUniversities.add(text);
+            for (University uni:
+                 universities) {
+                if(uni.getName().equals(text)){
+                    filtersUniversities.add(text);
+                }
+            }
+
+            for (University uni:
+                    faculties) {
+                if(uni.getName().equals(text)){
+                    filtersFaculties.add(text);
+                }
+            }
+
         }
         chip.setOnClickListener(v -> {
             chipGroup.removeView(v);
@@ -49,12 +62,13 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onResume() {
+        super.onResume();
         chipGroup.removeAllViews();
         filtersUniversities.clear();
         filtersFaculties.clear();
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

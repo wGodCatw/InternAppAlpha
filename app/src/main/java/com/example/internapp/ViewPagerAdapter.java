@@ -55,7 +55,6 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         ViewPagerItem viewPagerItem = viewPagerItemArrayList.get(position);
-        Log.e("ONBINDVIEWHOLDER", viewPagerItem.name);
 
         holder.txtName.setText(viewPagerItem.name);
         holder.txtFaculty.setText(viewPagerItem.faculty);
