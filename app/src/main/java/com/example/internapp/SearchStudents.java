@@ -18,6 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.leinardi.android.speeddial.SpeedDialView;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SearchStudents extends AppCompatActivity {
 
@@ -55,284 +56,43 @@ public class SearchStudents extends AppCompatActivity {
         viewPager2 = findViewById(R.id.viewpager);
         viewPagerItemArrayList = new ArrayList<>();
 
-        filterStudents(filtersUniversities, filtersFaculties, projectsNames);
-
         speedDialView = findViewById(R.id.speedDialView);
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), SearchStudents.this);
-    }
-
-    private void filterStudents(ArrayList<String> filtersUniversities, ArrayList<String> filterFaculties, ArrayList<University> projectsNames) {
-        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
         ArrayList<Student> students = new ArrayList<>();
+        ArrayList<String> studentsByUniversities = new ArrayList<>();
 
-        if (!filtersUniversities.isEmpty() || !filterFaculties.isEmpty()) {
+        for (Student i : students) {
+            ViewPagerItem viewPagerItem = new ViewPagerItem(i);
+            viewPagerItemArrayList.add(viewPagerItem);
+        }
 
-            ArrayList<String> studentsByFaculties = new ArrayList<>();
-            ArrayList<String> studentsByUniversities = new ArrayList<>();
-
-            if (filtersUniversities.isEmpty()) {
-                Log.e("No universities", "NOOO");
-                filterByFaculty(filterFaculties, new OnDataRetrieved() {
-                    @Override
-                    public void onData(ArrayList<String> data) {
-                        ArrayList<String> chosenStudentsfinal = new ArrayList<>(data);
-                        if (!chosenStudentsfinal.isEmpty()) {
-                            for (String id : chosenStudentsfinal) {
-                                referenceProfile.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if (snapshot.hasChildren()) {
-                                            for (DataSnapshot snap : snapshot.getChildren()) {
-                                                String nodId = snap.getKey();
-
-                                                if (nodId.equals(id)) {
-                                                    String name = (String) snap.child("name").getValue();
-                                                    String mobile = (String) snap.child("mobile").getValue();
-                                                    String userPic = (String) snap.child("userPic").getValue();
-                                                    String faculty = (String) snap.child("faculty").getValue();
-                                                    Student student = new Student(userPic, name, faculty, mobile);
-                                                    students.add(student);
-                                                }
-                                            }
-                                            for (Student i : students) {
-                                                ViewPagerItem viewPagerItem = new ViewPagerItem(i);
-                                                viewPagerItemArrayList.add(viewPagerItem);
-                                            }
-
-                                            txtNoStudentsFound.setVisibility(View.GONE);
-
-                                            ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
-                                            viewPager2.setAdapter(viewPagerAdapter);
-
-                                            viewPager2.setOffscreenPageLimit(2);
-                                            viewPager2.setClipChildren(false);
-                                            viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
-                                        } else {
-                                            txtNoStudentsFound.setVisibility(View.VISIBLE);
-                                        }
-
-
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
-                                });
-                            }
-
-                        } else {
-                            txtNoStudentsFound.setVisibility(View.VISIBLE);
-                        }
+        txtNoStudentsFound.setVisibility(View.GONE);
+        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+        referenceProfile.orderByChild("university").equalTo("Technion").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChildren()) {
+                    for (DataSnapshot snap : snapshot.getChildren()) {
+                        String nodId = snap.getKey();
+                        studentsByUniversities.add(nodId);
                     }
-                });
-            } else if (filterFaculties.isEmpty()) {
-                Log.e("No faculties", "NOOOOO");
-                filterByUniversity(filtersUniversities, data -> {
-                    ArrayList<String> chosenStudentsfinal = new ArrayList<>(data);
-                    if (!chosenStudentsfinal.isEmpty()) {
-                        Log.e("WTF", chosenStudentsfinal.toString());
-                        for (String id : chosenStudentsfinal) {
-                            referenceProfile.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.hasChildren()) {
-                                        for (DataSnapshot snap : snapshot.getChildren()) {
-                                            String nodId = snap.getKey();
+                } else {
 
-                                            if (nodId.equals(id)) {
-                                                String name = (String) snap.child("name").getValue();
-                                                String mobile = (String) snap.child("mobile").getValue();
-                                                String userPic = (String) snap.child("userPic").getValue();
-                                                String faculty = (String) snap.child("faculty").getValue();
-                                                Student student = new Student(userPic, name, faculty, mobile);
-                                                students.add(student);
-                                            }
-                                        }
-
-                                        Log.e("University student", students.toString());
-                                        for (Student i : students) {
-                                            ViewPagerItem viewPagerItem = new ViewPagerItem(i);
-                                            viewPagerItemArrayList.add(viewPagerItem);
-                                        }
-
-                                        txtNoStudentsFound.setVisibility(View.GONE);
-
-                                        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
-                                        viewPager2.setAdapter(viewPagerAdapter);
-
-                                        viewPager2.setOffscreenPageLimit(2);
-                                        viewPager2.setClipChildren(false);
-                                        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
-                                    } else {
-                                        txtNoStudentsFound.setVisibility(View.VISIBLE);
-                                    }
-
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-                        }
-
-                    } else {
-                        txtNoStudentsFound.setVisibility(View.VISIBLE);
-                    }
-                });
-            } else {
-                Log.e("Both is", "NOOOOO");
-                filterByBoth(filtersUniversities, filterFaculties, data -> {
-
-                    studentsByUniversities.addAll(data.get(0));
-                    studentsByFaculties.addAll(data.get(1));
-
-                    studentsByFaculties.retainAll(studentsByUniversities);
-                    ArrayList<String> chosenStudentsfinal = new ArrayList<>(studentsByFaculties);
-                    Log.e("Both students", chosenStudentsfinal.toString());
-
-                    if (!chosenStudentsfinal.isEmpty()) {
-                        for (String id : chosenStudentsfinal) {
-                            referenceProfile.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.hasChildren()) {
-                                        for (DataSnapshot snap : snapshot.getChildren()) {
-                                            String nodId = snap.getKey();
-
-                                            if (nodId.equals(id)) {
-                                                String name = (String) snap.child("name").getValue();
-                                                String mobile = (String) snap.child("mobile").getValue();
-                                                String userPic = (String) snap.child("userPic").getValue();
-                                                String faculty = (String) snap.child("faculty").getValue();
-                                                Student student = new Student(userPic, name, faculty, mobile);
-                                                students.add(student);
-                                            }
-                                        }
-                                        for (Student i : students) {
-                                            ViewPagerItem viewPagerItem = new ViewPagerItem(i);
-                                            viewPagerItemArrayList.add(viewPagerItem);
-                                        }
-
-                                        txtNoStudentsFound.setVisibility(View.GONE);
-
-                                        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
-                                        viewPager2.setAdapter(viewPagerAdapter);
-
-                                        viewPager2.setOffscreenPageLimit(2);
-                                        viewPager2.setClipChildren(false);
-                                        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
-                                    } else {
-                                        txtNoStudentsFound.setVisibility(View.VISIBLE);
-                                    }
-
-
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-                        }
-
-                    } else {
-                        txtNoStudentsFound.setVisibility(View.VISIBLE);
-                    }
-                });
+                }
             }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        } else {
-            txtNoStudentsFound.setVisibility(View.VISIBLE);
-        }
-
-    }
-
-    private ArrayList<String> filterByFaculty(ArrayList<String> filterFaculties, OnDataRetrieved callback) {
-        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        ArrayList<String> studentsByFaculties = new ArrayList<>();
-        for (String faculty : filterFaculties) {
-            referenceProfile.orderByChild("faculty").equalTo(faculty).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.hasChildren()) {
-                        for (DataSnapshot snap : snapshot.getChildren()) {
-                            String nodId = snap.getKey();
-                            Log.e("By faculty id", nodId);
-                            studentsByFaculties.add(nodId);
-                        }
-                    } else {
-                        callback.onData(null);
-                    }
-                    callback.onData(studentsByFaculties);
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
-        return studentsByFaculties;
-    }
-
-    private ArrayList<String> filterByUniversity(ArrayList<String> filtersUniversities, OnDataRetrieved callback) {
-        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        ArrayList<String> studentsByUniversities = new ArrayList<>();
-        for (String university : filtersUniversities) {
-            referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.hasChildren()) {
-                        for (DataSnapshot snap : snapshot.getChildren()) {
-                            String nodId = snap.getKey();
-                            Log.e("By university id", nodId);
-                            studentsByUniversities.add(nodId);
-                        }
-                    } else {
-                        callback.onData(null);
-                    }
-                    callback.onData(studentsByUniversities);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }
-        return studentsByUniversities;
-    }
-
-    public ArrayList<ArrayList<String>> filterByBoth(ArrayList<String> filtersUniversities, ArrayList<String> filterFaculties, OnDataRetrievedAll callback) {
-        ArrayList<ArrayList<String>> arr = new ArrayList<>();
-        ArrayList<String> studentsByUniversities = new ArrayList<>();
-        ArrayList<String> studentsByFaculties = new ArrayList<>();
-        filterByUniversity(filtersUniversities, data -> {
-            studentsByUniversities.addAll(data);
-
-            filterByFaculty(filterFaculties, data1 -> {
-                studentsByFaculties.addAll(data1);
-
-                arr.add(studentsByUniversities);
-                arr.add(studentsByFaculties);
-
-                callback.onData(arr);
-            });
+            }
         });
 
-        return arr;
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
+        viewPager2.setAdapter(viewPagerAdapter);
+
+        viewPager2.setOffscreenPageLimit(2);
+        viewPager2.setClipChildren(false);
+        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
 
-    interface OnDataRetrieved {
-        void onData(ArrayList<String> data);
-    }
-
-    interface OnDataRetrievedAll {
-        void onData(ArrayList<ArrayList<String>> data);
-    }
 }
