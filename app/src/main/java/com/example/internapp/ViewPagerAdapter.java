@@ -31,8 +31,8 @@ import java.util.Set;
 
 public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.ViewHolder> {
 
-    ArrayList<ViewPagerItem> viewPagerItemArrayList;
-    ArrayList<University> projectsNames;
+    private ArrayList<ViewPagerItem> viewPagerItemArrayList;
+    private ArrayList<University> projectsNames;
     private final Context context;
     private Activity a;
 
@@ -84,9 +84,9 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView imgStudentSearch, whatsappLink;
-        RecyclerView projects;
-        TextView txtName, txtFaculty;
+        private ImageView imgStudentSearch, whatsappLink;
+        private RecyclerView projects;
+        private TextView txtName, txtFaculty;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

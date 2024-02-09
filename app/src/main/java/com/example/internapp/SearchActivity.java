@@ -24,7 +24,7 @@ public class SearchActivity extends AppCompatActivity {
     public static ArrayList<String> filtersUniversities = new ArrayList<>();
     public static ArrayList<String> filtersFaculties = new ArrayList<>();
     private static ChipGroup chipGroup;
-    SpeedDialView speedDialView;
+    private SpeedDialView speedDialView;
     public static ArrayList<University> universities = new ArrayList<>();
     public static ArrayList<University> faculties = new ArrayList<>();
 
@@ -79,8 +79,8 @@ public class SearchActivity extends AppCompatActivity {
 
 
         filtersTxt = findViewById(R.id.filtersTxt);
-        RecyclerView facultiesRecView = findViewById(R.id.FacultiesRecView);
-        RecyclerView universitiesRecView = findViewById(R.id.UniversitiesRecView);
+        final RecyclerView facultiesRecView = findViewById(R.id.FacultiesRecView);
+        final RecyclerView universitiesRecView = findViewById(R.id.UniversitiesRecView);
 
         universities.add(new University("Tel Aviv", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
         universities.add(new University("Bar-Ilan", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
@@ -106,12 +106,12 @@ public class SearchActivity extends AppCompatActivity {
         faculties.add(new University("Visual arts", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
 
 
-        UniversitiesRecViewAdapter uniAdapter = new UniversitiesRecViewAdapter(this);
+        final UniversitiesRecViewAdapter uniAdapter = new UniversitiesRecViewAdapter(this);
         uniAdapter.setUniversities(universities);
         universitiesRecView.setAdapter(uniAdapter);
         universitiesRecView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        UniversitiesRecViewAdapter facultyAdapter = new UniversitiesRecViewAdapter(this);
+        final UniversitiesRecViewAdapter facultyAdapter = new UniversitiesRecViewAdapter(this);
         facultyAdapter.setUniversities(faculties);
         facultiesRecView.setAdapter(facultyAdapter);
         facultiesRecView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));

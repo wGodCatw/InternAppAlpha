@@ -21,18 +21,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class SearchStudents extends AppCompatActivity {
 
-    ViewPager2 viewPager2;
 
     SpeedDialView speedDialView;
     TextView txtNoStudentsFound;
-    ArrayList<String> filtersFaculties = new ArrayList<>();
-    ArrayList<String> filtersUniversities = new ArrayList<>();
+    private ArrayList<String> filtersFaculties = new ArrayList<>();
+    private ArrayList<String> filtersUniversities = new ArrayList<>();
 
-    ArrayList<ViewPagerItem> viewPagerItemArrayList;
-    ArrayList<String> allUniversities = new ArrayList<>();
-    ArrayList<String> allFaculties = new ArrayList<>();
-    ArrayList<String> studentsByUniversitiesID = new ArrayList<>();
-    ArrayList<String> studentsByFacultiesID = new ArrayList<>();
+    private ArrayList<ViewPagerItem> viewPagerItemArrayList;
+    private ArrayList<String> allUniversities = new ArrayList<>();
+    private ArrayList<String> allFaculties = new ArrayList<>();
+    private ArrayList<String> studentsByUniversitiesID = new ArrayList<>();
+    private ArrayList<String> studentsByFacultiesID = new ArrayList<>();
+
+
 
 
     @Override
@@ -56,7 +57,7 @@ public class SearchStudents extends AppCompatActivity {
         projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
         projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
 
-        viewPager2 = findViewById(R.id.viewpager);
+        final ViewPager2 viewPager2 = findViewById(R.id.viewpager);
         viewPagerItemArrayList = new ArrayList<>();
         studentsByFacultiesID.clear();
         studentsByUniversitiesID.clear();
@@ -77,11 +78,11 @@ public class SearchStudents extends AppCompatActivity {
                     } else {
                         txtNoStudentsFound.setVisibility(View.GONE);
                         for (Student i : students) {
-                            ViewPagerItem viewPagerItem = new ViewPagerItem(i);
+                            final ViewPagerItem viewPagerItem = new ViewPagerItem(i);
                             viewPagerItemArrayList.add(viewPagerItem);
                         }
 
-                        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
+                        final ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
                         viewPager2.setAdapter(viewPagerAdapter);
 
                         viewPager2.setOffscreenPageLimit(2);
@@ -263,7 +264,11 @@ public class SearchStudents extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                //10 2
+                //20 6 (3+3)
+                //30 12 (6+6)
+                //40 20 (10+10)
+                //50 30 (15+15)
             }
         });
     }
