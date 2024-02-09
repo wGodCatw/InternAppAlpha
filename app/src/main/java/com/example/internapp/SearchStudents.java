@@ -2,7 +2,6 @@ package com.example.internapp;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,8 +17,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.leinardi.android.speeddial.SpeedDialView;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SearchStudents extends AppCompatActivity {
@@ -61,6 +58,8 @@ public class SearchStudents extends AppCompatActivity {
 
         viewPager2 = findViewById(R.id.viewpager);
         viewPagerItemArrayList = new ArrayList<>();
+        studentsByFacultiesID.clear();
+        studentsByUniversitiesID.clear();
 
         speedDialView = findViewById(R.id.speedDialView);
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), SearchStudents.this);
@@ -119,42 +118,33 @@ public class SearchStudents extends AppCompatActivity {
 
             });
         } else if (!filtersFaculties.isEmpty()) {
-            filterAllUniversities(filtersUniversities, new UserCallback() {
-                @Override
-                public void onCallback(ArrayList<String> value) {
-                    studentIDs.addAll(value);
+            filterAllUniversities(filtersUniversities, value -> {
+                studentIDs.addAll(value);
 
-                    filterAllFaculties(filtersFaculties, new UserCallback() {
-                        @Override
-                        public void onCallback(ArrayList<String> value) {
-                            studentIDs.retainAll(value);
+                filterAllFaculties(filtersFaculties, value13 -> {
+                    studentIDs.retainAll(value13);
 
-                            getStudentsFromIDList(studentIDs, new UserListCallback() {
-                                @Override
-                                public void onCallback(ArrayList<Student> value) {
-                                    students.addAll(value);
+                    getStudentsFromIDList(studentIDs, value12 -> {
+                        students.addAll(value12);
 
-                                    if (students.isEmpty()) {
-                                        txtNoStudentsFound.setVisibility(View.VISIBLE);
-                                    } else {
-                                        txtNoStudentsFound.setVisibility(View.GONE);
-                                        for (Student i : students) {
-                                            ViewPagerItem viewPagerItem = new ViewPagerItem(i);
-                                            viewPagerItemArrayList.add(viewPagerItem);
-                                        }
+                        if (students.isEmpty()) {
+                            txtNoStudentsFound.setVisibility(View.VISIBLE);
+                        } else {
+                            txtNoStudentsFound.setVisibility(View.GONE);
+                            for (Student i : students) {
+                                ViewPagerItem viewPagerItem = new ViewPagerItem(i);
+                                viewPagerItemArrayList.add(viewPagerItem);
+                            }
 
-                                        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
-                                        viewPager2.setAdapter(viewPagerAdapter);
+                            ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
+                            viewPager2.setAdapter(viewPagerAdapter);
 
-                                        viewPager2.setOffscreenPageLimit(2);
-                                        viewPager2.setClipChildren(false);
-                                        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
-                                    }
-                                }
-                            });
+                            viewPager2.setOffscreenPageLimit(2);
+                            viewPager2.setClipChildren(false);
+                            viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
                         }
                     });
-                }
+                });
             });
 
 
@@ -162,7 +152,6 @@ public class SearchStudents extends AppCompatActivity {
             txtNoStudentsFound.setVisibility(View.VISIBLE);
         }
 
-        Log.e("AMOUNT OF STUDENTS", String.valueOf(students.size()));
 
         if (students.isEmpty()) {
             txtNoStudentsFound.setVisibility(View.VISIBLE);
@@ -174,7 +163,6 @@ public class SearchStudents extends AppCompatActivity {
             }
         }
 
-        Log.e("VIEWPAGER", String.valueOf(viewPagerItemArrayList.size()));
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
         viewPager2.setAdapter(viewPagerAdapter);
 
@@ -184,7 +172,7 @@ public class SearchStudents extends AppCompatActivity {
     }
 
 
-    public void filterByFaculty(String faculty, final UserCallback mycallback) {
+    public void filterByFaculty(String faculty, final UserCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
         referenceProfile.orderByChild("faculty").equalTo(faculty).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -194,7 +182,7 @@ public class SearchStudents extends AppCompatActivity {
                         String nodId = snap.getKey();
                         studentsByFacultiesID.add(nodId);
                     }
-                    mycallback.onCallback(studentsByFacultiesID);
+                    myCallback.onCallback(studentsByFacultiesID);
                 }
 
             }
@@ -206,7 +194,7 @@ public class SearchStudents extends AppCompatActivity {
         });
     }
 
-    public void filterByUniversity(String university, final UserCallback mycallback) {
+    public void filterByUniversity(String university, final UserCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
         referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -215,11 +203,9 @@ public class SearchStudents extends AppCompatActivity {
                     for (DataSnapshot snap : snapshot.getChildren()) {
                         String nodId = snap.getKey();
                         assert nodId != null;
-                        Log.e("Adding student", nodId);
                         studentsByUniversitiesID.add(nodId);
                     }
-                    Log.e("PASSING ARRAY", studentsByUniversitiesID.toString());
-                    mycallback.onCallback(studentsByUniversitiesID);
+                    myCallback.onCallback(studentsByUniversitiesID);
                 }
 
             }
@@ -231,35 +217,33 @@ public class SearchStudents extends AppCompatActivity {
         });
     }
 
-    public void filterAllUniversities(ArrayList<String> universities, final UserCallback mycallback) {
+    public void filterAllUniversities(ArrayList<String> universities, final UserCallback myCallback) {
         final AtomicInteger counter = new AtomicInteger(universities.size());
         for (String university :
                 universities) {
             filterByUniversity(university, value -> {
                 allUniversities.addAll(value);
                 if (counter.decrementAndGet() == 0) {
-                    Log.e("One University", allUniversities.toString());
-                    mycallback.onCallback(allUniversities);
+                    myCallback.onCallback(allUniversities);
                 }
             });
         }
     }
 
-    public void filterAllFaculties(ArrayList<String> faculties, final UserCallback mycallback) {
+    public void filterAllFaculties(ArrayList<String> faculties, final UserCallback myCallback) {
         final AtomicInteger counter = new AtomicInteger(faculties.size());
         for (String faculty :
                 faculties) {
             filterByFaculty(faculty, value -> {
                 allFaculties.addAll(value);
                 if (counter.decrementAndGet() == 0) {
-                    Log.e("One Faculty", allFaculties.toString());
-                    mycallback.onCallback(allFaculties);
+                    myCallback.onCallback(allFaculties);
                 }
             });
         }
     }
 
-    public void getStudentFromId(String studentId, final UserFinalCallback mycallback) {
+    public void getStudentFromId(String studentId, final UserFinalCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
         referenceProfile.orderByKey().equalTo(studentId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -272,7 +256,7 @@ public class SearchStudents extends AppCompatActivity {
                         String userPic = (String) snap.child("userPic").getValue();
                         String faculty = (String) snap.child("faculty").getValue();
                         Student student = new Student(userPic, name, faculty, mobile);
-                        mycallback.onCallback(student);
+                        myCallback.onCallback(student);
                     }
                 }
             }
@@ -284,7 +268,7 @@ public class SearchStudents extends AppCompatActivity {
         });
     }
 
-    public void getStudentsFromIDList(ArrayList<String> studentIDs, final UserListCallback mycallback) {
+    public void getStudentsFromIDList(ArrayList<String> studentIDs, final UserListCallback myCallback) {
         ArrayList<Student> students = new ArrayList<>();
         final AtomicInteger counter = new AtomicInteger(studentIDs.size());
 
@@ -292,8 +276,7 @@ public class SearchStudents extends AppCompatActivity {
             getStudentFromId(id, value -> {
                 students.add(value);
                 if (counter.decrementAndGet() == 0) {
-                    Log.e("PASSING IDS", students.toString());
-                    mycallback.onCallback(students);
+                    myCallback.onCallback(students);
                 }
             });
         }
