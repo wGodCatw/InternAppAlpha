@@ -2,7 +2,6 @@ package com.example.internapp;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,7 +17,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.leinardi.android.speeddial.SpeedDialView;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class SearchStudents extends AppCompatActivity {
 
@@ -30,6 +30,8 @@ public class SearchStudents extends AppCompatActivity {
     ArrayList<String> filtersUniversities = new ArrayList<>();
 
     ArrayList<ViewPagerItem> viewPagerItemArrayList;
+    ArrayList<String> studentsByUniversitiesID = new ArrayList<>();
+    ArrayList<String> studentsByFacultiesID = new ArrayList<>();
 
 
     @Override
@@ -59,25 +61,174 @@ public class SearchStudents extends AppCompatActivity {
         speedDialView = findViewById(R.id.speedDialView);
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), SearchStudents.this);
         ArrayList<Student> students = new ArrayList<>();
-        ArrayList<String> studentsByUniversities = new ArrayList<>();
+        ArrayList<String> studentIDs = new ArrayList<>();
 
-        for (Student i : students) {
-            ViewPagerItem viewPagerItem = new ViewPagerItem(i);
-            viewPagerItemArrayList.add(viewPagerItem);
+        if (filtersUniversities.isEmpty() && !filtersFaculties.isEmpty()) {
+            filterAllFaculties(filtersFaculties, new UserCallback() {
+                @Override
+                public void onCallback(ArrayList<String> value) {
+                    studentIDs.addAll(value);
+                    getStudentsFromIDList(studentIDs, new UserListCallback() {
+                        @Override
+                        public void onCallback(ArrayList<Student> value) {
+                            students.addAll(value);
+                        }
+                    });
+                }
+            });
+        } else if (filtersFaculties.isEmpty() && !filtersUniversities.isEmpty()) {
+            filterAllUniversities(filtersUniversities, new UserCallback() {
+                @Override
+                public void onCallback(ArrayList<String> value) {
+                    studentIDs.addAll(value);
+                    getStudentsFromIDList(studentIDs, new UserListCallback() {
+                        @Override
+                        public void onCallback(ArrayList<Student> value) {
+                            students.addAll(value);
+                        }
+                    });
+                }
+            });
+        } else if (!filtersFaculties.isEmpty()) {
+            filterAllUniversities(filtersUniversities, new UserCallback() {
+                @Override
+                public void onCallback(ArrayList<String> value) {
+                    studentIDs.addAll(value);
+                    getStudentsFromIDList(studentIDs, new UserListCallback() {
+                        @Override
+                        public void onCallback(ArrayList<Student> value) {
+                            students.addAll(value);
+                            filterAllFaculties(filtersFaculties, new UserCallback() {
+                                @Override
+                                public void onCallback(ArrayList<String> value) {
+                                    studentIDs.addAll(value);
+                                    getStudentsFromIDList(studentIDs, new UserListCallback() {
+                                        @Override
+                                        public void onCallback(ArrayList<Student> value) {
+                                            students.retainAll(value);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+
+            Set<Student> duplicateCheck = new LinkedHashSet<>(students);
+            students.clear();
+            students.addAll(duplicateCheck);
+        } else {
+            txtNoStudentsFound.setVisibility(View.VISIBLE);
         }
 
-        txtNoStudentsFound.setVisibility(View.GONE);
+        if (students.isEmpty()) {
+            txtNoStudentsFound.setVisibility(View.VISIBLE);
+        } else {
+            txtNoStudentsFound.setVisibility(View.GONE);
+            for (Student i : students) {
+                ViewPagerItem viewPagerItem = new ViewPagerItem(i);
+                viewPagerItemArrayList.add(viewPagerItem);
+            }
+        }
+
+
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
+        viewPager2.setAdapter(viewPagerAdapter);
+
+        viewPager2.setOffscreenPageLimit(2);
+        viewPager2.setClipChildren(false);
+        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+    }
+
+    public void filterByUniversity(String university, final UserCallback mycallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        referenceProfile.orderByChild("university").equalTo("Technion").addValueEventListener(new ValueEventListener() {
+        referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChildren()) {
                     for (DataSnapshot snap : snapshot.getChildren()) {
                         String nodId = snap.getKey();
-                        studentsByUniversities.add(nodId);
+                        studentsByUniversitiesID.add(nodId);
                     }
-                } else {
+                    mycallback.onCallback(studentsByUniversitiesID);
+                }
 
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void filterByFaculty(String faculty, final UserCallback mycallback) {
+        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+        referenceProfile.orderByChild("university").equalTo(faculty).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChildren()) {
+                    for (DataSnapshot snap : snapshot.getChildren()) {
+                        String nodId = snap.getKey();
+                        studentsByFacultiesID.add(nodId);
+                    }
+                    mycallback.onCallback(studentsByFacultiesID);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void filterAllUniversities(ArrayList<String> universities, final UserCallback mycallback) {
+        ArrayList<String> allUniversities = new ArrayList<>();
+        for (String university :
+                universities) {
+            filterByUniversity(university, new UserCallback() {
+                @Override
+                public void onCallback(ArrayList<String> value) {
+                    allUniversities.addAll(value);
+                }
+            });
+        }
+        mycallback.onCallback(allUniversities);
+    }
+
+    public void filterAllFaculties(ArrayList<String> faculties, final UserCallback mycallback) {
+        ArrayList<String> allFaculties = new ArrayList<>();
+        for (String faculty :
+                faculties) {
+            filterByFaculty(faculty, new UserCallback() {
+                @Override
+                public void onCallback(ArrayList<String> value) {
+                    allFaculties.addAll(value);
+                }
+            });
+        }
+        mycallback.onCallback(allFaculties);
+    }
+
+    public void getStudentFromId(String studentId, final UserFinalCallback mycallback) {
+        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+        referenceProfile.orderByKey().equalTo(studentId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChildren()) {
+                    for (DataSnapshot snap :
+                            snapshot.getChildren()) {
+                        String name = (String) snap.child("name").getValue();
+                        String mobile = (String) snap.child("mobile").getValue();
+                        String userPic = (String) snap.child("userPic").getValue();
+                        String faculty = (String) snap.child("faculty").getValue();
+                        Student student = new Student(userPic, name, faculty, mobile);
+                        mycallback.onCallback(student);
+                    }
                 }
             }
 
@@ -86,13 +237,32 @@ public class SearchStudents extends AppCompatActivity {
 
             }
         });
+    }
 
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
-        viewPager2.setAdapter(viewPagerAdapter);
+    public void getStudentsFromIDList(ArrayList<String> studentIDs, final UserListCallback mycallback) {
+        ArrayList<Student> students = new ArrayList<>();
+        for (String id :
+                studentIDs) {
+            getStudentFromId(id, new UserFinalCallback() {
+                @Override
+                public void onCallback(Student value) {
+                    students.add(value);
+                }
+            });
+        }
+        mycallback.onCallback(students);
+    }
 
-        viewPager2.setOffscreenPageLimit(2);
-        viewPager2.setClipChildren(false);
-        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+    public interface UserCallback {
+        void onCallback(ArrayList<String> value);
+    }
+
+    public interface UserFinalCallback {
+        void onCallback(Student value);
+    }
+
+    public interface UserListCallback {
+        void onCallback(ArrayList<Student> value);
     }
 
 }
