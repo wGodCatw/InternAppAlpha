@@ -2,6 +2,7 @@ package com.example.internapp;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import com.leinardi.android.speeddial.SpeedDialView;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SearchStudents extends AppCompatActivity {
 
@@ -30,6 +32,8 @@ public class SearchStudents extends AppCompatActivity {
     ArrayList<String> filtersUniversities = new ArrayList<>();
 
     ArrayList<ViewPagerItem> viewPagerItemArrayList;
+    ArrayList<String> allUniversities = new ArrayList<>();
+    ArrayList<String> allFaculties = new ArrayList<>();
     ArrayList<String> studentsByUniversitiesID = new ArrayList<>();
     ArrayList<String> studentsByFacultiesID = new ArrayList<>();
 
@@ -64,50 +68,88 @@ public class SearchStudents extends AppCompatActivity {
         ArrayList<String> studentIDs = new ArrayList<>();
 
         if (filtersUniversities.isEmpty() && !filtersFaculties.isEmpty()) {
-            filterAllFaculties(filtersFaculties, new UserCallback() {
-                @Override
-                public void onCallback(ArrayList<String> value) {
-                    studentIDs.addAll(value);
-                    getStudentsFromIDList(studentIDs, new UserListCallback() {
-                        @Override
-                        public void onCallback(ArrayList<Student> value) {
-                            students.addAll(value);
+            filterAllFaculties(filtersFaculties, value -> {
+                studentIDs.addAll(value);
+
+                getStudentsFromIDList(studentIDs, value1 -> {
+                    students.addAll(value1);
+                    if (students.isEmpty()) {
+                        txtNoStudentsFound.setVisibility(View.VISIBLE);
+                    } else {
+                        txtNoStudentsFound.setVisibility(View.GONE);
+                        for (Student i : students) {
+                            ViewPagerItem viewPagerItem = new ViewPagerItem(i);
+                            viewPagerItemArrayList.add(viewPagerItem);
                         }
-                    });
-                }
+
+                        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
+                        viewPager2.setAdapter(viewPagerAdapter);
+
+                        viewPager2.setOffscreenPageLimit(2);
+                        viewPager2.setClipChildren(false);
+                        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+                    }
+                });
+
             });
         } else if (filtersFaculties.isEmpty() && !filtersUniversities.isEmpty()) {
-            filterAllUniversities(filtersUniversities, new UserCallback() {
-                @Override
-                public void onCallback(ArrayList<String> value) {
-                    studentIDs.addAll(value);
-                    getStudentsFromIDList(studentIDs, new UserListCallback() {
-                        @Override
-                        public void onCallback(ArrayList<Student> value) {
-                            students.addAll(value);
+
+            filterAllUniversities(filtersUniversities, value -> {
+                studentIDs.addAll(value);
+
+                getStudentsFromIDList(studentIDs, value1 -> {
+                    students.addAll(value1);
+                    if (students.isEmpty()) {
+                        txtNoStudentsFound.setVisibility(View.VISIBLE);
+                    } else {
+                        txtNoStudentsFound.setVisibility(View.GONE);
+                        for (Student i : students) {
+                            ViewPagerItem viewPagerItem = new ViewPagerItem(i);
+                            viewPagerItemArrayList.add(viewPagerItem);
                         }
-                    });
-                }
+
+                        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
+                        viewPager2.setAdapter(viewPagerAdapter);
+
+                        viewPager2.setOffscreenPageLimit(2);
+                        viewPager2.setClipChildren(false);
+                        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+                    }
+                });
+
             });
         } else if (!filtersFaculties.isEmpty()) {
             filterAllUniversities(filtersUniversities, new UserCallback() {
                 @Override
                 public void onCallback(ArrayList<String> value) {
                     studentIDs.addAll(value);
-                    getStudentsFromIDList(studentIDs, new UserListCallback() {
+
+                    filterAllFaculties(filtersFaculties, new UserCallback() {
                         @Override
-                        public void onCallback(ArrayList<Student> value) {
-                            students.addAll(value);
-                            filterAllFaculties(filtersFaculties, new UserCallback() {
+                        public void onCallback(ArrayList<String> value) {
+                            studentIDs.retainAll(value);
+
+                            getStudentsFromIDList(studentIDs, new UserListCallback() {
                                 @Override
-                                public void onCallback(ArrayList<String> value) {
-                                    studentIDs.addAll(value);
-                                    getStudentsFromIDList(studentIDs, new UserListCallback() {
-                                        @Override
-                                        public void onCallback(ArrayList<Student> value) {
-                                            students.retainAll(value);
+                                public void onCallback(ArrayList<Student> value) {
+                                    students.addAll(value);
+
+                                    if (students.isEmpty()) {
+                                        txtNoStudentsFound.setVisibility(View.VISIBLE);
+                                    } else {
+                                        txtNoStudentsFound.setVisibility(View.GONE);
+                                        for (Student i : students) {
+                                            ViewPagerItem viewPagerItem = new ViewPagerItem(i);
+                                            viewPagerItemArrayList.add(viewPagerItem);
                                         }
-                                    });
+
+                                        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
+                                        viewPager2.setAdapter(viewPagerAdapter);
+
+                                        viewPager2.setOffscreenPageLimit(2);
+                                        viewPager2.setClipChildren(false);
+                                        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+                                    }
                                 }
                             });
                         }
@@ -116,12 +158,11 @@ public class SearchStudents extends AppCompatActivity {
             });
 
 
-            Set<Student> duplicateCheck = new LinkedHashSet<>(students);
-            students.clear();
-            students.addAll(duplicateCheck);
         } else {
             txtNoStudentsFound.setVisibility(View.VISIBLE);
         }
+
+        Log.e("AMOUNT OF STUDENTS", String.valueOf(students.size()));
 
         if (students.isEmpty()) {
             txtNoStudentsFound.setVisibility(View.VISIBLE);
@@ -133,7 +174,7 @@ public class SearchStudents extends AppCompatActivity {
             }
         }
 
-
+        Log.e("VIEWPAGER", String.valueOf(viewPagerItemArrayList.size()));
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
         viewPager2.setAdapter(viewPagerAdapter);
 
@@ -142,31 +183,10 @@ public class SearchStudents extends AppCompatActivity {
         viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
 
-    public void filterByUniversity(String university, final UserCallback mycallback) {
-        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.hasChildren()) {
-                    for (DataSnapshot snap : snapshot.getChildren()) {
-                        String nodId = snap.getKey();
-                        studentsByUniversitiesID.add(nodId);
-                    }
-                    mycallback.onCallback(studentsByUniversitiesID);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 
     public void filterByFaculty(String faculty, final UserCallback mycallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        referenceProfile.orderByChild("university").equalTo(faculty).addListenerForSingleValueEvent(new ValueEventListener() {
+        referenceProfile.orderByChild("faculty").equalTo(faculty).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChildren()) {
@@ -186,32 +206,57 @@ public class SearchStudents extends AppCompatActivity {
         });
     }
 
+    public void filterByUniversity(String university, final UserCallback mycallback) {
+        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+        referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChildren()) {
+                    for (DataSnapshot snap : snapshot.getChildren()) {
+                        String nodId = snap.getKey();
+                        assert nodId != null;
+                        Log.e("Adding student", nodId);
+                        studentsByUniversitiesID.add(nodId);
+                    }
+                    Log.e("PASSING ARRAY", studentsByUniversitiesID.toString());
+                    mycallback.onCallback(studentsByUniversitiesID);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     public void filterAllUniversities(ArrayList<String> universities, final UserCallback mycallback) {
-        ArrayList<String> allUniversities = new ArrayList<>();
+        final AtomicInteger counter = new AtomicInteger(universities.size());
         for (String university :
                 universities) {
-            filterByUniversity(university, new UserCallback() {
-                @Override
-                public void onCallback(ArrayList<String> value) {
-                    allUniversities.addAll(value);
+            filterByUniversity(university, value -> {
+                allUniversities.addAll(value);
+                if (counter.decrementAndGet() == 0) {
+                    Log.e("One University", allUniversities.toString());
+                    mycallback.onCallback(allUniversities);
                 }
             });
         }
-        mycallback.onCallback(allUniversities);
     }
 
     public void filterAllFaculties(ArrayList<String> faculties, final UserCallback mycallback) {
-        ArrayList<String> allFaculties = new ArrayList<>();
+        final AtomicInteger counter = new AtomicInteger(faculties.size());
         for (String faculty :
                 faculties) {
-            filterByFaculty(faculty, new UserCallback() {
-                @Override
-                public void onCallback(ArrayList<String> value) {
-                    allFaculties.addAll(value);
+            filterByFaculty(faculty, value -> {
+                allFaculties.addAll(value);
+                if (counter.decrementAndGet() == 0) {
+                    Log.e("One Faculty", allFaculties.toString());
+                    mycallback.onCallback(allFaculties);
                 }
             });
         }
-        mycallback.onCallback(allFaculties);
     }
 
     public void getStudentFromId(String studentId, final UserFinalCallback mycallback) {
@@ -241,16 +286,17 @@ public class SearchStudents extends AppCompatActivity {
 
     public void getStudentsFromIDList(ArrayList<String> studentIDs, final UserListCallback mycallback) {
         ArrayList<Student> students = new ArrayList<>();
-        for (String id :
-                studentIDs) {
-            getStudentFromId(id, new UserFinalCallback() {
-                @Override
-                public void onCallback(Student value) {
-                    students.add(value);
+        final AtomicInteger counter = new AtomicInteger(studentIDs.size());
+
+        for (String id : studentIDs) {
+            getStudentFromId(id, value -> {
+                students.add(value);
+                if (counter.decrementAndGet() == 0) {
+                    Log.e("PASSING IDS", students.toString());
+                    mycallback.onCallback(students);
                 }
             });
         }
-        mycallback.onCallback(students);
     }
 
     public interface UserCallback {
