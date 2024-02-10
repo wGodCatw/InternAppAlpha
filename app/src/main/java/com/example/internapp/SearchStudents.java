@@ -27,11 +27,11 @@ public class SearchStudents extends AppCompatActivity {
     private ArrayList<String> filtersFaculties = new ArrayList<>();
     private ArrayList<String> filtersUniversities = new ArrayList<>();
 
-    private ArrayList<ViewPagerItem> viewPagerItemArrayList;
-    private ArrayList<String> allUniversities = new ArrayList<>();
-    private ArrayList<String> allFaculties = new ArrayList<>();
-    private ArrayList<String> studentsByUniversitiesID = new ArrayList<>();
-    private ArrayList<String> studentsByFacultiesID = new ArrayList<>();
+//    private ArrayList<ViewPagerItem> viewPagerItemArrayList;
+    private final ArrayList<String> allUniversities = new ArrayList<>();
+    private final ArrayList<String> allFaculties = new ArrayList<>();
+    private final ArrayList<String> studentsByUniversitiesID = new ArrayList<>();
+    private final ArrayList<String> studentsByFacultiesID = new ArrayList<>();
 
 
 
@@ -58,7 +58,7 @@ public class SearchStudents extends AppCompatActivity {
         projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
 
         final ViewPager2 viewPager2 = findViewById(R.id.viewpager);
-        viewPagerItemArrayList = new ArrayList<>();
+        final ArrayList<ViewPagerItem> viewPagerItemArrayList = new ArrayList<>();
         studentsByFacultiesID.clear();
         studentsByUniversitiesID.clear();
 

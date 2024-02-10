@@ -17,10 +17,13 @@ import java.util.ArrayList;
 
 public class UniversitiesRecViewAdapter extends RecyclerView.Adapter<UniversitiesRecViewAdapter.ViewHolder>{
 
+    private final ArrayList<University> universitiesList;
+    private final ArrayList<University> facultiesList;
     private ArrayList<University> universities = new ArrayList<>();
-    private final Context context;
-    public UniversitiesRecViewAdapter(Context context) {
-        this.context = context;
+
+    public UniversitiesRecViewAdapter(final ArrayList<University> universitiesList, final ArrayList<University> facultiesList) {
+        this.universitiesList = universitiesList;
+        this.facultiesList = facultiesList;
     }
 
     @NonNull
@@ -33,12 +36,11 @@ public class UniversitiesRecViewAdapter extends RecyclerView.Adapter<Universitie
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.txtName.setText(universities.get(position).getName());
-//        holder.parent.setOnClickListener(v -> Toast.makeText(context, universities.get(holder.getAdapterPosition()).getName() + " selected", Toast.LENGTH_SHORT).show());
         holder.parent.setOnClickListener(v -> {
             String text = universities.get(holder.getAdapterPosition()).getName();
-            SearchActivity.createChip(text, v);
+            SearchActivity.createChip(facultiesList, universitiesList, text, v);
         });
-        Glide.with(context).asBitmap().load(universities.get(position).getImageUrl()).into(holder.image);
+        Glide.with(holder.itemView.getContext()).asBitmap().load(universities.get(position).getImageUrl()).into(holder.image);
     }
 
     @Override
@@ -46,7 +48,7 @@ public class UniversitiesRecViewAdapter extends RecyclerView.Adapter<Universitie
         return universities.size();
     }
 
-    public void setUniversities(ArrayList<University> universities) {
+    public void setUniversities(final ArrayList<University> universities) {
         this.universities = universities;
         notifyDataSetChanged();
     }

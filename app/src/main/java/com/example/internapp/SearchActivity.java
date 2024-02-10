@@ -2,7 +2,6 @@ package com.example.internapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -21,14 +20,13 @@ import java.util.ArrayList;
 
 public class SearchActivity extends AppCompatActivity {
     public static TextView filtersTxt;
-    public static ArrayList<String> filtersUniversities = new ArrayList<>();
-    public static ArrayList<String> filtersFaculties = new ArrayList<>();
+    private final static ArrayList<String> filtersUniversities = new ArrayList<>();
+    private final static ArrayList<String> filtersFaculties = new ArrayList<>();
     private static ChipGroup chipGroup;
-    private SpeedDialView speedDialView;
-    public static ArrayList<University> universities = new ArrayList<>();
-    public static ArrayList<University> faculties = new ArrayList<>();
+    private final ArrayList<University> universities = new ArrayList<>();
+    private final ArrayList<University> faculties = new ArrayList<>();
 
-    public static void createChip(String text, View view) {
+    public static void createChip(ArrayList<University> faculties, ArrayList<University> universities, String text, View view) {
         Chip chip = (Chip) LayoutInflater.from(view.getContext()).inflate(R.layout.chip_layout, null);
 
 
@@ -54,9 +52,22 @@ public class SearchActivity extends AppCompatActivity {
         }
         chip.setOnClickListener(v -> {
             chipGroup.removeView(v);
-            if (faculties.contains(text)) {
-                filtersFaculties.remove(text);
-            } else filtersUniversities.remove(text);
+            for (University faculty:
+                 faculties) {
+                if(faculty.getName().equals(text)){
+                    filtersFaculties.remove(text);
+                }
+            }
+            for (University university:
+                    universities) {
+                if(university.getName().equals(text)){
+                    filtersUniversities.remove(text);
+                }
+            }
+
+//            if (faculties.contains(text)) {
+//                filtersFaculties.remove(text);
+//            } else filtersUniversities.remove(text);
         });
 
     }
@@ -106,12 +117,12 @@ public class SearchActivity extends AppCompatActivity {
         faculties.add(new University("Visual arts", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
 
 
-        final UniversitiesRecViewAdapter uniAdapter = new UniversitiesRecViewAdapter(this);
+        final UniversitiesRecViewAdapter uniAdapter = new UniversitiesRecViewAdapter(universities, faculties);
         uniAdapter.setUniversities(universities);
         universitiesRecView.setAdapter(uniAdapter);
         universitiesRecView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        final UniversitiesRecViewAdapter facultyAdapter = new UniversitiesRecViewAdapter(this);
+        final UniversitiesRecViewAdapter facultyAdapter = new UniversitiesRecViewAdapter(universities, faculties);
         facultyAdapter.setUniversities(faculties);
         facultiesRecView.setAdapter(facultyAdapter);
         facultiesRecView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -125,8 +136,7 @@ public class SearchActivity extends AppCompatActivity {
         });
 
 
-
-        speedDialView = findViewById(R.id.speedDialView);
+        SpeedDialView speedDialView = findViewById(R.id.speedDialView);
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), SearchActivity.this);
 
     }

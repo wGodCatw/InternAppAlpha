@@ -1,9 +1,9 @@
 package com.example.internapp;
 
 public class ViewPagerItem {
-    String imageUrl;
-    String whatsappNumber;
-    String name, faculty;
+    private final String imageUrl;
+    private String whatsappNumber;
+    private final String name, faculty;
 
     public ViewPagerItem(Student student) {
         this.name = student.name;
@@ -11,6 +11,14 @@ public class ViewPagerItem {
         this.imageUrl = student.uri;
         this.faculty = student.faculty;
 
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getFaculty() {
+        return faculty;
     }
 
     public String getWhatsappNumber() {
