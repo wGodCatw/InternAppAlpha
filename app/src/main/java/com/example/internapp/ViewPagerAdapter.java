@@ -48,6 +48,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final ViewPagerItem viewPagerItem = viewPagerItemArrayList.get(position);
 
+        holder.txtUsername.setText("@" + viewPagerItem.getUsername());
         holder.txtName.setText(viewPagerItem.getName());
         holder.txtFaculty.setText(viewPagerItem.getFaculty());
         holder.whatsappLink.setOnClickListener(v -> {
@@ -75,7 +76,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         private final ImageView imgStudentSearch, whatsappLink;
-        private final TextView txtName, txtFaculty;
+        private final TextView txtName, txtFaculty, txtUsername;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,6 +86,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
             imgStudentSearch = itemView.findViewById(R.id.studentPicSearch);
             txtName = itemView.findViewById(R.id.studentNameSearch);
             txtFaculty = itemView.findViewById(R.id.studentFacultySearch);
+            txtUsername = itemView.findViewById(R.id.username);
 
 
             final UniversitiesRecViewAdapter projectsAdapter = new UniversitiesRecViewAdapter(null, null);

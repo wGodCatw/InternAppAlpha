@@ -64,10 +64,6 @@ public class SearchActivity extends AppCompatActivity {
                     filtersUniversities.remove(text);
                 }
             }
-
-//            if (faculties.contains(text)) {
-//                filtersFaculties.remove(text);
-//            } else filtersUniversities.remove(text);
         });
 
     }

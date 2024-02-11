@@ -37,8 +37,18 @@ public class UniversitiesRecViewAdapter extends RecyclerView.Adapter<Universitie
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         holder.txtName.setText(universities.get(position).getName());
         holder.parent.setOnClickListener(v -> {
-            String text = universities.get(holder.getAdapterPosition()).getName();
-            SearchActivity.createChip(facultiesList, universitiesList, text, v);
+            if(holder.txtName.getCurrentTextColor() == holder.itemView.getResources().getColor(R.color.white)){
+                String text = universities.get(holder.getAdapterPosition()).getName();
+                SearchActivity.createChip(facultiesList, universitiesList, text, v);
+                holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.black));
+                holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.lightblue));
+            } else{
+                holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.white));
+                holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.blue));
+                String text = universities.get(holder.getAdapterPosition()).getName();
+                SearchActivity.createChip(facultiesList, universitiesList, text, v);
+            }
+
         });
         Glide.with(holder.itemView.getContext()).asBitmap().load(universities.get(position).getImageUrl()).into(holder.image);
     }

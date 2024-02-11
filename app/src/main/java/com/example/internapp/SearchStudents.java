@@ -252,11 +252,12 @@ public class SearchStudents extends AppCompatActivity {
                 if (snapshot.hasChildren()) {
                     for (DataSnapshot snap :
                             snapshot.getChildren()) {
+                        String username = (String) snap.child("username").getValue();
                         String name = (String) snap.child("name").getValue();
                         String mobile = (String) snap.child("mobile").getValue();
                         String userPic = (String) snap.child("userPic").getValue();
                         String faculty = (String) snap.child("faculty").getValue();
-                        Student student = new Student(userPic, name, faculty, mobile);
+                        Student student = new Student(username, userPic, name, faculty, mobile);
                         myCallback.onCallback(student);
                     }
                 }
@@ -264,11 +265,7 @@ public class SearchStudents extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                //10 2
-                //20 6 (3+3)
-                //30 12 (6+6)
-                //40 20 (10+10)
-                //50 30 (15+15)
+
             }
         });
     }

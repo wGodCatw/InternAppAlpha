@@ -52,13 +52,13 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         }
     };
-    private TextInputEditText edt_fullName, edt_email, edt_phone, edt_role, edt_dob, edt_uniCompany, edt_faculty;
+    private TextInputEditText edt_fullName, edt_email, edt_phone, edt_role, edt_dob, edt_uniCompany, edt_faculty, edt_username;
     private ProgressBar progressBar;
     private DatePickerDialog picker;
     private TextInputLayout layout_faculty;
     private TextInputLayout layout_uniCompany;
     private ImageView profilePic, wifiState;
-    private String fullName, email, phone, role, dob, uniCompany, faculty;
+    private String fullName, email, phone, role, dob, uniCompany, faculty, username;
     private String dateBirth;
     private SwipeRefreshLayout swipeContainer;
 
@@ -81,6 +81,7 @@ public class UserProfileActivity extends AppCompatActivity {
         layout_faculty = findViewById(R.id.layout_faculty);
         layout_uniCompany = findViewById(R.id.layout_uni_company);
         profilePic = findViewById(R.id.profilePicture);
+        edt_username = findViewById(R.id.username);
         TextInputLayout layout_fullName = findViewById(R.id.layout_fullName);
         TextInputLayout layout_dateOfBirth = findViewById(R.id.layout_dateOfBirth);
 
@@ -237,6 +238,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
 
                     if (readUserDetails != null) {
+                        username = readUserDetails.username;
                         fullName = firebaseUser.getDisplayName();
                         email = firebaseUser.getEmail();
                         dob = readUserDetails.doB;
@@ -247,6 +249,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         Uri uri = firebaseUser.getPhotoUrl();
                         Picasso.get().load(uri).into(profilePic);
 
+                        edt_username.setText("@" + username);
                         layout_uniCompany.setHint("Company");
                         edt_uniCompany.setText(uniCompany);
                         edt_fullName.setText(fullName);
@@ -276,6 +279,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
 
                     if (readUserDetails != null) {
+                        username  = readUserDetails.username;
                         fullName = firebaseUser.getDisplayName();
                         email = firebaseUser.getEmail();
                         dob = readUserDetails.doB;
@@ -288,6 +292,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         Uri uri = firebaseUser.getPhotoUrl();
                         Picasso.get().load(uri).into(profilePic);
 
+                        edt_username.setText("@" + username);
                         edt_uniCompany.setText(uniCompany);
                         layout_uniCompany.setHint("University");
                         layout_faculty.setVisibility(View.VISIBLE);

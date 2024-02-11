@@ -3,13 +3,14 @@ package com.example.internapp;
 public class ViewPagerItem {
     private final String imageUrl;
     private String whatsappNumber;
-    private final String name, faculty;
+    private final String name, faculty, username;
 
     public ViewPagerItem(Student student) {
         this.name = student.name;
         this.whatsappNumber = student.phone;
         this.imageUrl = student.uri;
         this.faculty = student.faculty;
+        this.username = student.username;
 
     }
 
@@ -31,5 +32,9 @@ public class ViewPagerItem {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

@@ -3,6 +3,7 @@ package com.example.internapp;
 import android.net.Uri;
 
 public class ReadWriteUserDetails {
+    public String username;
     public String doB;
     public String userPic;
     public String role;
@@ -21,7 +22,8 @@ public class ReadWriteUserDetails {
 
 
 
-    public ReadWriteUserDetails(String name, String doB, String role, String mobile, String university, String faculty, String userPic) {
+    public ReadWriteUserDetails(String username, String name, String doB, String role, String mobile, String university, String faculty, String userPic) {
+        this.username = username;
         this.name = name;
         this.doB = doB;
         this.role = role;
@@ -31,7 +33,8 @@ public class ReadWriteUserDetails {
         this.userPic = userPic;
     }
 
-    public ReadWriteUserDetails(String name, String doB, String role, String mobile, String company, String userPic) {
+    public ReadWriteUserDetails(String username, String name, String doB, String role, String mobile, String company, String userPic) {
+        this.username = username;
         this.name = name;
         this.doB = doB;
         this.role = role;

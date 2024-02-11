@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -86,72 +88,72 @@ public class UploadUserPicActivity extends AppCompatActivity {
 
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                             .setPhotoUri(uri).build();
-                    firebaseUser.updateProfile(profileUpdates);
-                });
+                    firebaseUser.updateProfile(profileUpdates).addOnCompleteListener(task -> {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(UploadUserPicActivity.this, "Upload successful!", Toast.LENGTH_LONG).show();
+                        Uri uri1 = firebaseUser.getPhotoUrl();
 
-                progressBar.setVisibility(View.GONE);
-                Toast.makeText(UploadUserPicActivity.this, "Upload successful!", Toast.LENGTH_LONG).show();
-                Uri uri = firebaseUser.getPhotoUrl();
-
-
-                DatabaseReference referenceHR = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
-                referenceHR.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            DatabaseReference referenceHRPic = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid() + "/userPic");
-                            referenceHRPic.setValue(uri.toString()).addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(firebaseUser.getDisplayName()).build();
-                                    firebaseUser.updateProfile(userProfileChangeRequest);
-                                } else {
-                                    try {
-                                        throw Objects.requireNonNull(task.getException());
-                                    } catch (Exception e) {
-                                        Toast.makeText(UploadUserPicActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                                    }
+                        DatabaseReference referenceHR = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
+                        referenceHR.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    DatabaseReference referenceHRPic = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid() + "/userPic");
+                                    referenceHRPic.setValue(uri1.toString()).addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(firebaseUser.getDisplayName()).build();
+                                            firebaseUser.updateProfile(userProfileChangeRequest);
+                                        } else {
+                                            try {
+                                                throw Objects.requireNonNull(task.getException());
+                                            } catch (Exception e) {
+                                                Toast.makeText(UploadUserPicActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                        progressBar.setVisibility(View.GONE);
+                                    });
+                                    ;
                                 }
-                                progressBar.setVisibility(View.GONE);
-                            });
-                            ;
-                        }
-                    }
+                            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+                            }
+                        });
 
-                DatabaseReference referenceStudent = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-                referenceStudent.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            DatabaseReference referenceStudentPic = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid() + "/userPic");
+                        DatabaseReference referenceStudent = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+                        referenceStudent.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    DatabaseReference referenceStudentPic = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid() + "/userPic");
 
-                            referenceStudentPic.setValue(uri.toString()).addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(firebaseUser.getDisplayName()).build();
-                                    firebaseUser.updateProfile(userProfileChangeRequest);
-                                } else {
-                                    try {
-                                        throw Objects.requireNonNull(task.getException());
-                                    } catch (Exception e) {
-                                        Toast.makeText(UploadUserPicActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                                    }
+                                    referenceStudentPic.setValue(uri1.toString()).addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(firebaseUser.getDisplayName()).build();
+                                            firebaseUser.updateProfile(userProfileChangeRequest);
+                                        } else {
+                                            try {
+                                                throw Objects.requireNonNull(task.getException());
+                                            } catch (Exception e) {
+                                                Toast.makeText(UploadUserPicActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                        progressBar.setVisibility(View.GONE);
+                                    });
+                                    ;
                                 }
-                                progressBar.setVisibility(View.GONE);
-                            });
-                            ;
-                        }
-                    }
+                            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
+                            }
+                        });
+                    });
                 });
+
 
                 Intent intent = new Intent(UploadUserPicActivity.this, UserProfileActivity.class);
                 startActivity(intent);
