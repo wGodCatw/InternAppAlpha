@@ -30,6 +30,7 @@ public class SearchActivity extends AppCompatActivity {
         Chip chip = (Chip) LayoutInflater.from(view.getContext()).inflate(R.layout.chip_layout, null);
 
 
+        //TODO fix the click to remove the chip
         if (!filtersFaculties.contains(text) && !filtersUniversities.contains(text)) {
             chip.setText(text);
             chip.setId(ViewCompat.generateViewId());
