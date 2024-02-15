@@ -93,17 +93,14 @@ public class UserProfileActivity extends AppCompatActivity {
         callBtn = findViewById(R.id.callBtn);
 
         callBtn.setOnClickListener(v -> {
-            PermissionX.init(this)
-                    .permissions(android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO).request(((allGranted, grantedList, deniedList) -> {
-                        if (allGranted) {
-                            //all permissions are granted
-                            mainRepository.login(edt_username.getText().toString(), getApplicationContext(), () -> {
-                                startActivity(new Intent(UserProfileActivity.this, VideoCallActivity.class));
-                            });
-                        } else {
-                            //some permissions are denied
-                        }
-                    }));
+            PermissionX.init(this).permissions(android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO).request(((allGranted, grantedList, deniedList) -> {
+                if (allGranted) {
+                    //all permissions are granted
+                    mainRepository.login(edt_username.getText().toString().substring(1), getApplicationContext(), () -> {
+                        startActivity(new Intent(UserProfileActivity.this, VideoCallActivity.class));
+                    });
+                }
+            }));
         });
 
         profilePic.setOnClickListener(v -> {
@@ -299,7 +296,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
 
                     if (readUserDetails != null) {
-                        username  = readUserDetails.username;
+                        username = readUserDetails.username;
                         fullName = firebaseUser.getDisplayName();
                         email = firebaseUser.getEmail();
                         dob = readUserDetails.doB;

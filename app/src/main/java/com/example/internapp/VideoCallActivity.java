@@ -2,6 +2,7 @@ package com.example.internapp;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -9,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.internapp.databinding.ActivityVideoCallBinding;
+import com.google.firebase.database.DatabaseReference;
 import com.permissionx.guolindev.PermissionX;
 
 

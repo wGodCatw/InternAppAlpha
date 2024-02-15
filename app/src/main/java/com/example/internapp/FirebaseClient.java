@@ -1,5 +1,7 @@
 package com.example.internapp;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -16,6 +18,7 @@ public class FirebaseClient {
     private static final String LATEST_EVENT_FIELD_NAME = "latest_event";
     private final Gson gson = new Gson();
     private DatabaseReference dbRef;
+    private DatabaseReference selfDbRef;
     private String currentUsername;
     private String UID;
 
@@ -25,35 +28,41 @@ public class FirebaseClient {
         reference.orderByChild("username").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snap :
-                        snapshot.getChildren()) {
-                    if (snap.exists()) {
-                        currentUsername = snap.child("username").getValue().toString();
-                        dbRef = reference;
+                if (snapshot.exists()) {
+                    for (DataSnapshot snap : snapshot.getChildren()) {
+                        selfDbRef = reference;
                         UID = snap.getKey();
-                    } else {
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+                        currentUsername = UID;
+                        Log.e("UID", UID);
+                        callBack.onSuccess();
+                    }
 
-                        reference.orderByChild("username").addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for (DataSnapshot snap :
-                                        snapshot.getChildren()) {
-                                    if (snap.exists()) {
-                                        currentUsername = snap.child("username").getValue().toString();
-                                        dbRef = reference;
-                                        UID = snap.getKey();
-                                    }
+                } else {
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+
+                    reference.orderByChild("username").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                for (DataSnapshot snap : snapshot.getChildren()) {
+                                    selfDbRef = reference;
+                                    UID = snap.getKey();
+                                    currentUsername = UID;
+                                    Log.e("UID", UID);
+                                    callBack.onSuccess();
                                 }
                             }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
-                    }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
+
             }
 
             @Override
@@ -64,48 +73,63 @@ public class FirebaseClient {
     }
 
     public void sendMessageToOtherUser(DataModel dataModel, ErrorCallback errorCallBack) {
-        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        dbRef = FirebaseDatabase.getInstance().getReference().child("Registered users/HRs");
+        dbRef.orderByKey().equalTo(dataModel.getTarget()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.child(dataModel.getTarget()).exists()) {
+                if (snapshot.exists()) {
                     //send the signal to other user
-                    dbRef.child(dataModel.getTarget()).child(LATEST_EVENT_FIELD_NAME)
-                            .setValue(gson.toJson(dataModel));
+                    dbRef.child(UID).child(LATEST_EVENT_FIELD_NAME).setValue(gson.toJson(dataModel));
+                } else {
+                    dbRef = FirebaseDatabase.getInstance().getReference().child("Registered users/Students");
+                    dbRef.orderByKey().equalTo(dataModel.getTarget()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                //send the signal to other user
+                                dbRef.child(UID).child(LATEST_EVENT_FIELD_NAME).setValue(gson.toJson(dataModel));
+                            } else {
+                                errorCallBack.onError();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
                 }
-                if (snapshot.child(dataModel.getTarget()).exists()) {
-                    //send the signal to other user
-                    dbRef.child(dataModel.getTarget()).child(LATEST_EVENT_FIELD_NAME)
-                            .setValue(gson.toJson(dataModel));
-                }
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 errorCallBack.onError();
             }
+
         });
     }
 
     public void observeIncomingLatestEvent(NewEventCallback callBack) {
-        dbRef.child(UID).child(LATEST_EVENT_FIELD_NAME).addValueEventListener(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        try {
-                            String data = Objects.requireNonNull(snapshot.getValue()).toString();
-                            DataModel dataModel = gson.fromJson(data, DataModel.class);
-                            callBack.onNewEventReceived(dataModel);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
+        selfDbRef.child(LATEST_EVENT_FIELD_NAME).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try {
+                    String data = Objects.requireNonNull(snapshot.getValue()).toString();
+                    DataModel dataModel = gson.fromJson(data, DataModel.class);
+                    callBack.onNewEventReceived(dataModel);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-        );
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
     }
