@@ -2,6 +2,8 @@ package com.example.internapp;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
 import org.webrtc.Camera2Enumerator;
@@ -9,10 +11,12 @@ import org.webrtc.CameraVideoCapturer;
 import org.webrtc.DefaultVideoDecoderFactory;
 import org.webrtc.DefaultVideoEncoderFactory;
 import org.webrtc.EglBase;
+import org.webrtc.IceCandidate;
 import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
+import org.webrtc.SessionDescription;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoSource;
@@ -24,6 +28,7 @@ import java.util.List;
 public class WebRTCClient {
     private final Context context;
     private final String username;
+    private final Gson gson = new Gson();
     private EglBase.Context eglBaseContext = EglBase.create().getEglBaseContext();
     private PeerConnectionFactory peerConnectionFactory;
     private PeerConnection peerConnection;
@@ -37,19 +42,21 @@ public class WebRTCClient {
     private VideoTrack localVideoTrack;
     private AudioTrack localAudioTrack;
     private MediaStream localStream;
+    private MediaConstraints mediaConstraints = new MediaConstraints();
+    public Listener listener;
 
     public WebRTCClient(Context context, PeerConnection.Observer observer, String username) {
         this.context = context;
         this.username = username;
         initPeerConnectionFactory();
         peerConnectionFactory = createPeerConnectionFactory();
-        iceServer.add(PeerConnection.IceServer.builder("turn:a.relay.metered.ca:443?transport=tcp")
-                .setUsername("83eebabf8b4cce9d5dbcb649")
-                .setPassword("2D7JvfkOQtBdYW3R").createIceServer());
+        iceServer.add(PeerConnection.IceServer.builder("turns:global.relay.metered.ca:443?transport=tcp")
+                .setUsername("90f23c313113cdbb20a7e272")
+                .setPassword("bPC6tVb+ficTToGC").createIceServer());
         peerConnection = createPeerConnection(observer);
         localVideoSource = peerConnectionFactory.createVideoSource(false);
         localAudioSource = peerConnectionFactory.createAudioSource(new MediaConstraints());
-//        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo","true"));
+        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
     }
 
     public void initPeerConnectionFactory() {
@@ -119,5 +126,100 @@ public class WebRTCClient {
             }
         }
         throw new IllegalStateException("front facing camera not found");
+    }
+
+    public void call(String target) {
+        try {
+            peerConnection.createOffer(new MySdpObserver() {
+                @Override
+                public void onCreateSuccess(SessionDescription sessionDescription) {
+                    super.onCreateSuccess(sessionDescription);
+                    peerConnection.setLocalDescription(new MySdpObserver() {
+                        @Override
+                        public void onSetSuccess() {
+                            super.onSetSuccess();
+                            //its time to transfer this sdp to other peer
+                            if (listener != null) {
+                                listener.onTransferDataToOtherPeer(new DataModel(
+                                        target, username, sessionDescription.description, DataModelType.Offer
+                                ));
+                            }
+                        }
+                    }, sessionDescription);
+                }
+            }, mediaConstraints);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void answer(String target) {
+        try {
+            peerConnection.createAnswer(new MySdpObserver() {
+                @Override
+                public void onCreateSuccess(SessionDescription sessionDescription) {
+                    super.onCreateSuccess(sessionDescription);
+                    peerConnection.setLocalDescription(new MySdpObserver() {
+                        @Override
+                        public void onSetSuccess() {
+                            super.onSetSuccess();
+                            //its time to transfer this sdp to other peer
+                            if (listener != null) {
+                                listener.onTransferDataToOtherPeer(new DataModel(
+                                        target, username, sessionDescription.description, DataModelType.Answer
+                                ));
+                            }
+                        }
+                    }, sessionDescription);
+                }
+            }, mediaConstraints);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onRemoteSessionReceived(SessionDescription sessionDescription) {
+        peerConnection.setRemoteDescription(new MySdpObserver(), sessionDescription);
+    }
+
+    public void addIceCandidate(IceCandidate iceCandidate) {
+        peerConnection.addIceCandidate(iceCandidate);
+    }
+
+    public void sendIceCandidate(IceCandidate iceCandidate, String target) {
+        addIceCandidate(iceCandidate);
+        if (listener != null) {
+            listener.onTransferDataToOtherPeer(new DataModel(
+                    target, username, gson.toJson(iceCandidate), DataModelType.IceCandidate
+            ));
+        }
+    }
+
+    public void switchCamera() {
+        videoCapturer.switchCamera(null);
+    }
+
+    public void toggleVideo(Boolean shouldBeMuted) {
+        localVideoTrack.setEnabled(shouldBeMuted);
+    }
+
+    public void toggleAudio(Boolean shouldBeMuted) {
+        localAudioTrack.setEnabled(shouldBeMuted);
+    }
+
+    public void closeConnection() {
+        try {
+
+            localVideoTrack.dispose();
+            videoCapturer.stopCapture();
+            videoCapturer.dispose();
+            peerConnection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public interface Listener {
+        void onTransferDataToOtherPeer(DataModel model);
     }
 }

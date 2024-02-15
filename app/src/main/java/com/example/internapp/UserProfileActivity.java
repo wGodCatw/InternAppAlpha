@@ -1,5 +1,6 @@
 package com.example.internapp;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -33,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.leinardi.android.speeddial.SpeedDialView;
+import com.permissionx.guolindev.PermissionX;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
@@ -55,17 +58,20 @@ public class UserProfileActivity extends AppCompatActivity {
     private TextInputEditText edt_fullName, edt_email, edt_phone, edt_role, edt_dob, edt_uniCompany, edt_faculty, edt_username;
     private ProgressBar progressBar;
     private DatePickerDialog picker;
+    private Button callBtn;
     private TextInputLayout layout_faculty;
     private TextInputLayout layout_uniCompany;
     private ImageView profilePic, wifiState;
     private String fullName, email, phone, role, dob, uniCompany, faculty, username;
     private String dateBirth;
     private SwipeRefreshLayout swipeContainer;
+    private MainRepository mainRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        mainRepository = MainRepository.getInstance();
 
         swipeToRefresh();
 
@@ -84,7 +90,21 @@ public class UserProfileActivity extends AppCompatActivity {
         edt_username = findViewById(R.id.username);
         TextInputLayout layout_fullName = findViewById(R.id.layout_fullName);
         TextInputLayout layout_dateOfBirth = findViewById(R.id.layout_dateOfBirth);
+        callBtn = findViewById(R.id.callBtn);
 
+        callBtn.setOnClickListener(v -> {
+            PermissionX.init(this)
+                    .permissions(android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO).request(((allGranted, grantedList, deniedList) -> {
+                        if (allGranted) {
+                            //all permissions are granted
+                            mainRepository.login(edt_username.getText().toString(), getApplicationContext(), () -> {
+                                startActivity(new Intent(UserProfileActivity.this, VideoCallActivity.class));
+                            });
+                        } else {
+                            //some permissions are denied
+                        }
+                    }));
+        });
 
         profilePic.setOnClickListener(v -> {
             Intent intent = new Intent(UserProfileActivity.this, UploadUserPicActivity.class);

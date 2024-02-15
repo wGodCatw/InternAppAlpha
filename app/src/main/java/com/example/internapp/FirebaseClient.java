@@ -1,7 +1,5 @@
 package com.example.internapp;
 
-import android.provider.ContactsContract;
-
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -14,50 +12,101 @@ import com.google.gson.Gson;
 import java.util.Objects;
 
 public class FirebaseClient {
-    private final Gson gson = new Gson();
-    private final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
-    private String currentUsername;
 
     private static final String LATEST_EVENT_FIELD_NAME = "latest_event";
+    private final Gson gson = new Gson();
+    private DatabaseReference dbRef;
+    private String currentUsername;
+    private String UID;
 
-    public void sendMessageToOtherUser(DataModel dataModel, ErrorCallback errorCallback){
-        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+    public void login(String username, SuccessCallback callBack) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
+        reference.orderByChild("username").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.child(dataModel.getTarget()).exists()){
-                    //send the signal to the other user
-                    dbRef.child(dataModel.getTarget()).child(LATEST_EVENT_FIELD_NAME)
-                            .setValue(gson.toJson(dataModel));
-                } else{
-                    errorCallback.onError();
+                for (DataSnapshot snap :
+                        snapshot.getChildren()) {
+                    if (snap.exists()) {
+                        currentUsername = snap.child("username").getValue().toString();
+                        dbRef = reference;
+                        UID = snap.getKey();
+                    } else {
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+
+                        reference.orderByChild("username").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot snap :
+                                        snapshot.getChildren()) {
+                                    if (snap.exists()) {
+                                        currentUsername = snap.child("username").getValue().toString();
+                                        dbRef = reference;
+                                        UID = snap.getKey();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                errorCallback.onError();
+
             }
         });
     }
 
-    public void observeIncomingLatestEvent(NewEventCallback callback){
-        dbRef.child(currentUsername).child(LATEST_EVENT_FIELD_NAME).addValueEventListener(new ValueEventListener() {
+    public void sendMessageToOtherUser(DataModel dataModel, ErrorCallback errorCallBack) {
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try{
-                    String data = Objects.requireNonNull(snapshot.getValue().toString());
-                    DataModel dataModel = gson.fromJson(data, DataModel.class);
-                    callback.onNewEventReceived(dataModel);
-                }catch (Exception e){
-                    e.printStackTrace();
+                if (snapshot.child(dataModel.getTarget()).exists()) {
+                    //send the signal to other user
+                    dbRef.child(dataModel.getTarget()).child(LATEST_EVENT_FIELD_NAME)
+                            .setValue(gson.toJson(dataModel));
+                }
+                if (snapshot.child(dataModel.getTarget()).exists()) {
+                    //send the signal to other user
+                    dbRef.child(dataModel.getTarget()).child(LATEST_EVENT_FIELD_NAME)
+                            .setValue(gson.toJson(dataModel));
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
-
+                errorCallBack.onError();
             }
         });
+    }
+
+    public void observeIncomingLatestEvent(NewEventCallback callBack) {
+        dbRef.child(UID).child(LATEST_EVENT_FIELD_NAME).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
+                            String data = Objects.requireNonNull(snapshot.getValue()).toString();
+                            DataModel dataModel = gson.fromJson(data, DataModel.class);
+                            callBack.onNewEventReceived(dataModel);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                }
+        );
+
+
     }
 }
