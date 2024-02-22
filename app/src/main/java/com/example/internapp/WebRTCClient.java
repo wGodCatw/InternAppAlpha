@@ -26,44 +26,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WebRTCClient {
+
+    private final Gson gson = new Gson();
     private final Context context;
     private final String username;
-    private final Gson gson = new Gson();
+    public Listener listener;
     private EglBase.Context eglBaseContext = EglBase.create().getEglBaseContext();
     private PeerConnectionFactory peerConnectionFactory;
     private PeerConnection peerConnection;
     private List<PeerConnection.IceServer> iceServer = new ArrayList<>();
-
     private CameraVideoCapturer videoCapturer;
     private VideoSource localVideoSource;
     private AudioSource localAudioSource;
-    private String localTrackId = "local track";
-    private String localStreamId = "local stream";
+    private String localTrackId = "local_track";
+    private String localStreamId = "local_stream";
     private VideoTrack localVideoTrack;
     private AudioTrack localAudioTrack;
     private MediaStream localStream;
     private MediaConstraints mediaConstraints = new MediaConstraints();
-    public Listener listener;
 
     public WebRTCClient(Context context, PeerConnection.Observer observer, String username) {
         this.context = context;
         this.username = username;
         initPeerConnectionFactory();
         peerConnectionFactory = createPeerConnectionFactory();
-        iceServer.add(PeerConnection.IceServer.builder("turns:global.relay.metered.ca:443?transport=tcp")
-                .setUsername("90f23c313113cdbb20a7e272")
-                .setPassword("bPC6tVb+ficTToGC").createIceServer());
+        iceServer.add(PeerConnection.IceServer.builder("turn:a.relay.metered.ca:443?transport=tcp")
+                .setUsername("83eebabf8b4cce9d5dbcb649")
+                .setPassword("2D7JvfkOQtBdYW3R").createIceServer());
         peerConnection = createPeerConnection(observer);
         localVideoSource = peerConnectionFactory.createVideoSource(false);
         localAudioSource = peerConnectionFactory.createAudioSource(new MediaConstraints());
         mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
     }
 
-    public void initPeerConnectionFactory() {
-        PeerConnectionFactory.InitializationOptions options = PeerConnectionFactory
-                .InitializationOptions.builder(context)
-                .setFieldTrials("WebRTC-H264HighProfile/Enabled/")
-                .setEnableInternalTracer(true).createInitializationOptions();
+    //initializing peer connection section
+    private void initPeerConnectionFactory() {
+        PeerConnectionFactory.InitializationOptions options = PeerConnectionFactory.InitializationOptions.builder(context).setFieldTrials("WebRTC-H264HighProfile/Enabled/").setEnableInternalTracer(true).createInitializationOptions();
         PeerConnectionFactory.initialize(options);
     }
 
@@ -72,8 +70,7 @@ public class WebRTCClient {
         options.disableEncryption = false;
         options.disableNetworkMonitor = false;
         return PeerConnectionFactory.builder()
-                .setVideoEncoderFactory(new DefaultVideoEncoderFactory(eglBaseContext,
-                        true, true))
+                .setVideoEncoderFactory(new DefaultVideoEncoderFactory(eglBaseContext, true, true))
                 .setVideoDecoderFactory(new DefaultVideoDecoderFactory(eglBaseContext))
                 .setOptions(options).createPeerConnectionFactory();
     }
@@ -81,6 +78,8 @@ public class WebRTCClient {
     private PeerConnection createPeerConnection(PeerConnection.Observer observer) {
         return peerConnectionFactory.createPeerConnection(iceServer, observer);
     }
+
+    //initilizing ui like surface view renderers
 
     public void initSurfaceViewRendere(SurfaceViewRenderer viewRenderer) {
         viewRenderer.setEnableHardwareScaler(true);
@@ -93,19 +92,17 @@ public class WebRTCClient {
         startLocalVideoStreaming(view);
     }
 
-    public void initRemoteSurfaceView(SurfaceViewRenderer view) {
-        initSurfaceViewRendere(view);
-    }
-
     private void startLocalVideoStreaming(SurfaceViewRenderer view) {
         SurfaceTextureHelper helper = SurfaceTextureHelper.create(
-                Thread.currentThread().getName(), eglBaseContext);
+                Thread.currentThread().getName(), eglBaseContext
+        );
 
         videoCapturer = getVideoCapturer();
         videoCapturer.initialize(helper, context, localVideoSource.getCapturerObserver());
         videoCapturer.startCapture(480, 360, 15);
         localVideoTrack = peerConnectionFactory.createVideoTrack(
-                localTrackId + "_video", localVideoSource);
+                localTrackId + "_video", localVideoSource
+        );
         localVideoTrack.addSink(view);
 
         localAudioTrack = peerConnectionFactory.createAudioTrack(localTrackId + "_audio", localAudioSource);
@@ -128,6 +125,11 @@ public class WebRTCClient {
         throw new IllegalStateException("front facing camera not found");
     }
 
+    public void initRemoteSurfaceView(SurfaceViewRenderer view) {
+        initSurfaceViewRendere(view);
+    }
+
+    //negotiation section like call and answer
     public void call(String target) {
         try {
             peerConnection.createOffer(new MySdpObserver() {

@@ -15,121 +15,59 @@ import java.util.Objects;
 
 public class FirebaseClient {
 
-    private static final String LATEST_EVENT_FIELD_NAME = "latest_event";
     private final Gson gson = new Gson();
-    private DatabaseReference dbRef;
-    private DatabaseReference selfDbRef;
+    private final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
     private String currentUsername;
-    private String UID;
+    private static final String LATEST_EVENT_FIELD_NAME = "latest_event";
 
-
-    public void login(String username, SuccessCallback callBack) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
-        reference.orderByChild("username").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot snap : snapshot.getChildren()) {
-                        selfDbRef = reference;
-                        UID = snap.getKey();
-                        currentUsername = UID;
-                        Log.e("UID", UID);
-                        callBack.onSuccess();
-                    }
-
-                } else {
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-
-                    reference.orderByChild("username").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists()) {
-                                for (DataSnapshot snap : snapshot.getChildren()) {
-                                    selfDbRef = reference;
-                                    UID = snap.getKey();
-                                    currentUsername = UID;
-                                    Log.e("UID", UID);
-                                    callBack.onSuccess();
-                                }
-                            }
-
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+    public void login(String username, SuccessCallback callBack){
+        dbRef.child(username).setValue("").addOnCompleteListener(task -> {
+            currentUsername = username;
+            callBack.onSuccess();
         });
     }
 
-    public void sendMessageToOtherUser(DataModel dataModel, ErrorCallback errorCallBack) {
-        dbRef = FirebaseDatabase.getInstance().getReference().child("Registered users/HRs");
-        dbRef.orderByKey().equalTo(dataModel.getTarget()).addListenerForSingleValueEvent(new ValueEventListener() {
+    public void sendMessageToOtherUser(DataModel dataModel, ErrorCallback errorCallBack){
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
+                if (snapshot.child(dataModel.getTarget()).exists()){
                     //send the signal to other user
-                    dbRef.child(UID).child(LATEST_EVENT_FIELD_NAME).setValue(gson.toJson(dataModel));
-                } else {
-                    dbRef = FirebaseDatabase.getInstance().getReference().child("Registered users/Students");
-                    dbRef.orderByKey().equalTo(dataModel.getTarget()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    dbRef.child(dataModel.getTarget()).child(LATEST_EVENT_FIELD_NAME)
+                            .setValue(gson.toJson(dataModel));
 
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists()) {
-                                //send the signal to other user
-                                dbRef.child(UID).child(LATEST_EVENT_FIELD_NAME).setValue(gson.toJson(dataModel));
-                            } else {
-                                errorCallBack.onError();
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
+                }else {
+                    errorCallBack.onError();
                 }
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 errorCallBack.onError();
             }
-
         });
     }
 
-    public void observeIncomingLatestEvent(NewEventCallback callBack) {
-        selfDbRef.child(LATEST_EVENT_FIELD_NAME).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try {
-                    String data = Objects.requireNonNull(snapshot.getValue()).toString();
-                    DataModel dataModel = gson.fromJson(data, DataModel.class);
-                    callBack.onNewEventReceived(dataModel);
-                } catch (Exception e) {
-                    e.printStackTrace();
+    public void observeIncomingLatestEvent(NewEventCallback callBack){
+        dbRef.child(currentUsername).child(LATEST_EVENT_FIELD_NAME).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try{
+                            String data= Objects.requireNonNull(snapshot.getValue()).toString();
+                            DataModel dataModel = gson.fromJson(data,DataModel.class);
+                            callBack.onNewEventReceived(dataModel);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        );
 
 
     }

@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -73,6 +74,9 @@ public class UserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
         mainRepository = MainRepository.getInstance();
 
+        FirebaseAuth authProfile = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = authProfile.getCurrentUser();
+
         swipeToRefresh();
 
         edt_fullName = findViewById(R.id.fullName);
@@ -96,7 +100,7 @@ public class UserProfileActivity extends AppCompatActivity {
             PermissionX.init(this).permissions(android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO).request(((allGranted, grantedList, deniedList) -> {
                 if (allGranted) {
                     //all permissions are granted
-                    mainRepository.login(edt_username.getText().toString().substring(1), getApplicationContext(), () -> {
+                    mainRepository.login(firebaseUser.getUid().substring(1), getApplicationContext(), () -> {
                         startActivity(new Intent(UserProfileActivity.this, VideoCallActivity.class));
                     });
                 }
@@ -114,8 +118,7 @@ public class UserProfileActivity extends AppCompatActivity {
         speedDialView.setOrientation(LinearLayout.HORIZONTAL);
 
 
-        FirebaseAuth authProfile = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = authProfile.getCurrentUser();
+
 
         if (firebaseUser == null) {
             Toast.makeText(UserProfileActivity.this, "Something went wrong, user details are not available", Toast.LENGTH_LONG).show();
@@ -247,7 +250,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private void showUserProfile(FirebaseUser firebaseUser) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
         String userID = firebaseUser.getUid();
-
+        Log.e("LOG_UID", userID);
         referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -274,6 +277,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         edt_dob.setText(dob);
                         edt_role.setText(role);
                         edt_phone.setText(phone);
+
                     } else {
                         Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
                     }
