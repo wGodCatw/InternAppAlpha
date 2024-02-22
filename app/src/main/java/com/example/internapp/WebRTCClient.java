@@ -50,13 +50,14 @@ public class WebRTCClient {
         this.username = username;
         initPeerConnectionFactory();
         peerConnectionFactory = createPeerConnectionFactory();
+//        iceServer.add(PeerConnection.IceServer.builder("stun:stun.relay.metered.ca:80").createIceServer());
         iceServer.add(PeerConnection.IceServer.builder("turns:global.relay.metered.ca:443?transport=tcp")
                 .setUsername("90f23c313113cdbb20a7e272")
                 .setPassword("bPC6tVb+ficTToGC").createIceServer());
         peerConnection = createPeerConnection(observer);
         localVideoSource = peerConnectionFactory.createVideoSource(false);
         localAudioSource = peerConnectionFactory.createAudioSource(new MediaConstraints());
-        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
+        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo","true"));
     }
 
     //initializing peer connection section
@@ -70,42 +71,42 @@ public class WebRTCClient {
         options.disableEncryption = false;
         options.disableNetworkMonitor = false;
         return PeerConnectionFactory.builder()
-                .setVideoEncoderFactory(new DefaultVideoEncoderFactory(eglBaseContext, true, true))
+                .setVideoEncoderFactory(new DefaultVideoEncoderFactory(eglBaseContext,true,true))
                 .setVideoDecoderFactory(new DefaultVideoDecoderFactory(eglBaseContext))
                 .setOptions(options).createPeerConnectionFactory();
     }
 
-    private PeerConnection createPeerConnection(PeerConnection.Observer observer) {
-        return peerConnectionFactory.createPeerConnection(iceServer, observer);
+    private PeerConnection createPeerConnection(PeerConnection.Observer observer){
+        return peerConnectionFactory.createPeerConnection(iceServer,observer);
     }
 
-    //initilizing ui like surface view renderers
+    //initializing ui like surface view renderers
 
-    public void initSurfaceViewRendere(SurfaceViewRenderer viewRenderer) {
+    public void initSurfaceViewRendere(SurfaceViewRenderer viewRenderer){
         viewRenderer.setEnableHardwareScaler(true);
         viewRenderer.setMirror(true);
-        viewRenderer.init(eglBaseContext, null);
+        viewRenderer.init(eglBaseContext,null);
     }
 
-    public void initLocalSurfaceView(SurfaceViewRenderer view) {
+    public void initLocalSurfaceView(SurfaceViewRenderer view){
         initSurfaceViewRendere(view);
         startLocalVideoStreaming(view);
     }
 
     private void startLocalVideoStreaming(SurfaceViewRenderer view) {
-        SurfaceTextureHelper helper = SurfaceTextureHelper.create(
+        SurfaceTextureHelper helper= SurfaceTextureHelper.create(
                 Thread.currentThread().getName(), eglBaseContext
         );
 
         videoCapturer = getVideoCapturer();
-        videoCapturer.initialize(helper, context, localVideoSource.getCapturerObserver());
-        videoCapturer.startCapture(480, 360, 15);
+        videoCapturer.initialize(helper,context,localVideoSource.getCapturerObserver());
+        videoCapturer.startCapture(480,360,15);
         localVideoTrack = peerConnectionFactory.createVideoTrack(
-                localTrackId + "_video", localVideoSource
+                localTrackId+"_video",localVideoSource
         );
         localVideoTrack.addSink(view);
 
-        localAudioTrack = peerConnectionFactory.createAudioTrack(localTrackId + "_audio", localAudioSource);
+        localAudioTrack = peerConnectionFactory.createAudioTrack(localTrackId+"_audio",localAudioSource);
         localStream = peerConnectionFactory.createLocalMediaStream(localStreamId);
         localStream.addTrack(localVideoTrack);
         localStream.addTrack(localAudioTrack);
@@ -117,82 +118,82 @@ public class WebRTCClient {
 
         String[] deviceNames = enumerator.getDeviceNames();
 
-        for (String device : deviceNames) {
-            if (enumerator.isFrontFacing(device)) {
-                return enumerator.createCapturer(device, null);
+        for (String device: deviceNames){
+            if (enumerator.isFrontFacing(device)){
+                return enumerator.createCapturer(device,null);
             }
         }
         throw new IllegalStateException("front facing camera not found");
     }
 
-    public void initRemoteSurfaceView(SurfaceViewRenderer view) {
+    public void initRemoteSurfaceView(SurfaceViewRenderer view){
         initSurfaceViewRendere(view);
     }
 
     //negotiation section like call and answer
-    public void call(String target) {
-        try {
-            peerConnection.createOffer(new MySdpObserver() {
+    public void call(String target){
+        try{
+            peerConnection.createOffer(new MySdpObserver(){
                 @Override
                 public void onCreateSuccess(SessionDescription sessionDescription) {
                     super.onCreateSuccess(sessionDescription);
-                    peerConnection.setLocalDescription(new MySdpObserver() {
+                    peerConnection.setLocalDescription(new MySdpObserver(){
                         @Override
                         public void onSetSuccess() {
                             super.onSetSuccess();
                             //its time to transfer this sdp to other peer
-                            if (listener != null) {
+                            if (listener!=null){
                                 listener.onTransferDataToOtherPeer(new DataModel(
-                                        target, username, sessionDescription.description, DataModelType.Offer
+                                        target,username,sessionDescription.description, DataModelType.Offer
                                 ));
                             }
                         }
-                    }, sessionDescription);
+                    },sessionDescription);
                 }
-            }, mediaConstraints);
-        } catch (Exception e) {
+            },mediaConstraints);
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void answer(String target) {
-        try {
-            peerConnection.createAnswer(new MySdpObserver() {
+    public void answer(String target){
+        try{
+            peerConnection.createAnswer(new MySdpObserver(){
                 @Override
                 public void onCreateSuccess(SessionDescription sessionDescription) {
                     super.onCreateSuccess(sessionDescription);
-                    peerConnection.setLocalDescription(new MySdpObserver() {
+                    peerConnection.setLocalDescription(new MySdpObserver(){
                         @Override
                         public void onSetSuccess() {
                             super.onSetSuccess();
                             //its time to transfer this sdp to other peer
-                            if (listener != null) {
+                            if (listener!=null){
                                 listener.onTransferDataToOtherPeer(new DataModel(
-                                        target, username, sessionDescription.description, DataModelType.Answer
+                                        target,username,sessionDescription.description, DataModelType.Answer
                                 ));
                             }
                         }
-                    }, sessionDescription);
+                    },sessionDescription);
                 }
-            }, mediaConstraints);
-        } catch (Exception e) {
+            },mediaConstraints);
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void onRemoteSessionReceived(SessionDescription sessionDescription) {
-        peerConnection.setRemoteDescription(new MySdpObserver(), sessionDescription);
+    public void onRemoteSessionReceived(SessionDescription sessionDescription){
+        peerConnection.setRemoteDescription(new MySdpObserver(),sessionDescription);
     }
 
-    public void addIceCandidate(IceCandidate iceCandidate) {
+    public void addIceCandidate(IceCandidate iceCandidate){
         peerConnection.addIceCandidate(iceCandidate);
     }
 
-    public void sendIceCandidate(IceCandidate iceCandidate, String target) {
+    public void sendIceCandidate(IceCandidate iceCandidate, String target){
         addIceCandidate(iceCandidate);
-        if (listener != null) {
+        if (listener!=null){
             listener.onTransferDataToOtherPeer(new DataModel(
-                    target, username, gson.toJson(iceCandidate), DataModelType.IceCandidate
+                    target,username,gson.toJson(iceCandidate),DataModelType.IceCandidate
             ));
         }
     }
@@ -201,22 +202,22 @@ public class WebRTCClient {
         videoCapturer.switchCamera(null);
     }
 
-    public void toggleVideo(Boolean shouldBeMuted) {
+    public void toggleVideo(Boolean shouldBeMuted){
         localVideoTrack.setEnabled(shouldBeMuted);
     }
 
-    public void toggleAudio(Boolean shouldBeMuted) {
+    public void toggleAudio(Boolean shouldBeMuted){
         localAudioTrack.setEnabled(shouldBeMuted);
     }
 
-    public void closeConnection() {
-        try {
+    public void closeConnection(){
+        try{
 
             localVideoTrack.dispose();
             videoCapturer.stopCapture();
             videoCapturer.dispose();
             peerConnection.close();
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
         }
     }

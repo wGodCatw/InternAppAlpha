@@ -35,7 +35,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
         views.callBtn.setOnClickListener(v->{
             //start a call request here
             mainRepository.sendCallRequest(views.targetUserNameEt.getText().toString(),()->{
-                Toast.makeText(this, "couldnt find the target", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "couldn't find the target", Toast.LENGTH_SHORT).show();
             });
 
         });
@@ -66,9 +66,9 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
 
         views.micButton.setOnClickListener(v->{
             if (isMicrophoneMuted){
-                views.micButton.setImageResource(R.drawable.ic_wifi_enabled);
+                views.micButton.setImageResource(R.drawable.ic_mic);
             }else {
-                views.micButton.setImageResource(R.drawable.ic_wifi_disabled);
+                views.micButton.setImageResource(R.drawable.ic_mic_off);
             }
             mainRepository.toggleAudio(isMicrophoneMuted);
             isMicrophoneMuted=!isMicrophoneMuted;
@@ -76,9 +76,9 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
 
         views.videoButton.setOnClickListener(v->{
             if (isCameraMuted){
-                views.videoButton.setImageResource(R.drawable.ic_wifi_enabled);
+                views.videoButton.setImageResource(R.drawable.ic_video);
             }else {
-                views.videoButton.setImageResource(R.drawable.ic_wifi_disabled);
+                views.videoButton.setImageResource(R.drawable.ic_video_off);
             }
             mainRepository.toggleVideo(isCameraMuted);
             isCameraMuted=!isCameraMuted;

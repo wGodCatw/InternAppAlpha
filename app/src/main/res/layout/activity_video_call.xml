@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="match_parent"
     android:keepScreenOn="true">
 
@@ -11,7 +10,7 @@
         android:id="@+id/incomingCallLayout"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@color/white"
+        android:background="@color/blue"
         android:layout_alignParentTop="true"
         android:orientation="horizontal"
         android:visibility="gone">
@@ -31,20 +30,16 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:src="@drawable/ic_email_txt"
-            android:padding="15dp" />
-
-
+            android:padding="15dp"
+            android:src="@drawable/ic_call" />
 
         <ImageView
             android:id="@+id/rejectButton"
             android:layout_width="0dp"
-            android:src="@drawable/ic_email_txt"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:padding="15dp" />
-        <!--            android:src="@drawable/ic_reject"-->
-
+            android:padding="15dp"
+            android:src="@drawable/ic_call_declined" />
 
     </LinearLayout>
 
@@ -52,30 +47,35 @@
         android:id="@+id/whoToCallLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:layout_below="@+id/incomingCallLayout">
 
         <EditText
             android:id="@+id/targetUserNameEt"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:textColorHint="@color/black"
+            android:textColor="@color/black"
             android:layout_margin="30dp"
             android:hint="who to call ?" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/callBtn"
+        <Button
             android:layout_width="match_parent"
-
-
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/callBtn"
+            android:padding="20dp"
+            android:layout_margin="20dp"
+            android:textColor="@color/white"
             android:layout_below="@id/targetUserNameEt"
             android:layout_marginHorizontal="30dp"
-            android:text="call" />
-        <!--            android:background="@drawable/rounded_button"-->
+            android:background="@color/blue"
+            android:text="call"/>
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/callLayout"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -99,15 +99,13 @@
 
         <LinearLayout
             android:id="@+id/controls"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:backgroundTint="@android:color/secondary_text_light"
+            android:background="@color/blue"
             android:gravity="center"
             android:orientation="horizontal">
-            <!--            android:background="@drawable/curve_background"-->
 
             <ImageView
                 android:id="@+id/mic_button"
@@ -117,10 +115,8 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="12dp"
+                app:srcCompat="@drawable/ic_mic" />
 
-                app:backgroundTint="@color/cardview_dark_background" />
-            <!--        android:background="@drawable/circle_background"-->
-            <!--                app:srcCompat="@drawable/ic_baseline_mic_off_24"-->
             <ImageView
                 android:id="@+id/video_button"
                 android:layout_width="wrap_content"
@@ -129,9 +125,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="12dp"
-                app:backgroundTint="@color/cardview_dark_background" />
-            <!--android:background="@drawable/circle_background"-->
-            <!--            app:srcCompat="@drawable/ic_baseline_videocam_off_24" -->
+                app:srcCompat="@drawable/ic_video" />
 
             <ImageView
                 android:id="@+id/end_call_button"
@@ -141,9 +135,8 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="12dp"
-                app:backgroundTint="@android:color/holo_red_dark" />
-            <!--            android:background="@drawable/circle_background"-->
-            <!--            app:srcCompat="@drawable/ic_baseline_call_end_24" -->
+                android:background="@color/red"
+                app:srcCompat="@drawable/ic_call_declined" />
 
             <ImageView
                 android:id="@+id/switch_camera_button"
@@ -152,12 +145,9 @@
                 android:layout_margin="16dp"
                 android:clickable="true"
                 android:focusable="true"
+                android:src="@drawable/ic_video_switch"
                 android:padding="12dp"
-                app:backgroundTint="@color/cardview_dark_background" />
-            <!--        android:background="@drawable/circle_background"            -->
-            <!--            app:srcCompat="@drawable/ic_baseline_cameraswitch_24"-->
-
-
+                app:srcCompat="@drawable/ic_video_switch" />
         </LinearLayout>
 
     </RelativeLayout>

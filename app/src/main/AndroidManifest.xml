@@ -24,7 +24,7 @@
         tools:targetApi="34">
         <activity
             android:name=".VideoCallActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".DeleteUserActivity"
             android:exported="false" />
