@@ -50,9 +50,9 @@ public class WebRTCClient {
         this.username = username;
         initPeerConnectionFactory();
         peerConnectionFactory = createPeerConnectionFactory();
-        iceServer.add(PeerConnection.IceServer.builder("turn:a.relay.metered.ca:443?transport=tcp")
-                .setUsername("83eebabf8b4cce9d5dbcb649")
-                .setPassword("2D7JvfkOQtBdYW3R").createIceServer());
+        iceServer.add(PeerConnection.IceServer.builder("turns:global.relay.metered.ca:443?transport=tcp")
+                .setUsername("90f23c313113cdbb20a7e272")
+                .setPassword("bPC6tVb+ficTToGC").createIceServer());
         peerConnection = createPeerConnection(observer);
         localVideoSource = peerConnectionFactory.createVideoSource(false);
         localAudioSource = peerConnectionFactory.createAudioSource(new MediaConstraints());

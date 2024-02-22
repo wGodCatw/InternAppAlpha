@@ -100,9 +100,50 @@ public class UserProfileActivity extends AppCompatActivity {
             PermissionX.init(this).permissions(android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO).request(((allGranted, grantedList, deniedList) -> {
                 if (allGranted) {
                     //all permissions are granted
-                    mainRepository.login(firebaseUser.getUid().substring(1), getApplicationContext(), () -> {
-                        startActivity(new Intent(UserProfileActivity.this, VideoCallActivity.class));
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
+                    reference.orderByKey().equalTo(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                for (DataSnapshot snap:
+                                        snapshot.getChildren()) {
+                                    String username = snap.child("username").getValue().toString();
+                                    mainRepository.login(username, getApplicationContext(), () -> {
+                                        startActivity(new Intent(UserProfileActivity.this, VideoCallActivity.class));
+                                    });
+                                }
+
+                            } else {
+                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+                                reference.orderByKey().equalTo(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            for (DataSnapshot snap:
+                                                 snapshot.getChildren()) {
+                                                String username = snap.child("username").getValue().toString();
+                                                mainRepository.login(username, getApplicationContext(), () -> {
+                                                    startActivity(new Intent(UserProfileActivity.this, VideoCallActivity.class));
+                                                });
+                                            }
+
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
                     });
+
                 }
             }));
         });
@@ -116,8 +157,6 @@ public class UserProfileActivity extends AppCompatActivity {
         SpeedDialView speedDialView = findViewById(R.id.speedDialView);
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), UserProfileActivity.this);
         speedDialView.setOrientation(LinearLayout.HORIZONTAL);
-
-
 
 
         if (firebaseUser == null) {
