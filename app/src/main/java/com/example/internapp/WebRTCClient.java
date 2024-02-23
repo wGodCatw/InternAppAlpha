@@ -50,7 +50,16 @@ public class WebRTCClient {
         this.username = username;
         initPeerConnectionFactory();
         peerConnectionFactory = createPeerConnectionFactory();
-//        iceServer.add(PeerConnection.IceServer.builder("stun:stun.relay.metered.ca:80").createIceServer());
+        iceServer.add(PeerConnection.IceServer.builder("stun:stun.relay.metered.ca:80").createIceServer());
+        iceServer.add(PeerConnection.IceServer.builder("turn:global.relay.metered.ca:80")
+                .setUsername("90f23c313113cdbb20a7e272")
+                .setPassword("bPC6tVb+ficTToGC").createIceServer());
+        iceServer.add(PeerConnection.IceServer.builder("turn:global.relay.metered.ca:80?transport=tcp")
+                .setUsername("90f23c313113cdbb20a7e272")
+                .setPassword("bPC6tVb+ficTToGC").createIceServer());
+        iceServer.add(PeerConnection.IceServer.builder("turn:global.relay.metered.ca:443")
+                .setUsername("90f23c313113cdbb20a7e272")
+                .setPassword("bPC6tVb+ficTToGC").createIceServer());
         iceServer.add(PeerConnection.IceServer.builder("turns:global.relay.metered.ca:443?transport=tcp")
                 .setUsername("90f23c313113cdbb20a7e272")
                 .setPassword("bPC6tVb+ficTToGC").createIceServer());
