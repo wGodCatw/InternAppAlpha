@@ -105,6 +105,10 @@ public class MainRepository implements WebRTCClient.Listener {
         webRTCClient.switchCamera();
     }
 
+    public void toggleSpeaker(Boolean shouldBeSpeaker){
+        webRTCClient.switchAudioDevice(shouldBeSpeaker);
+    }
+
     public void toggleAudio(Boolean shouldBeMuted){
         webRTCClient.toggleAudio(shouldBeMuted);
     }

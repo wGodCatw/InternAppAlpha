@@ -18,6 +18,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
 
     private ActivityVideoCallBinding views;
     private MainRepository mainRepository;
+    private Boolean isSpeakerOn = false;
     private Boolean isCameraMuted = false;
     private Boolean isMicrophoneMuted = false;
 
@@ -62,6 +63,16 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
 
         views.switchCameraButton.setOnClickListener(v->{
             mainRepository.switchCamera();
+        });
+
+        views.switchSpeakerButton.setOnClickListener(v->{
+            if(isSpeakerOn){
+                views.switchSpeakerButton.setImageResource(R.drawable.ic_speaker_on);
+            } else {
+                views.switchSpeakerButton.setImageResource(R.drawable.ic_speaker_off);
+            }
+            mainRepository.toggleSpeaker(isSpeakerOn);
+            isSpeakerOn = !isSpeakerOn;
         });
 
         views.micButton.setOnClickListener(v->{

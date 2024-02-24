@@ -1,6 +1,7 @@
 package com.example.internapp;
 
 import android.content.Context;
+import android.media.AudioManager;
 
 import com.google.gson.Gson;
 
@@ -21,6 +22,8 @@ import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
+import org.webrtc.voiceengine.WebRtcAudioManager;
+import org.webrtc.voiceengine.WebRtcAudioTrack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,14 +94,14 @@ public class WebRTCClient {
 
     //initializing ui like surface view renderers
 
-    public void initSurfaceViewRendere(SurfaceViewRenderer viewRenderer){
+    public void initSurfaceViewRenderer(SurfaceViewRenderer viewRenderer){
         viewRenderer.setEnableHardwareScaler(true);
         viewRenderer.setMirror(true);
         viewRenderer.init(eglBaseContext,null);
     }
 
     public void initLocalSurfaceView(SurfaceViewRenderer view){
-        initSurfaceViewRendere(view);
+        initSurfaceViewRenderer(view);
         startLocalVideoStreaming(view);
     }
 
@@ -114,6 +117,7 @@ public class WebRTCClient {
                 localTrackId+"_video",localVideoSource
         );
         localVideoTrack.addSink(view);
+
 
         localAudioTrack = peerConnectionFactory.createAudioTrack(localTrackId+"_audio",localAudioSource);
         localStream = peerConnectionFactory.createLocalMediaStream(localStreamId);
@@ -136,7 +140,7 @@ public class WebRTCClient {
     }
 
     public void initRemoteSurfaceView(SurfaceViewRenderer view){
-        initSurfaceViewRendere(view);
+        initSurfaceViewRenderer(view);
     }
 
     //negotiation section like call and answer
@@ -205,6 +209,12 @@ public class WebRTCClient {
                     target,username,gson.toJson(iceCandidate),DataModelType.IceCandidate
             ));
         }
+    }
+
+    public void switchAudioDevice(Boolean shouldBeSpeaker){
+        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+        audioManager.setSpeakerphoneOn(shouldBeSpeaker);
     }
 
     public void switchCamera() {

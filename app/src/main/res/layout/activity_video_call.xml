@@ -114,7 +114,7 @@
                 android:layout_margin="16dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:padding="12dp"
+                android:padding="6dp"
                 app:srcCompat="@drawable/ic_mic" />
 
             <ImageView
@@ -124,7 +124,7 @@
                 android:layout_margin="16dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:padding="12dp"
+                android:padding="6dp"
                 app:srcCompat="@drawable/ic_video" />
 
             <ImageView
@@ -134,9 +134,19 @@
                 android:layout_margin="16dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:padding="12dp"
+                android:padding="6dp"
                 android:background="@color/red"
                 app:srcCompat="@drawable/ic_call_declined" />
+
+            <ImageView
+                android:id="@+id/switch_speaker_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="6dp"
+                app:srcCompat="@drawable/ic_speaker_off" />
 
             <ImageView
                 android:id="@+id/switch_camera_button"
@@ -146,7 +156,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:src="@drawable/ic_video_switch"
-                android:padding="12dp"
+                android:padding="6dp"
                 app:srcCompat="@drawable/ic_video_switch" />
         </LinearLayout>
 
