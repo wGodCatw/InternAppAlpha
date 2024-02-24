@@ -94,7 +94,7 @@ public class UploadUserPicActivity extends AppCompatActivity {
                         Uri uri1 = firebaseUser.getPhotoUrl();
 
                         DatabaseReference referenceHR = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
-                        referenceHR.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        referenceHR.child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
@@ -123,7 +123,7 @@ public class UploadUserPicActivity extends AppCompatActivity {
                         });
 
                         DatabaseReference referenceStudent = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-                        referenceStudent.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        referenceStudent.child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {

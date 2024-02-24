@@ -175,7 +175,7 @@ public class SearchStudents extends AppCompatActivity {
 
     private void filterByFaculty(String faculty, final UserCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        referenceProfile.orderByChild("faculty").equalTo(faculty).addListenerForSingleValueEvent(new ValueEventListener() {
+        referenceProfile.orderByChild("faculty").equalTo(faculty).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChildren()) {
@@ -197,7 +197,7 @@ public class SearchStudents extends AppCompatActivity {
 
     private void filterByUniversity(String university, final UserCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
+        referenceProfile.orderByChild("university").equalTo(university).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChildren()) {
@@ -246,7 +246,7 @@ public class SearchStudents extends AppCompatActivity {
 
     private void getStudentFromId(String studentId, final UserFinalCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        referenceProfile.orderByKey().equalTo(studentId).addListenerForSingleValueEvent(new ValueEventListener() {
+        referenceProfile.orderByKey().equalTo(studentId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChildren()) {
