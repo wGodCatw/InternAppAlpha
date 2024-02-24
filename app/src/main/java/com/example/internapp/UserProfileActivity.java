@@ -289,7 +289,6 @@ public class UserProfileActivity extends AppCompatActivity {
     private void showUserProfile(FirebaseUser firebaseUser) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
         String userID = firebaseUser.getUid();
-        Log.e("LOG_UID", userID);
         referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

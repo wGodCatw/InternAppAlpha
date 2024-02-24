@@ -17,7 +17,6 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/ic_launcher_foreground" />
 
         <TextView
@@ -53,14 +52,25 @@
             android:layout_width="74dp"
             android:layout_height="71dp"
             android:layout_marginTop="36dp"
-            android:layout_marginEnd="72dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintEnd_toStartOf="@+id/addToFavorites"
+            app:layout_constraintHorizontal_bias="0.65"
             app:layout_constraintStart_toEndOf="@+id/studentFacultySearch"
             app:layout_constraintTop_toBottomOf="@+id/studentPicSearch"
+            app:layout_constraintBottom_toTopOf="@id/cardInfoStudent"
             app:srcCompat="@drawable/ic_whatsapp" />
 
+        <ImageView
+            android:id="@+id/addToFavorites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/studentPicSearch"
+            app:srcCompat="@drawable/ic_favorites" />
+
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardInfoStudent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
@@ -146,13 +156,13 @@
         <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
-            android:layout_marginVertical="10sp"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="15sp"
+            android:layout_marginVertical="10sp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="12dp"
             android:text="Username"
+            android:textColor="@color/black"
+            android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/studentNameSearch" />
     </androidx.constraintlayout.widget.ConstraintLayout>

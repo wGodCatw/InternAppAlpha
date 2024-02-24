@@ -173,7 +173,7 @@ public class SearchStudents extends AppCompatActivity {
     }
 
 
-    public void filterByFaculty(String faculty, final UserCallback myCallback) {
+    private void filterByFaculty(String faculty, final UserCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
         referenceProfile.orderByChild("faculty").equalTo(faculty).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -195,7 +195,7 @@ public class SearchStudents extends AppCompatActivity {
         });
     }
 
-    public void filterByUniversity(String university, final UserCallback myCallback) {
+    private void filterByUniversity(String university, final UserCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
         referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -218,7 +218,7 @@ public class SearchStudents extends AppCompatActivity {
         });
     }
 
-    public void filterAllUniversities(ArrayList<String> universities, final UserCallback myCallback) {
+    private void filterAllUniversities(ArrayList<String> universities, final UserCallback myCallback) {
         final AtomicInteger counter = new AtomicInteger(universities.size());
         for (String university :
                 universities) {
@@ -231,7 +231,7 @@ public class SearchStudents extends AppCompatActivity {
         }
     }
 
-    public void filterAllFaculties(ArrayList<String> faculties, final UserCallback myCallback) {
+    private void filterAllFaculties(ArrayList<String> faculties, final UserCallback myCallback) {
         final AtomicInteger counter = new AtomicInteger(faculties.size());
         for (String faculty :
                 faculties) {
@@ -244,7 +244,7 @@ public class SearchStudents extends AppCompatActivity {
         }
     }
 
-    public void getStudentFromId(String studentId, final UserFinalCallback myCallback) {
+    private void getStudentFromId(String studentId, final UserFinalCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
         referenceProfile.orderByKey().equalTo(studentId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -270,7 +270,7 @@ public class SearchStudents extends AppCompatActivity {
         });
     }
 
-    public void getStudentsFromIDList(ArrayList<String> studentIDs, final UserListCallback myCallback) {
+    private void getStudentsFromIDList(ArrayList<String> studentIDs, final UserListCallback myCallback) {
         ArrayList<Student> students = new ArrayList<>();
         final AtomicInteger counter = new AtomicInteger(studentIDs.size());
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.ViewHolder> {
 
@@ -38,8 +47,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.viewpager_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewpager_item, parent, false);
 
         return new ViewHolder(view);
     }
@@ -47,6 +55,48 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final ViewPagerItem viewPagerItem = viewPagerItemArrayList.get(position);
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        Log.e("CHECK UID", firebaseUser.getUid());
+
+        //check if student is already in favorites
+        DatabaseReference referenceImage = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid());
+        referenceImage.child("favoriteStudents").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String favoriteStr = (String) snapshot.getValue();
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+                    ref.orderByChild("username").equalTo(viewPagerItem.getUsername()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                String UID = "";
+                                for (DataSnapshot snap : snapshot.getChildren()) {
+                                    UID = snap.getKey();
+                                }
+                                ArrayList<String> favoritesList = new ArrayList<>(Arrays.asList(favoriteStr.split(",")));
+                                if (favoritesList.contains(UID)) {
+                                    holder.addToFavorites.setImageResource(R.drawable.ic_favorites_added);
+                                } else {
+                                    holder.addToFavorites.setImageResource(R.drawable.ic_favorites);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         holder.txtUsername.setText("@" + viewPagerItem.getUsername());
         holder.txtName.setText(viewPagerItem.getName());
@@ -59,11 +109,107 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 a.startActivity(i);
-            } catch (PackageManager.NameNotFoundException e){
+            } catch (PackageManager.NameNotFoundException e) {
                 a.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             }
         });
 
+        holder.addToFavorites.setOnClickListener(v -> {
+
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid());
+            reference.child("favoriteStudents").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String favoriteStr = (String) snapshot.getValue();
+                        if (favoriteStr.equals("")) {
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+                            reference.orderByChild("username").equalTo(viewPagerItem.getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        String UID = "";
+                                        for (DataSnapshot snap : snapshot.getChildren()) {
+                                            UID = snap.getKey();
+                                        }
+                                        DatabaseReference referenceUser = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid());
+                                        referenceUser.child("favoriteStudents").setValue(UID);
+                                        holder.addToFavorites.setImageResource(R.drawable.ic_favorites_added);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        } else {
+
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+                            ref.orderByChild("username").equalTo(viewPagerItem.getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        String UID = "";
+                                        for (DataSnapshot snap : snapshot.getChildren()) {
+                                            UID = snap.getKey();
+                                        }
+                                        ArrayList<String> favoritesList = new ArrayList<>(Arrays.asList(favoriteStr.split(",")));
+                                        if (favoritesList.contains(UID)) {
+                                            holder.addToFavorites.setImageResource(R.drawable.ic_favorites);
+                                            favoritesList.remove(UID);
+                                        } else {
+                                            holder.addToFavorites.setImageResource(R.drawable.ic_favorites_added);
+                                            favoritesList.add(UID);
+
+                                        }
+
+                                        String newFavoriteStr = String.join(",", favoritesList);
+                                        reference.child("favoriteStudents").setValue(newFavoriteStr);
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+
+                    } else {
+                        //get UID of the student from username of the viewpager item
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+                        reference.orderByChild("username").equalTo(viewPagerItem.getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    String UID = "";
+                                    for (DataSnapshot snap : snapshot.getChildren()) {
+                                        UID = snap.getKey();
+                                    }
+                                    DatabaseReference referenceUser = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid());
+                                    referenceUser.child("favoriteStudents").setValue(UID);
+                                    holder.addToFavorites.setImageResource(R.drawable.ic_favorites_added);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        });
 
         Glide.with(context).asBitmap().load(viewPagerItemArrayList.get(position).getImageUrl()).into(holder.imgStudentSearch);
     }
@@ -73,15 +219,16 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
         return viewPagerItemArrayList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final ImageView imgStudentSearch, whatsappLink;
+        private final ImageView imgStudentSearch, whatsappLink, addToFavorites;
         private final TextView txtName, txtFaculty, txtUsername;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             final RecyclerView projects = itemView.findViewById(R.id.ProjectsRecView);
+            addToFavorites = itemView.findViewById(R.id.addToFavorites);
             whatsappLink = itemView.findViewById(R.id.whatsappLink);
             imgStudentSearch = itemView.findViewById(R.id.studentPicSearch);
             txtName = itemView.findViewById(R.id.studentNameSearch);
