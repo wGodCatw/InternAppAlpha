@@ -77,6 +77,15 @@ public class SearchStudents extends AppCompatActivity {
                         txtNoStudentsFound.setVisibility(View.VISIBLE);
                     } else {
                         txtNoStudentsFound.setVisibility(View.GONE);
+                        //remove all duplicate values from the array list students
+                        for (int i = 0; i < students.size(); i++) {
+                            for (int j = i + 1; j < students.size(); j++) {
+                                if (students.get(i).username.equals(students.get(j).username)) {
+                                    students.remove(j);
+                                    j--;
+                                }
+                            }
+                        }
                         for (Student i : students) {
                             final ViewPagerItem viewPagerItem = new ViewPagerItem(i);
                             viewPagerItemArrayList.add(viewPagerItem);
@@ -103,6 +112,14 @@ public class SearchStudents extends AppCompatActivity {
                         txtNoStudentsFound.setVisibility(View.VISIBLE);
                     } else {
                         txtNoStudentsFound.setVisibility(View.GONE);
+                        for (int i = 0; i < students.size(); i++) {
+                            for (int j = i + 1; j < students.size(); j++) {
+                                if (students.get(i).username.equals(students.get(j).username)) {
+                                    students.remove(j);
+                                    j--;
+                                }
+                            }
+                        }
                         for (Student i : students) {
                             ViewPagerItem viewPagerItem = new ViewPagerItem(i);
                             viewPagerItemArrayList.add(viewPagerItem);
@@ -132,6 +149,14 @@ public class SearchStudents extends AppCompatActivity {
                             txtNoStudentsFound.setVisibility(View.VISIBLE);
                         } else {
                             txtNoStudentsFound.setVisibility(View.GONE);
+                            for (int i = 0; i < students.size(); i++) {
+                                for (int j = i + 1; j < students.size(); j++) {
+                                    if (students.get(i).username.equals(students.get(j).username)) {
+                                        students.remove(j);
+                                        j--;
+                                    }
+                                }
+                            }
                             for (Student i : students) {
                                 ViewPagerItem viewPagerItem = new ViewPagerItem(i);
                                 viewPagerItemArrayList.add(viewPagerItem);
@@ -154,28 +179,36 @@ public class SearchStudents extends AppCompatActivity {
         }
 
 
-        if (students.isEmpty()) {
-            txtNoStudentsFound.setVisibility(View.VISIBLE);
-        } else {
-            txtNoStudentsFound.setVisibility(View.GONE);
-            for (Student i : students) {
-                ViewPagerItem viewPagerItem = new ViewPagerItem(i);
-                viewPagerItemArrayList.add(viewPagerItem);
-            }
-        }
-
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
-        viewPager2.setAdapter(viewPagerAdapter);
-
-        viewPager2.setOffscreenPageLimit(2);
-        viewPager2.setClipChildren(false);
-        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+//        if (students.isEmpty()) {
+//            txtNoStudentsFound.setVisibility(View.VISIBLE);
+//        } else {
+//            txtNoStudentsFound.setVisibility(View.GONE);
+//            for (int i = 0; i < students.size(); i++) {
+//                for (int j = i + 1; j < students.size(); j++) {
+//                    if (students.get(i).username.equals(students.get(j).username)) {
+//                        students.remove(j);
+//                        j--;
+//                    }
+//                }
+//            }
+//            for (Student i : students) {
+//                ViewPagerItem viewPagerItem = new ViewPagerItem(i);
+//                viewPagerItemArrayList.add(viewPagerItem);
+//            }
+//        }
+//
+//        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
+//        viewPager2.setAdapter(viewPagerAdapter);
+//
+//        viewPager2.setOffscreenPageLimit(2);
+//        viewPager2.setClipChildren(false);
+//        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
 
 
     private void filterByFaculty(String faculty, final UserCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        referenceProfile.orderByChild("faculty").equalTo(faculty).addValueEventListener(new ValueEventListener() {
+        referenceProfile.orderByChild("faculty").equalTo(faculty).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChildren()) {
@@ -197,7 +230,7 @@ public class SearchStudents extends AppCompatActivity {
 
     private void filterByUniversity(String university, final UserCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        referenceProfile.orderByChild("university").equalTo(university).addValueEventListener(new ValueEventListener() {
+        referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChildren()) {
@@ -246,7 +279,7 @@ public class SearchStudents extends AppCompatActivity {
 
     private void getStudentFromId(String studentId, final UserFinalCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        referenceProfile.orderByKey().equalTo(studentId).addValueEventListener(new ValueEventListener() {
+        referenceProfile.orderByKey().equalTo(studentId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChildren()) {

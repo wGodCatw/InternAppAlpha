@@ -67,7 +67,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
                 if (snapshot.exists()) {
                     String favoriteStr = (String) snapshot.getValue();
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-                    ref.orderByChild("username").equalTo(viewPagerItem.getUsername()).addValueEventListener(new ValueEventListener() {
+                    ref.orderByChild("username").equalTo(viewPagerItem.getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()) {
