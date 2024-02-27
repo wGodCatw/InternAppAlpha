@@ -27,6 +27,10 @@ public class FirebaseClient {
         });
     }
 
+    public String getCurrentUsername() {
+        return currentUsername;
+    }
+
     public void sendMessageToOtherUser(DataModel dataModel, ErrorCallback errorCallBack){
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
