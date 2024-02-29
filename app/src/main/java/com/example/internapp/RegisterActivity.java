@@ -92,11 +92,9 @@ public class RegisterActivity extends AppCompatActivity {
         autoFaculty.setAdapter(adapterFaculties);
 
         autoUniversity.setOnItemClickListener((parent, view, position, id) -> {
-            String uni = parent.getItemAtPosition(position).toString();
         });
 
         autoFaculty.setOnItemClickListener((parent, view, position, id) -> {
-            String faculty = parent.getItemAtPosition(position).toString();
         });
 
         login = findViewById(R.id.loginFromRegister);
@@ -167,7 +165,7 @@ public class RegisterActivity extends AppCompatActivity {
                             String textPassword = Objects.requireNonNull(editTextRegisterPwd.getText()).toString();
                             String textConfirmPassword = Objects.requireNonNull(editTextRegisterConfirmPwd.getText()).toString();
                             String textRole;
-                            String mobileRegex = "[5][0-9]{7}";
+                            String mobileRegex = "5[0-9]{7}";
                             Matcher mobileMatcher;
                             Pattern mobilePattern = Pattern.compile(mobileRegex);
                             mobileMatcher = mobilePattern.matcher(textMobile);

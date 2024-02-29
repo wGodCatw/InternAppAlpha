@@ -22,8 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class SearchStudents extends AppCompatActivity {
 
-
-    //    private ArrayList<ViewPagerItem> viewPagerItemArrayList;
     private final ArrayList<String> allUniversities = new ArrayList<>();
     private final ArrayList<String> allFaculties = new ArrayList<>();
     private final ArrayList<String> studentsByUniversitiesID = new ArrayList<>();

@@ -2,7 +2,6 @@ package com.example.internapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -60,15 +59,12 @@ public class HomepageActivity extends AppCompatActivity {
         Glide.with(getApplicationContext()).load("https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large").into(studentImg2);
         Glide.with(getApplicationContext()).load("https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large").into(studentImg1);
 
-        logoutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-            }
+        logoutBtn.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
         });
 
         speedDialView = findViewById(R.id.speedDialView);

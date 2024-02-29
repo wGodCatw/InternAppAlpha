@@ -1,7 +1,5 @@
 package com.example.internapp;
 
-import android.net.Uri;
-
 public class ReadWriteUserDetails {
     public String username;
     public String doB;

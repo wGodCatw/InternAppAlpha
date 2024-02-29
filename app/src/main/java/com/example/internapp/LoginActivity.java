@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     firebaseUser.sendEmailVerification();
                     authProfile.signOut();
-                    showAlerDialog();
+                    showAlertDialog();
                 }
             } else {
                 try {
@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void showAlerDialog() {
+    private void showAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
         builder.setTitle("Email not verified");
         builder.setMessage("Please verify your email now. You can not login without email verification");

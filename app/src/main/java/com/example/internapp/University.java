@@ -23,10 +23,6 @@ public class University {
         return imageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     @NonNull
     @Override
     public String toString() {

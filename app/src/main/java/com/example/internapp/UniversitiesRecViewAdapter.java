@@ -3,7 +3,7 @@ package com.example.internapp;
 import static com.example.internapp.SearchActivity.filtersFaculties;
 import static com.example.internapp.SearchActivity.filtersUniversities;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,39 +43,24 @@ public class UniversitiesRecViewAdapter extends RecyclerView.Adapter<Universitie
 
         holder.txtName.setText(universities.get(position).getName());
 
-
         if (filtersUniversities.contains(universities.get(position).getName()) || filtersFaculties.contains(universities.get(position).getName())) {
-            holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.white));
-            holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.blue));
+            holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.white, null));
+            holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.blue, null));
         } else {
-            holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.black));
-            holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.lightblue));
+            holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.black, null));
+            holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.lightblue, null));
         }
 
 
         holder.parent.setOnClickListener(v -> {
-//            String text = universities.get(holder.getAdapterPosition()).getName();
-//            if(holder.txtName.getCurrentTextColor() == holder.itemView.getResources().getColor(R.color.white)){
-//                // Remove from filters
-//                filtersUniversities.remove(text);
-//                filtersFaculties.remove(text);
-//                holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.black));
-//                holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.lightblue));
-//            } else{
-//                holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.white));
-//                holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.blue));
-//                SearchActivity.createChip(facultiesList, universitiesList, text, v, SearchActivity.uniAdapter, SearchActivity.facultyAdapter);
-//            }
-
-
-            if(holder.txtName.getCurrentTextColor() == holder.itemView.getResources().getColor(R.color.white)){
+            if(holder.txtName.getCurrentTextColor() == holder.itemView.getResources().getColor(R.color.white, null)){
                 String text = universities.get(holder.getAdapterPosition()).getName();
                 SearchActivity.createChip(facultiesList, universitiesList, text, v, SearchActivity.uniAdapter, SearchActivity.facultyAdapter);
-                holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.black));
-                holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.lightblue));
+                holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.black, null));
+                holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.lightblue, null));
             } else{
-                holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.white));
-                holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.blue));
+                holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.white, null));
+                holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.blue, null));
                 String text = universities.get(holder.getAdapterPosition()).getName();
                 SearchActivity.createChip(facultiesList, universitiesList, text, v, SearchActivity.uniAdapter, SearchActivity.facultyAdapter);
             }
@@ -89,6 +74,7 @@ public class UniversitiesRecViewAdapter extends RecyclerView.Adapter<Universitie
         return universities.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setUniversities(final ArrayList<University> universities) {
         this.universities = universities;
         notifyDataSetChanged();
