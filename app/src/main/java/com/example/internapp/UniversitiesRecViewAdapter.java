@@ -1,5 +1,8 @@
 package com.example.internapp;
 
+import static com.example.internapp.SearchActivity.filtersFaculties;
+import static com.example.internapp.SearchActivity.filtersUniversities;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,20 +36,48 @@ public class UniversitiesRecViewAdapter extends RecyclerView.Adapter<Universitie
         return new ViewHolder(view);
     }
 
+
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+
         holder.txtName.setText(universities.get(position).getName());
+
+
+        if (filtersUniversities.contains(universities.get(position).getName()) || filtersFaculties.contains(universities.get(position).getName())) {
+            holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.white));
+            holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.blue));
+        } else {
+            holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.black));
+            holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.lightblue));
+        }
+
+
         holder.parent.setOnClickListener(v -> {
+//            String text = universities.get(holder.getAdapterPosition()).getName();
+//            if(holder.txtName.getCurrentTextColor() == holder.itemView.getResources().getColor(R.color.white)){
+//                // Remove from filters
+//                filtersUniversities.remove(text);
+//                filtersFaculties.remove(text);
+//                holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.black));
+//                holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.lightblue));
+//            } else{
+//                holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.white));
+//                holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.blue));
+//                SearchActivity.createChip(facultiesList, universitiesList, text, v, SearchActivity.uniAdapter, SearchActivity.facultyAdapter);
+//            }
+
+
             if(holder.txtName.getCurrentTextColor() == holder.itemView.getResources().getColor(R.color.white)){
                 String text = universities.get(holder.getAdapterPosition()).getName();
-                SearchActivity.createChip(facultiesList, universitiesList, text, v);
+                SearchActivity.createChip(facultiesList, universitiesList, text, v, SearchActivity.uniAdapter, SearchActivity.facultyAdapter);
                 holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.black));
                 holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.lightblue));
             } else{
                 holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.white));
                 holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.blue));
                 String text = universities.get(holder.getAdapterPosition()).getName();
-                SearchActivity.createChip(facultiesList, universitiesList, text, v);
+                SearchActivity.createChip(facultiesList, universitiesList, text, v, SearchActivity.uniAdapter, SearchActivity.facultyAdapter);
             }
 
         });

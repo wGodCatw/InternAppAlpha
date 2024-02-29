@@ -4,6 +4,7 @@ package com.example.internapp;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,19 +23,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SearchStudents extends AppCompatActivity {
 
 
+    //    private ArrayList<ViewPagerItem> viewPagerItemArrayList;
+    private final ArrayList<String> allUniversities = new ArrayList<>();
+    private final ArrayList<String> allFaculties = new ArrayList<>();
+    private final ArrayList<String> studentsByUniversitiesID = new ArrayList<>();
+    private final ArrayList<String> studentsByFacultiesID = new ArrayList<>();
     SpeedDialView speedDialView;
     TextView txtNoStudentsFound;
     private ArrayList<String> filtersFaculties = new ArrayList<>();
     private ArrayList<String> filtersUniversities = new ArrayList<>();
 
-//    private ArrayList<ViewPagerItem> viewPagerItemArrayList;
-    private final ArrayList<String> allUniversities = new ArrayList<>();
-    private final ArrayList<String> allFaculties = new ArrayList<>();
-    private final ArrayList<String> studentsByUniversitiesID = new ArrayList<>();
-    private final ArrayList<String> studentsByFacultiesID = new ArrayList<>();
+    @NonNull
+    @Override
+    public OnBackInvokedDispatcher getOnBackInvokedDispatcher() {
+        SearchActivity.filtersFaculties.clear();
+        SearchActivity.filtersUniversities.clear();
+        //make all items in faculty and university recyclerview have grey background and black text
 
-
-
+        return super.getOnBackInvokedDispatcher();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,33 +185,7 @@ public class SearchStudents extends AppCompatActivity {
             txtNoStudentsFound.setVisibility(View.VISIBLE);
         }
 
-
-//        if (students.isEmpty()) {
-//            txtNoStudentsFound.setVisibility(View.VISIBLE);
-//        } else {
-//            txtNoStudentsFound.setVisibility(View.GONE);
-//            for (int i = 0; i < students.size(); i++) {
-//                for (int j = i + 1; j < students.size(); j++) {
-//                    if (students.get(i).username.equals(students.get(j).username)) {
-//                        students.remove(j);
-//                        j--;
-//                    }
-//                }
-//            }
-//            for (Student i : students) {
-//                ViewPagerItem viewPagerItem = new ViewPagerItem(i);
-//                viewPagerItemArrayList.add(viewPagerItem);
-//            }
-//        }
-//
-//        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
-//        viewPager2.setAdapter(viewPagerAdapter);
-//
-//        viewPager2.setOffscreenPageLimit(2);
-//        viewPager2.setClipChildren(false);
-//        viewPager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
-
 
     private void filterByFaculty(String faculty, final UserCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
@@ -253,8 +234,7 @@ public class SearchStudents extends AppCompatActivity {
 
     private void filterAllUniversities(ArrayList<String> universities, final UserCallback myCallback) {
         final AtomicInteger counter = new AtomicInteger(universities.size());
-        for (String university :
-                universities) {
+        for (String university : universities) {
             filterByUniversity(university, value -> {
                 allUniversities.addAll(value);
                 if (counter.decrementAndGet() == 0) {
@@ -266,8 +246,7 @@ public class SearchStudents extends AppCompatActivity {
 
     private void filterAllFaculties(ArrayList<String> faculties, final UserCallback myCallback) {
         final AtomicInteger counter = new AtomicInteger(faculties.size());
-        for (String faculty :
-                faculties) {
+        for (String faculty : faculties) {
             filterByFaculty(faculty, value -> {
                 allFaculties.addAll(value);
                 if (counter.decrementAndGet() == 0) {
@@ -283,8 +262,7 @@ public class SearchStudents extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChildren()) {
-                    for (DataSnapshot snap :
-                            snapshot.getChildren()) {
+                    for (DataSnapshot snap : snapshot.getChildren()) {
                         String username = (String) snap.child("username").getValue();
                         String name = (String) snap.child("name").getValue();
                         String mobile = (String) snap.child("mobile").getValue();

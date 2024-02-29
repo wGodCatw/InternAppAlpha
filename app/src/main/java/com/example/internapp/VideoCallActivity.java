@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -45,16 +44,16 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
         mainRepository = MainRepository.getInstance();
         views.callBtn.setOnClickListener(v -> {
 
+            //Hide keyboard
             InputMethodManager imm = (InputMethodManager) VideoCallActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-            //Find the currently focused view, so we can grab the correct window token from it.
             View view = VideoCallActivity.this.getCurrentFocus();
-            //If no view currently has focus, create a new one, just so we can grab a window token from it
             if (view == null) {
                 view = new View(VideoCallActivity.this);
             }
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
             //start a call request here
-            mainRepository.sendCallRequest(views.targetUserNameEt.getText().toString(), () -> {
+            mainRepository.sendCallRequest(views.targetUserNameEt.getText().toString().trim(), () -> {
                 Toast.makeText(this, "couldn't find the target", Toast.LENGTH_SHORT).show();
             });
 
