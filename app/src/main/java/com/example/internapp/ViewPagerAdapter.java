@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -31,15 +30,13 @@ import java.util.Arrays;
 public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.ViewHolder> {
 
     private final ArrayList<ViewPagerItem> viewPagerItemArrayList;
-    private final ArrayList<University> projectsNames;
     private final Context context;
     private final Activity a;
 
 
-    public ViewPagerAdapter(Activity a, final ArrayList<ViewPagerItem> viewPagerItemArrayList, Context context, ArrayList<University> projectsNames) {
+    public ViewPagerAdapter(Activity a, final ArrayList<ViewPagerItem> viewPagerItemArrayList, Context context) {
         this.viewPagerItemArrayList = viewPagerItemArrayList;
         this.a = a;
-        this.projectsNames = projectsNames;
         this.context = context;
     }
 
@@ -227,19 +224,12 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            final RecyclerView projects = itemView.findViewById(R.id.ProjectsRecView);
             addToFavorites = itemView.findViewById(R.id.addToFavorites);
             whatsappLink = itemView.findViewById(R.id.whatsappLink);
             imgStudentSearch = itemView.findViewById(R.id.studentPicSearch);
             txtName = itemView.findViewById(R.id.studentNameSearch);
             txtFaculty = itemView.findViewById(R.id.studentFacultySearch);
             txtUsername = itemView.findViewById(R.id.username);
-
-
-            final UniversitiesRecViewAdapter projectsAdapter = new UniversitiesRecViewAdapter(null, null);
-            projectsAdapter.setUniversities(projectsNames);
-            projects.setAdapter(projectsAdapter);
-            projects.setLayoutManager(new LinearLayoutManager(a.getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
         }
     }
 }

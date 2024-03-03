@@ -48,23 +48,12 @@
             app:layout_constraintTop_toBottomOf="@id/username" />
 
         <ImageView
-            android:id="@+id/whatsappLink"
-            android:layout_width="74dp"
-            android:layout_height="71dp"
-            android:layout_marginTop="36dp"
-            android:layout_marginBottom="20dp"
-            app:layout_constraintEnd_toStartOf="@+id/addToFavorites"
-            app:layout_constraintHorizontal_bias="0.65"
-            app:layout_constraintStart_toEndOf="@+id/studentFacultySearch"
-            app:layout_constraintTop_toBottomOf="@+id/studentPicSearch"
-            app:layout_constraintBottom_toTopOf="@id/cardInfoStudent"
-            app:srcCompat="@drawable/ic_whatsapp" />
-
-        <ImageView
             android:id="@+id/addToFavorites"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="64dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/studentPicSearch"
             app:srcCompat="@drawable/ic_favorites" />
@@ -74,79 +63,57 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            app:layout_constraintTop_toBottomOf="@id/whatsappLink">
+            android:layout_marginTop="50dp"
+            app:layout_constraintTop_toBottomOf="@id/addToFavorites"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="697dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white">
 
-                <Button
+
+                <ImageView
                     android:id="@+id/btnProjects"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="20sp"
-                    android:layout_marginStart="50sp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:padding="20sp"
+                    android:src="@drawable/ic_projects"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/whatsappLink"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5" />
 
-                <Button
-                    android:id="@+id/btnSocial"
+
+                <ImageView
+                    android:id="@+id/whatsappLink"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20sp"
-                    app:layout_constraintLeft_toRightOf="@id/btnProjects"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:padding="20sp"
+                    android:src="@drawable/ic_whatsapp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
 
-                <Button
-                    android:id="@+id/btnChat"
+                <ImageView
+                    android:id="@+id/btnProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20sp"
-                    app:layout_constraintLeft_toRightOf="@id/btnSocial"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:padding="20sp"
+                    android:src="@drawable/ic_student_profile"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/whatsappLink"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5" />
 
-
-                <TextView
-                    android:id="@+id/txtGPA"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="50sp"
-                    android:text="4.3 GPA"
-                    android:textSize="25sp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btnProjects" />
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="70dp"
-                    android:text="5 courses studying"
-                    android:textSize="25sp"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/btnSocial" />
-
-                <TextView
-                    android:id="@+id/txtProjects"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="40sp"
-                    android:layout_marginTop="30sp"
-                    android:text="Projects"
-                    android:textSize="30sp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtGPA" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/ProjectsRecView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10sp"
-                    android:layout_marginTop="20sp"
-                    android:elevation="10sp"
-                    android:orientation="horizontal"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtProjects" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

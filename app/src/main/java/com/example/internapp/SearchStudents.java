@@ -52,15 +52,6 @@ public class SearchStudents extends AppCompatActivity {
             filtersFaculties = extras.getStringArrayList("filtersFaculties");
         }
 
-        ArrayList<University> projectsNames = new ArrayList<>();
-        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
-        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
-        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
-        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
-        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
-        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
-        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
-        projectsNames.add(new University("Ryan GOD Gosling", "https://pbs.twimg.com/media/F0mt2ApXwAE7Lmt?format=jpg&name=large"));
 
         final ViewPager2 viewPager2 = findViewById(R.id.viewpager);
         final ArrayList<ViewPagerItem> viewPagerItemArrayList = new ArrayList<>();
@@ -96,7 +87,7 @@ public class SearchStudents extends AppCompatActivity {
                             viewPagerItemArrayList.add(viewPagerItem);
                         }
 
-                        final ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
+                        final ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext());
                         viewPager2.setAdapter(viewPagerAdapter);
 
                         viewPager2.setOffscreenPageLimit(2);
@@ -130,7 +121,7 @@ public class SearchStudents extends AppCompatActivity {
                             viewPagerItemArrayList.add(viewPagerItem);
                         }
 
-                        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
+                        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext());
                         viewPager2.setAdapter(viewPagerAdapter);
 
                         viewPager2.setOffscreenPageLimit(2);
@@ -167,7 +158,7 @@ public class SearchStudents extends AppCompatActivity {
                                 viewPagerItemArrayList.add(viewPagerItem);
                             }
 
-                            ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext(), projectsNames);
+                            ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(SearchStudents.this, viewPagerItemArrayList, getApplicationContext());
                             viewPager2.setAdapter(viewPagerAdapter);
 
                             viewPager2.setOffscreenPageLimit(2);
@@ -195,8 +186,8 @@ public class SearchStudents extends AppCompatActivity {
                         String nodId = snap.getKey();
                         studentsByFacultiesID.add(nodId);
                     }
-                    myCallback.onCallback(studentsByFacultiesID);
                 }
+                myCallback.onCallback(studentsByFacultiesID);
 
             }
 
@@ -218,8 +209,8 @@ public class SearchStudents extends AppCompatActivity {
                         assert nodId != null;
                         studentsByUniversitiesID.add(nodId);
                     }
-                    myCallback.onCallback(studentsByUniversitiesID);
                 }
+                myCallback.onCallback(studentsByUniversitiesID);
 
             }
 
@@ -234,9 +225,11 @@ public class SearchStudents extends AppCompatActivity {
         final AtomicInteger counter = new AtomicInteger(universities.size());
         for (String university : universities) {
             filterByUniversity(university, value -> {
-                allUniversities.addAll(value);
-                if (counter.decrementAndGet() == 0) {
-                    myCallback.onCallback(allUniversities);
+                if (!value.isEmpty()) {
+                    allUniversities.addAll(value);
+                    if (counter.decrementAndGet() == 0) {
+                        myCallback.onCallback(allUniversities);
+                    }
                 }
             });
         }
@@ -246,10 +239,13 @@ public class SearchStudents extends AppCompatActivity {
         final AtomicInteger counter = new AtomicInteger(faculties.size());
         for (String faculty : faculties) {
             filterByFaculty(faculty, value -> {
-                allFaculties.addAll(value);
-                if (counter.decrementAndGet() == 0) {
-                    myCallback.onCallback(allFaculties);
+                if (!value.isEmpty()) {
+                    allFaculties.addAll(value);
+                    if (counter.decrementAndGet() == 0) {
+                        myCallback.onCallback(allFaculties);
+                    }
                 }
+
             });
         }
     }
