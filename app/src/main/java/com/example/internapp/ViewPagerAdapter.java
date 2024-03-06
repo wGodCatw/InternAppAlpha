@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,8 +53,6 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
         final ViewPagerItem viewPagerItem = viewPagerItemArrayList.get(position);
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        Log.e("CHECK UID", firebaseUser.getUid());
-
         //check if student is already in favorites
         DatabaseReference referenceImage = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid());
         referenceImage.child("favoriteStudents").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -98,6 +95,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
         holder.txtUsername.setText("@" + viewPagerItem.getUsername());
         holder.txtName.setText(viewPagerItem.getName());
         holder.txtFaculty.setText(viewPagerItem.getFaculty());
+        holder.txtUniversity.setText(viewPagerItem.getUniversity());
         holder.whatsappLink.setOnClickListener(v -> {
             String url = "https://api.whatsapp.com/send?phone=" + viewPagerItem.getWhatsappNumber();
             try {
@@ -219,12 +217,13 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView imgStudentSearch, whatsappLink, addToFavorites;
-        private final TextView txtName, txtFaculty, txtUsername;
+        private final TextView txtName, txtFaculty, txtUsername, txtUniversity;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             addToFavorites = itemView.findViewById(R.id.addToFavorites);
+            txtUniversity = itemView.findViewById(R.id.studentUniversitySearch);
             whatsappLink = itemView.findViewById(R.id.whatsappLink);
             imgStudentSearch = itemView.findViewById(R.id.studentPicSearch);
             txtName = itemView.findViewById(R.id.studentNameSearch);

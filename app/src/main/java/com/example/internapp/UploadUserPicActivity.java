@@ -11,9 +11,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,23 +40,11 @@ public class UploadUserPicActivity extends AppCompatActivity {
     private StorageReference storageReference;
     private FirebaseUser firebaseUser;
     private Uri uriImage;
-    ActivityResultLauncher<String> mGetContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_user_pic);
-
-
-        mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-                new ActivityResultCallback<Uri>() {
-                    @Override
-                    public void onActivityResult(Uri uri) {
-                        // Handle the returned Uri
-                        uriImage = uri;
-                        profilePic.setImageURI(uriImage);
-                    }
-                });
 
         SpeedDialView speedDialView = findViewById(R.id.speedDialView);
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), UploadUserPicActivity.this);
@@ -182,19 +167,12 @@ public class UploadUserPicActivity extends AppCompatActivity {
         return mime.getExtensionFromMimeType(cR.getType(uriImage));
     }
 
-
-
     private void openFileChooser() {
-        mGetContent.launch("image/*");
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
-
-
-//    private void openFileChooser() {
-//        Intent intent = new Intent();
-//        intent.setType("image/*");
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//        startActivityForResult(intent, PICK_IMAGE_REQUEST);
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

@@ -262,7 +262,8 @@ public class SearchStudents extends AppCompatActivity {
                         String mobile = (String) snap.child("mobile").getValue();
                         String userPic = (String) snap.child("userPic").getValue();
                         String faculty = (String) snap.child("faculty").getValue();
-                        Student student = new Student(username, userPic, name, faculty, mobile);
+                        String university = (String) snap.child("university").getValue();
+                        Student student = new Student(username, userPic, name, university, faculty, mobile);
                         myCallback.onCallback(student);
                     }
                 }

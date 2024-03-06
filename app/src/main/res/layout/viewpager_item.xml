@@ -24,9 +24,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
-            android:text="TextView"
+            android:text="Name"
             android:textColor="@color/black"
-            android:textSize="25sp"
+            android:textSize="30sp"
             app:layout_constraintBottom_toTopOf="@+id/studentFacultySearch"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.086"
@@ -40,12 +40,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
+            android:layout_marginVertical="12dp"
             android:fontFamily="@font/montserrat"
             android:text="Faculty"
             android:textColor="@color/black"
-            android:textSize="15sp"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/username" />
+            app:layout_constraintTop_toBottomOf="@id/studentUniversitySearch" />
 
         <ImageView
             android:id="@+id/addToFavorites"
@@ -64,7 +65,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:layout_marginTop="50dp"
-            app:layout_constraintTop_toBottomOf="@id/addToFavorites"
+            app:layout_constraintTop_toBottomOf="@id/studentUniversitySearch"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -121,6 +122,19 @@
         </androidx.cardview.widget.CardView>
 
         <TextView
+            android:id="@+id/studentUniversitySearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginVertical="12dp"
+            android:fontFamily="@font/montserrat"
+            android:text="University"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/username" />
+
+        <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -129,7 +143,7 @@
             android:layout_marginTop="12dp"
             android:text="Username"
             android:textColor="@color/black"
-            android:textSize="15sp"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/studentNameSearch" />
     </androidx.constraintlayout.widget.ConstraintLayout>
