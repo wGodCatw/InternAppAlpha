@@ -106,7 +106,9 @@ public class SearchStudents extends AppCompatActivity {
                     students.addAll(value1);
                     if (students.isEmpty()) {
                         txtNoStudentsFound.setVisibility(View.VISIBLE);
+                        viewPager2.setVisibility(View.GONE);
                     } else {
+                        viewPager2.setVisibility(View.VISIBLE);
                         txtNoStudentsFound.setVisibility(View.GONE);
                         for (int i = 0; i < students.size(); i++) {
                             for (int j = i + 1; j < students.size(); j++) {
@@ -142,8 +144,10 @@ public class SearchStudents extends AppCompatActivity {
                         students.addAll(value12);
 
                         if (students.isEmpty()) {
+                            viewPager2.setVisibility(View.GONE);
                             txtNoStudentsFound.setVisibility(View.VISIBLE);
                         } else {
+                            viewPager2.setVisibility(View.VISIBLE);
                             txtNoStudentsFound.setVisibility(View.GONE);
                             for (int i = 0; i < students.size(); i++) {
                                 for (int j = i + 1; j < students.size(); j++) {
@@ -230,6 +234,8 @@ public class SearchStudents extends AppCompatActivity {
                     if (counter.decrementAndGet() == 0) {
                         myCallback.onCallback(allUniversities);
                     }
+                } else{
+                    txtNoStudentsFound.setVisibility(View.VISIBLE);
                 }
             });
         }
@@ -244,6 +250,8 @@ public class SearchStudents extends AppCompatActivity {
                     if (counter.decrementAndGet() == 0) {
                         myCallback.onCallback(allFaculties);
                     }
+                }else{
+                    txtNoStudentsFound.setVisibility(View.VISIBLE);
                 }
 
             });
