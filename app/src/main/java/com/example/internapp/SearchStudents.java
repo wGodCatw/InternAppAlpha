@@ -63,6 +63,7 @@ public class SearchStudents extends AppCompatActivity {
         ArrayList<Student> students = new ArrayList<>();
         ArrayList<String> studentIDs = new ArrayList<>();
 
+
         if (filtersUniversities.isEmpty() && !filtersFaculties.isEmpty()) {
             filterAllFaculties(filtersFaculties, value -> {
                 studentIDs.addAll(value);

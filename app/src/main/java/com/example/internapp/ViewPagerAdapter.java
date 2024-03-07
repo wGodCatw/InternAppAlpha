@@ -14,7 +14,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,6 +96,29 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
         holder.txtName.setText(viewPagerItem.getName());
         holder.txtFaculty.setText(viewPagerItem.getFaculty());
         holder.txtUniversity.setText(viewPagerItem.getUniversity());
+        holder.btnProfile.setOnClickListener(v -> {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+            reference.orderByChild("username").equalTo(viewPagerItem.getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String UID = "";
+                        for (DataSnapshot snap : snapshot.getChildren()) {
+                            UID = snap.getKey();
+                        }
+                        Intent intent = new Intent(context, StudentProfileActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("UID", UID);
+                        context.startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        });
         holder.whatsappLink.setOnClickListener(v -> {
             String url = "https://api.whatsapp.com/send?phone=" + viewPagerItem.getWhatsappNumber();
             try {
@@ -206,7 +229,9 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
             });
         });
 
-        Glide.with(context).asBitmap().load(viewPagerItemArrayList.get(position).getImageUrl()).into(holder.imgStudentSearch);
+        if(!viewPagerItemArrayList.get(position).getImageUrl().equals("none")){
+            Picasso.get().load(viewPagerItemArrayList.get(position).getImageUrl()).into(holder.imgStudentSearch);
+        }
     }
 
     @Override
@@ -216,12 +241,13 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final ImageView imgStudentSearch, whatsappLink, addToFavorites;
+        private final ImageView imgStudentSearch, whatsappLink, addToFavorites, btnProfile;
         private final TextView txtName, txtFaculty, txtUsername, txtUniversity;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            btnProfile = itemView.findViewById(R.id.btnProfile);
             addToFavorites = itemView.findViewById(R.id.addToFavorites);
             txtUniversity = itemView.findViewById(R.id.studentUniversitySearch);
             whatsappLink = itemView.findViewById(R.id.whatsappLink);

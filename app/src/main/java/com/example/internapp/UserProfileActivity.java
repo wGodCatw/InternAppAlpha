@@ -113,7 +113,7 @@ public class UserProfileActivity extends AppCompatActivity {
         TextInputLayout layout_fullName = findViewById(R.id.layout_fullName);
         TextInputLayout layout_dateOfBirth = findViewById(R.id.layout_dateOfBirth);
         callBtn = findViewById(R.id.callBtn);
-        PermissionX.init(this).permissions(android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO).request(((allGranted, grantedList, deniedList) -> {
+        PermissionX.init(this).permissions(android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.POST_NOTIFICATIONS).request(((allGranted, grantedList, deniedList) -> {
             if (allGranted) {
                 Toast.makeText(this, "Thanks!", Toast.LENGTH_SHORT).show();
             } else {
@@ -174,7 +174,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         SpeedDialView speedDialView = findViewById(R.id.speedDialView);
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), UserProfileActivity.this);
-        speedDialView.setOrientation(LinearLayout.HORIZONTAL);
+        speedDialView.setOrientation(LinearLayout.VERTICAL);
 
 
         if (firebaseUser == null) {
@@ -323,7 +323,9 @@ public class UserProfileActivity extends AppCompatActivity {
                         uniCompany = readUserDetails.company;
 
                         Uri uri = firebaseUser.getPhotoUrl();
-                        Picasso.get().load(uri).into(profilePic);
+                        if(!uri.toString().equals("none")){
+                            Picasso.get().load(uri).into(profilePic);
+                        }
 
                         edt_username.setText("@" + username);
                         layout_uniCompany.setHint("Company");
