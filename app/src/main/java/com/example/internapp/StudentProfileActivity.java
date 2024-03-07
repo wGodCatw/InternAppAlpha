@@ -51,35 +51,11 @@ public class StudentProfileActivity extends AppCompatActivity {
         edt_username = findViewById(R.id.username);
 
 
-//        callBtn.setOnClickListener(v -> {
-//            //all permissions are granted
-//            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-//            reference.orderByKey().equalTo(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    if (snapshot.exists()) {
-//                        for (DataSnapshot snap : snapshot.getChildren()) {
-//                            String username = snap.child("username").getValue().toString();
-//                            mainRepository.login(username, getApplicationContext(), () -> {
-//                                startActivity(new Intent(StudentProfileActivity.this, VideoCallActivity.class));
-//                            });
-//                        }
-//
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
-//        });
-
 
 
         SpeedDialView speedDialView = findViewById(R.id.speedDialView);
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), StudentProfileActivity.this);
-        speedDialView.setOrientation(LinearLayout.HORIZONTAL);
+        speedDialView.setOrientation(LinearLayout.VERTICAL);
 
         progressBar.setVisibility(View.VISIBLE);
         showUserProfile();
