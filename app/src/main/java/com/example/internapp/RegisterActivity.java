@@ -139,7 +139,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         Button buttonRegister = findViewById(R.id.button_register);
         buttonRegister.setOnClickListener(v -> {
-            String textUsername = Objects.requireNonNull(edt_username.getText()).toString();
+            String textUsername = Objects.requireNonNull(edt_username.getText()).toString().trim();
 
 
             findSameUsernameHR(textUsername, isExist -> {
@@ -248,7 +248,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     } else {
                                         UniCompany = autoUniversity.getText().toString();
                                         Faculty = autoFaculty.getText().toString();
-                                        registerUser(textUsername, textFullName, textEmail, textDoB, textRole, "+972" + textMobile, textPassword, UniCompany, Faculty);
+                                        registerUser(textUsername.trim(), textFullName.trim(), textEmail, textDoB, textRole, "+972" + textMobile, textPassword, UniCompany, Faculty);
                                     }
                                 }
                                 if (textRole.equals("HR Specialist")) {
@@ -258,7 +258,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         textUniCompany.setError("Company not specified");
                                     } else {
                                         UniCompany = textUniCompany.getText().toString();
-                                        registerUser(textUsername, textFullName, textEmail, textDoB, textRole, "+972" + textMobile, textPassword, UniCompany);
+                                        registerUser(textUsername.trim(), textFullName.trim(), textEmail, textDoB, textRole, "+972" + textMobile, textPassword, UniCompany);
                                     }
                                 }
                             }

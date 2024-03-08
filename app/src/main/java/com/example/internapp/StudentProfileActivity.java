@@ -1,7 +1,9 @@
 package com.example.internapp;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,6 +16,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,15 +31,21 @@ public class StudentProfileActivity extends AppCompatActivity {
     private TextInputEditText edt_fullName, edt_phone, edt_role, edt_dob, edt_uniCompany, edt_username;
     private ProgressBar progressBar;
     private TextInputLayout layout_uniCompany;
-    private ImageView profilePic;
+    private ImageView profilePic, btnCallStudent;
     private String fullName, phone, role, dob, uniCompany, username;
     private SwipeRefreshLayout swipeContainer;
+    private FirebaseUser firebaseUser;
+    private MainRepository mainRepository;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_profile);
+
+
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        mainRepository = MainRepository.getInstance();
 
 
         swipeToRefresh();
@@ -49,8 +59,14 @@ public class StudentProfileActivity extends AppCompatActivity {
         layout_uniCompany = findViewById(R.id.layout_uni_company);
         profilePic = findViewById(R.id.profilePicture);
         edt_username = findViewById(R.id.username);
+        btnCallStudent = findViewById(R.id.btnCallStudent);
 
-
+        btnCallStudent.setOnClickListener(v -> {
+            String studentUsername = edt_username.getText().toString().substring(1);
+            Intent call = new Intent(StudentProfileActivity.this, VideoCallActivity.class);
+            call.putExtra("studentUsername", studentUsername);
+            startActivity(call);
+        });
 
 
         SpeedDialView speedDialView = findViewById(R.id.speedDialView);
@@ -97,7 +113,7 @@ public class StudentProfileActivity extends AppCompatActivity {
 
                         Uri uri = Uri.parse(readUserDetails.userPic);
 
-                        if(!uri.toString().equals("none")){
+                        if (!uri.toString().equals("none")) {
                             Picasso.get().load(uri).into(profilePic);
                         }
 

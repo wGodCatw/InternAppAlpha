@@ -62,8 +62,6 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white">
 
-
-
                 <ProgressBar
                     android:id="@+id/progressBar"
                     style="@style/Widget.Material3.CircularProgressIndicator.Medium"
@@ -100,6 +98,20 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <ImageView
+                        android:id="@+id/btnCallStudent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_call"
+                        android:padding="10dp"
+                        android:background="@color/blue"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.924"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.076" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -114,16 +126,13 @@
                     app:layout_constraintTop_toBottomOf="@id/layout_header">
 
 
-
-
-
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/layout_fullName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:paddingHorizontal="20dp"
                         android:paddingVertical="10dp"
-                        android:focusable="false"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
@@ -133,10 +142,10 @@
                             android:id="@+id/fullName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:focusable="false"
                             android:cursorVisible="false"
                             android:drawableStart="@drawable/ic_profile_txt"
                             android:drawablePadding="15sp"
+                            android:focusable="false"
                             android:fontFamily="@font/montserrat"
                             android:hint="Full name"
                             android:textColor="@color/black" />
@@ -146,10 +155,10 @@
                         android:id="@+id/layout_username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:paddingHorizontal="20dp"
                         android:paddingVertical="10dp"
                         app:endIconTint="@color/black"
-                        android:focusable="false"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
@@ -159,8 +168,8 @@
                             android:id="@+id/username"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:focusable="false"
                             android:cursorVisible="false"
+                            android:focusable="false"
                             android:fontFamily="@font/montserrat"
                             android:hint="Username"
                             android:textColor="@color/black" />
@@ -195,9 +204,9 @@
                         android:id="@+id/layout_phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:paddingHorizontal="20dp"
                         android:paddingVertical="10dp"
-                        android:focusable="false"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
@@ -207,10 +216,10 @@
                             android:id="@+id/phone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:cursorVisible="false"
                             android:drawableStart="@drawable/ic_phone_txt"
                             android:drawablePadding="15sp"
                             android:focusable="false"
-                            android:cursorVisible="false"
                             android:fontFamily="@font/montserrat"
                             android:hint="Phone number"
                             android:textColor="@color/black" />
@@ -245,8 +254,8 @@
                         android:id="@+id/layout_role"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingHorizontal="20dp"
                         android:focusable="false"
+                        android:paddingHorizontal="20dp"
                         android:paddingVertical="10dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -270,9 +279,9 @@
                         android:id="@+id/layout_uni_company"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:paddingHorizontal="20dp"
                         android:paddingVertical="10dp"
-                        android:focusable="false"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"

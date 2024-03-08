@@ -25,6 +25,7 @@ import java.util.Objects;
 
 public class BackgroundCheck extends Service {
     private static boolean isRunning = false;
+    private static boolean madeNotification = false;
     private MainRepository mainRepository;
     private FirebaseUser firebaseUser;
 
@@ -99,26 +100,30 @@ public class BackgroundCheck extends Service {
             Runnable hand = new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        Log.e("service", "service running");
-                        mainRepository.subscribeForLatestEvent(data -> {
-                            if (data.getType() == DataModelType.StartCall) {
-                                Log.e("service", data.getSender() + " is calling you");
-                                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                                String text = data.getSender() + " is calling you";
-                                Notification notification = new Notification.Builder(getApplicationContext(), "1")
-                                        .setContentText(text)
-                                        .setSmallIcon(R.drawable.ic_launcher)
-                                        .setContentIntent(pendingIntent)
-                                        .setAutoCancel(true) // this will close the notification after it's clicked
-                                        .build();
+                    if(!madeNotification){
+                        try {
+                            Log.e("service", "service running");
+                            mainRepository.subscribeForLatestEvent(data -> {
+                                if (data.getType() == DataModelType.StartCall) {
+                                    Log.e("service", data.getSender() + " is calling you");
+                                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                    String text = data.getSender() + " is calling you";
+                                    Notification notification = new Notification.Builder(getApplicationContext(), "1")
+                                            .setContentText(text)
+                                            .setSmallIcon(R.drawable.ic_launcher)
+                                            .setContentIntent(pendingIntent)
+                                            .setAutoCancel(true) // this will close the notification after it's clicked
+                                            .build();
 
-                                notificationManager.notify(1, notification);
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                                    notificationManager.notify(1, notification);
+                                    madeNotification = true;
+                                }
+                            });
+                        } catch (Exception e) {
+                            Log.e("service", Objects.requireNonNull(e.getMessage()));
+                        }
                     }
+
                     handler.postDelayed(this, 1000);
                 }
             };
@@ -131,6 +136,7 @@ public class BackgroundCheck extends Service {
     public void onDestroy() {
         super.onDestroy();
         isRunning = false;
+        madeNotification = false;
         Log.e("service", "service stopped");
     }
 }

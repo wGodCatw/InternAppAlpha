@@ -3,7 +3,10 @@ package com.example.internapp;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -20,16 +23,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 
 public class VideoCallActivity extends AppCompatActivity implements MainRepository.Listener {
 
+    private final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private ActivityVideoCallBinding views;
     private MainRepository mainRepository;
     private Boolean isSpeakerOn = false;
     private Boolean isCameraMuted = false;
     private Boolean isMicrophoneMuted = false;
-    private FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +46,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
 
     private void init() {
         mainRepository = MainRepository.getInstance();
+
         views.callBtn.setOnClickListener(v -> {
 
             //Hide keyboard
@@ -58,24 +63,86 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
             });
 
         });
+
         mainRepository.initLocalView(views.localView);
         mainRepository.initRemoteView(views.remoteView);
         mainRepository.listener = this;
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String studentUsername = extras.getString("studentUsername");
+            //log student username
+            views.targetUserNameEt.setText(studentUsername);
 
+            views.callBtn.performClick();
+
+        }
 
         mainRepository.subscribeForLatestEvent(data -> {
             if (data.getType() == DataModelType.StartCall) {
                 runOnUiThread(() -> {
                     views.incomingNameTV.setText(data.getSender() + " is Calling you");
 
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+                    reference.orderByChild("username").equalTo(data.getSender()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                for (DataSnapshot snap : snapshot.getChildren()) {
+                                    Uri photo = Uri.parse(snap.child("userPic").getValue().toString());
+
+                                    Picasso.get().load(photo).into(views.callerPic);
+                                }
+
+                            } else{
+                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
+                                reference.orderByChild("username").equalTo(data.getSender()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            for (DataSnapshot snap : snapshot.getChildren()) {
+                                                Uri photo = Uri.parse(snap.child("userPic").getValue().toString());
+
+                                                Picasso.get().load(photo).into(views.callerPic);
+                                            }
+
+                                        } else{
+                                            Log.e("VideoCallActivity", "onDataChange: user not found");
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
                     views.incomingCallLayout.setVisibility(View.VISIBLE);
                     views.acceptButton.setOnClickListener(v -> {
-                        //star the call here
+                        // Stop background service
+                        Intent backgroundCheckIntent = new Intent(this, BackgroundCheck.class);
+
+                        stopService(backgroundCheckIntent);
+
+                        // Start the call here
                         mainRepository.startCall(data.getSender());
                         views.incomingCallLayout.setVisibility(View.GONE);
                     });
+
                     views.rejectButton.setOnClickListener(v -> {
+
+                        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
+                        dbRef.child(data.getTarget()).setValue("");
+                        dbRef.child(data.getSender()).setValue("");
                         views.incomingCallLayout.setVisibility(View.GONE);
+                        finish();
                     });
                 });
             }
@@ -116,6 +183,11 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
         });
 
         views.endCallButton.setOnClickListener(v -> {
+            Intent backgroundCheck = new Intent(this, BackgroundCheck.class);
+            if (!BackgroundCheck.isServiceRunning()) {
+                startService(backgroundCheck);
+            }
+
             mainRepository.endCall();
 
             final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
