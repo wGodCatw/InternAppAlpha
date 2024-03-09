@@ -48,9 +48,9 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
         mainRepository = MainRepository.getInstance();
 
         views.remoteView.setOnClickListener(v -> {
-            if(views.controls.getVisibility() == View.VISIBLE){
+            if (views.controls.getVisibility() == View.VISIBLE) {
                 views.controls.setVisibility(View.GONE);
-            } else{
+            } else {
                 views.controls.setVisibility(View.VISIBLE);
             }
         });
@@ -101,7 +101,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                                     Picasso.get().load(photo).into(views.callerPic);
                                 }
 
-                            } else{
+                            } else {
                                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
                                 reference.orderByChild("username").equalTo(data.getSender()).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -113,7 +113,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                                                 Picasso.get().load(photo).into(views.callerPic);
                                             }
 
-                                        } else{
+                                        } else {
                                             Log.e("VideoCallActivity", "onDataChange: user not found");
                                         }
                                     }
