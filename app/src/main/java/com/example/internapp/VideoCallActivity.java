@@ -47,6 +47,14 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
     private void init() {
         mainRepository = MainRepository.getInstance();
 
+        views.remoteView.setOnClickListener(v -> {
+            if(views.controls.getVisibility() == View.VISIBLE){
+                views.controls.setVisibility(View.GONE);
+            } else{
+                views.controls.setVisibility(View.VISIBLE);
+            }
+        });
+
         views.callBtn.setOnClickListener(v -> {
 
             //Hide keyboard
@@ -80,7 +88,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
         mainRepository.subscribeForLatestEvent(data -> {
             if (data.getType() == DataModelType.StartCall) {
                 runOnUiThread(() -> {
-                    views.incomingNameTV.setText(data.getSender() + " is Calling you");
+                    views.incomingNameTV.setText(data.getSender());
 
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
                     reference.orderByChild("username").equalTo(data.getSender()).addListenerForSingleValueEvent(new ValueEventListener() {
