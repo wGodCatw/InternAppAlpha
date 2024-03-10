@@ -21,6 +21,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
+/**
+ * Activity for updating user email address after re-authentication.
+ */
 public class UpdateEmailActivity extends AppCompatActivity {
     private FirebaseAuth authProfile;
     private ProgressBar progressBar;
@@ -42,7 +45,6 @@ public class UpdateEmailActivity extends AppCompatActivity {
         btnUpdateEmail = findViewById(R.id.updEmailBtnUpdate);
         btnAuth = findViewById(R.id.updEmailBtnAuth);
 
-
         btnUpdateEmail.setEnabled(false);
         edtupdEmail.setEnabled(false);
 
@@ -58,9 +60,13 @@ public class UpdateEmailActivity extends AppCompatActivity {
         } else {
             reAuthenticate(firebaseUser);
         }
-
     }
 
+    /**
+     * Handles re-authentication of the user with their password.
+     *
+     * @param firebaseUser The current Firebase user.
+     */
     private void reAuthenticate(FirebaseUser firebaseUser) {
         btnAuth.setOnClickListener(v -> {
             password = Objects.requireNonNull(edtpassword.getText()).toString();
@@ -111,16 +117,20 @@ public class UpdateEmailActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-
             }
         });
     }
 
+    /**
+     * Updates the email address of the user after successful re-authentication.
+     *
+     * @param firebaseUser The current Firebase user.
+     * @param email        The new email address to be updated.
+     */
     private void updateEmail(FirebaseUser firebaseUser, String email) {
         firebaseUser.verifyBeforeUpdateEmail(email).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(getApplicationContext(), "Email has been updated. Please check you inbox to verify it", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Email has been updated. Please check your inbox to verify it", Toast.LENGTH_LONG).show();
             } else {
                 try {
                     throw Objects.requireNonNull(task.getException());

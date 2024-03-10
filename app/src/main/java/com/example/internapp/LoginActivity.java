@@ -14,7 +14,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
@@ -22,6 +21,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
+/**
+ * Activity for handling user login functionality.
+ */
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivityV2";
     FirebaseAuth authProfile;
@@ -89,6 +91,12 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Logs in the user with the provided email and password.
+     *
+     * @param textEmail The email entered by the user.
+     * @param textPwd   The password entered by the user.
+     */
     private void loginUser(String textEmail, String textPwd) {
         authProfile.signInWithEmailAndPassword(textEmail, textPwd).addOnCompleteListener(LoginActivity.this, task -> {
             if (task.isSuccessful()) {
@@ -123,6 +131,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Shows an alert dialog informing the user that email verification is required.
+     */
     private void showAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
         builder.setTitle("Email not verified");

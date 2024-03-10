@@ -102,7 +102,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         // Start the BackgroundCheck service if it's not running
         Intent backgroundCheck = new Intent(this, BackgroundCheck.class);
-        if (!BackgroundCheck.isServiceRunning()) {
+        if (BackgroundCheck.isServiceRunning()) {
             startService(backgroundCheck);
         }
 

@@ -25,13 +25,15 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.Objects;
 
+/**
+ * The DeleteUserActivity class allows users to delete their account and associated data after re-authenticating themselves.
+ */
 public class DeleteUserActivity extends AppCompatActivity {
     private FirebaseAuth authProfile;
     private FirebaseUser firebaseUser;
     private ProgressBar progressBar;
     private String password;
     private Button btnAuth, btnDeleteAccount;
-
     private TextInputEditText edtPassword;
     private TextView titleAuth;
 
@@ -59,9 +61,14 @@ public class DeleteUserActivity extends AppCompatActivity {
         } else {
             reAuthenticateUser(firebaseUser);
         }
-
     }
 
+    /**
+     * Prompts the user to re-authenticate themselves by entering their current password.
+     * If the authentication is successful, it enables the "Delete Account" button.
+     *
+     * @param firebaseUser The current FirebaseUser instance.
+     */
     private void reAuthenticateUser(FirebaseUser firebaseUser) {
         btnAuth.setOnClickListener(v -> {
             password = Objects.requireNonNull(edtPassword.getText()).toString();
@@ -71,8 +78,10 @@ public class DeleteUserActivity extends AppCompatActivity {
                 edtPassword.requestFocus();
             } else {
                 progressBar.setVisibility(View.VISIBLE);
+                // Create an AuthCredential object with the user's email and current password
                 AuthCredential authCredential = EmailAuthProvider.getCredential(Objects.requireNonNull(firebaseUser.getEmail()), password);
 
+                // Re-authenticate the user with their current password
                 firebaseUser.reauthenticate(authCredential).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
@@ -83,6 +92,7 @@ public class DeleteUserActivity extends AppCompatActivity {
                         titleAuth.setText("You are authenticated. You can delete your account now");
                         Toast.makeText(DeleteUserActivity.this, "You can delete your account. Be careful, this action can not be undone", Toast.LENGTH_LONG).show();
 
+                        // Set an OnClickListener for the "Delete Account" button
                         btnDeleteAccount.setOnClickListener(v1 -> showAlertDialog());
                     } else {
                         try {
@@ -97,13 +107,18 @@ public class DeleteUserActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Displays an AlertDialog to confirm if the user wants to delete their account and associated data.
+     */
     private void showAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(DeleteUserActivity.this);
         builder.setTitle("Delete account and related data");
         builder.setMessage("Do you really want to delete your account? This action is irreversible");
 
+        // When the user confirms, call the deleteUserData method
         builder.setPositiveButton("Yes, delete the account", (dialog, which) -> deleteUserData(firebaseUser));
 
+        // When the user cancels, navigate back to the SettingsActivity
         builder.setNegativeButton("Cancel", (dialog, which) -> {
             Intent intent = new Intent(DeleteUserActivity.this, SettingsActivity.class);
             startActivity(intent);
@@ -112,10 +127,14 @@ public class DeleteUserActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
 
+        // Change the color of the positive button (Delete Account)
         alertDialog.setOnShowListener(dialog -> alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.red, getTheme())));
         alertDialog.show();
     }
 
+    /**
+     * Deletes the user's account from Firebase Authentication.
+     */
     private void deleteUser() {
         firebaseUser.delete().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -135,29 +154,32 @@ public class DeleteUserActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Deletes the user's data from Firebase Realtime Database and Firebase Storage.
+     *
+     * @param firebaseUser The current FirebaseUser instance.
+     */
     private void deleteUserData(FirebaseUser firebaseUser) {
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = firebaseStorage.getReferenceFromUrl(Objects.requireNonNull(firebaseUser.getPhotoUrl()).toString());
+
+        // Delete the user's profile picture from Firebase Storage
         if (firebaseUser.getPhotoUrl() != null) {
             storageReference.delete().addOnSuccessListener(unused -> Log.d("Data deletion", "Profile picture deleted")).addOnFailureListener(e -> {
                 Log.e("Data deletion", Objects.requireNonNull(e.getMessage()));
                 Toast.makeText(DeleteUserActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-
             });
         }
 
-
+        // Delete the user's data from the "HRs" node in Firebase Realtime Database
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
-
         databaseReference.child(firebaseUser.getUid()).removeValue().addOnSuccessListener(unused -> {
             deleteUser();
             Log.d("Data deletion", "User data deleted");
         });
 
+        // Delete the user's data from the "Students" node in Firebase Realtime Database
         databaseReference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
         databaseReference.child(firebaseUser.getUid()).removeValue().addOnSuccessListener(unused -> Log.d("Data deletion", "User data deleted"));
-
-
     }
 }
-

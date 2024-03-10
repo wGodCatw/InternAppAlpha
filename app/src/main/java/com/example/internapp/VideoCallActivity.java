@@ -25,7 +25,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-
+/**
+ * Activity for handling video calls.
+ */
 public class VideoCallActivity extends AppCompatActivity implements MainRepository.Listener {
 
     private final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -44,6 +46,9 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
         init();
     }
 
+    /**
+     * Initializes the activity.
+     */
     private void init() {
         mainRepository = MainRepository.getInstance();
 
@@ -56,8 +61,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
         });
 
         views.callBtn.setOnClickListener(v -> {
-
-            //Hide keyboard
+            // Hide keyboard
             InputMethodManager imm = (InputMethodManager) VideoCallActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
             View view = VideoCallActivity.this.getCurrentFocus();
             if (view == null) {
@@ -65,31 +69,32 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
             }
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-            //start a call request here
+            // Start a call request
             mainRepository.sendCallRequest(views.targetUserNameEt.getText().toString().trim(), () -> {
                 Toast.makeText(this, "couldn't find the target", Toast.LENGTH_SHORT).show();
             });
-
         });
 
+        // Initialization of local and remote views
         mainRepository.initLocalView(views.localView);
         mainRepository.initRemoteView(views.remoteView);
         mainRepository.listener = this;
+
+        // Handling incoming call event
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String studentUsername = extras.getString("studentUsername");
-            //log student username
             views.targetUserNameEt.setText(studentUsername);
-
             views.callBtn.performClick();
-
         }
 
+        // Subscribing for latest event
         mainRepository.subscribeForLatestEvent(data -> {
             if (data.getType() == DataModelType.StartCall) {
                 runOnUiThread(() -> {
+                    // Setting up incoming call UI
                     views.incomingNameTV.setText(data.getSender());
-
+                    // Loading caller's photo
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
                     reference.orderByChild("username").equalTo(data.getSender()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -97,10 +102,11 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                             if (snapshot.exists()) {
                                 for (DataSnapshot snap : snapshot.getChildren()) {
                                     Uri photo = Uri.parse(snap.child("userPic").getValue().toString());
+                                    if (!photo.toString().equals("none")) {
+                                        Picasso.get().load(photo).into(views.callerPic);
+                                    }
 
-                                    Picasso.get().load(photo).into(views.callerPic);
                                 }
-
                             } else {
                                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
                                 reference.orderByChild("username").equalTo(data.getSender()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -109,10 +115,10 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                                         if (snapshot.exists()) {
                                             for (DataSnapshot snap : snapshot.getChildren()) {
                                                 Uri photo = Uri.parse(snap.child("userPic").getValue().toString());
-
-                                                Picasso.get().load(photo).into(views.callerPic);
+                                                if (!photo.toString().equals("none")) {
+                                                    Picasso.get().load(photo).into(views.callerPic);
+                                                }
                                             }
-
                                         } else {
                                             Log.e("VideoCallActivity", "onDataChange: user not found");
                                         }
@@ -120,7 +126,6 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
-
                                     }
                                 });
                             }
@@ -128,24 +133,22 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
                         }
                     });
 
+                    // Handling accept and reject call actions
                     views.incomingCallLayout.setVisibility(View.VISIBLE);
                     views.acceptButton.setOnClickListener(v -> {
                         // Stop background service
                         Intent backgroundCheckIntent = new Intent(this, BackgroundCheck.class);
-
                         stopService(backgroundCheckIntent);
-
-                        // Start the call here
+                        // Start the call
                         mainRepository.startCall(data.getSender());
                         views.incomingCallLayout.setVisibility(View.GONE);
                     });
 
                     views.rejectButton.setOnClickListener(v -> {
-
+                        // Remove call entries from database and finish activity
                         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
                         dbRef.child(data.getTarget()).setValue("");
                         dbRef.child(data.getSender()).setValue("");
@@ -156,10 +159,12 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
             }
         });
 
+        // Switching camera
         views.switchCameraButton.setOnClickListener(v -> {
             mainRepository.switchCamera();
         });
 
+        // Toggling speaker
         views.switchSpeakerButton.setOnClickListener(v -> {
             if (isSpeakerOn) {
                 views.switchSpeakerButton.setImageResource(R.drawable.ic_speaker_on);
@@ -170,6 +175,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
             isSpeakerOn = !isSpeakerOn;
         });
 
+        // Toggling microphone
         views.micButton.setOnClickListener(v -> {
             if (isMicrophoneMuted) {
                 views.micButton.setImageResource(R.drawable.ic_mic);
@@ -180,6 +186,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
             isMicrophoneMuted = !isMicrophoneMuted;
         });
 
+        // Toggling video
         views.videoButton.setOnClickListener(v -> {
             if (isCameraMuted) {
                 views.videoButton.setImageResource(R.drawable.ic_video);
@@ -190,9 +197,10 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
             isCameraMuted = !isCameraMuted;
         });
 
+        // Ending the call
         views.endCallButton.setOnClickListener(v -> {
             Intent backgroundCheck = new Intent(this, BackgroundCheck.class);
-            if (!BackgroundCheck.isServiceRunning()) {
+            if (BackgroundCheck.isServiceRunning()) {
                 startService(backgroundCheck);
             }
 
@@ -224,22 +232,18 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-
                             }
                         });
                     }
-
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
                 }
             });
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancelAll();
-
 
             finish();
         });

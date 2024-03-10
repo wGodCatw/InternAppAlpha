@@ -11,60 +11,101 @@ import org.webrtc.PeerConnection;
 import org.webrtc.SessionDescription;
 import org.webrtc.SurfaceViewRenderer;
 
+/**
+ * MainRepository class handles the communication between the application and Firebase/WebRTC clients.
+ */
 public class MainRepository implements WebRTCClient.Listener {
 
-    public Listener listener;
+    /**
+     * WebRTC client for establishing and managing WebRTC connections.
+     */
+
+    private static MainRepository instance;
+    /**
+     * Gson instance for JSON serialization/deserialization.
+     */
     private final Gson gson = new Gson();
+    /**
+     * Firebase client for handling authentication and messaging.
+     */
     private final FirebaseClient firebaseClient;
-
+    /**
+     * Listener for WebRTC events.
+     */
+    public Listener listener;
     private WebRTCClient webRTCClient;
-
+    /**
+     * Username of the current user.
+     */
     private String currentUsername;
-
+    /**
+     * SurfaceViewRenderer for remote video display.
+     */
     private SurfaceViewRenderer remoteView;
-
+    /**
+     * Target user for communication.
+     */
     private String target;
-    private void updateCurrentUsername(String username){
-        this.currentUsername = username;
-    }
 
-    private MainRepository(){
+    /**
+     * Private constructor to enforce singleton pattern.
+     */
+    private MainRepository() {
         this.firebaseClient = new FirebaseClient();
     }
 
-    private static MainRepository instance;
-    public static MainRepository getInstance(){
-        if (instance == null){
+    /**
+     * Retrieves the singleton instance of MainRepository.
+     *
+     * @return MainRepository instance.
+     */
+    public static MainRepository getInstance() {
+        if (instance == null) {
             instance = new MainRepository();
         }
         return instance;
     }
 
-    public void login(String username, Context context, SuccessCallback callBack){
-        firebaseClient.login(username,()->{
+    /**
+     * Updates the current username of the user.
+     *
+     * @param username The new username to be set as the current username.
+     */
+    private void updateCurrentUsername(String username) {
+        this.currentUsername = username;
+    }
+
+    /**
+     * Logs in the user.
+     *
+     * @param username Username of the user.
+     * @param context  Application context.
+     * @param callBack Callback for login success.
+     */
+    public void login(String username, Context context, SuccessCallback callBack) {
+        firebaseClient.login(username, () -> {
             updateCurrentUsername(username);
-            this.webRTCClient = new WebRTCClient(context,new MyPeerConnectionObserver(){
+            this.webRTCClient = new WebRTCClient(context, new MyPeerConnectionObserver() {
                 @Override
                 public void onAddStream(MediaStream mediaStream) {
                     super.onAddStream(mediaStream);
-                    try{
+                    try {
                         mediaStream.videoTracks.get(0).addSink(remoteView);
-                    }catch (Exception e){
-                        e.printStackTrace();
+                    } catch (Exception e) {
+                        Log.e("TAG", "onAddStream: ", e);
                     }
                 }
 
                 @Override
                 public void onConnectionChange(PeerConnection.PeerConnectionState newState) {
-                    Log.d("TAG", "onConnectionChange: "+newState);
+                    Log.d("TAG", "onConnectionChange: " + newState);
                     super.onConnectionChange(newState);
-                    if (newState == PeerConnection.PeerConnectionState.CONNECTED && listener!=null){
+                    if (newState == PeerConnection.PeerConnectionState.CONNECTED && listener != null) {
                         listener.webrtcConnected();
                     }
 
-                    if (newState == PeerConnection.PeerConnectionState.CLOSED ||
-                            newState == PeerConnection.PeerConnectionState.DISCONNECTED ){
-                        if (listener!=null){
+                    if (newState == PeerConnection.PeerConnectionState.CLOSED || newState == PeerConnection.PeerConnectionState.DISCONNECTED) {
+                        if (listener != null) {
                             listener.webrtcClosed();
                         }
                     }
@@ -73,74 +114,117 @@ public class MainRepository implements WebRTCClient.Listener {
                 @Override
                 public void onIceCandidate(IceCandidate iceCandidate) {
                     super.onIceCandidate(iceCandidate);
-                    webRTCClient.sendIceCandidate(iceCandidate,target);
+                    webRTCClient.sendIceCandidate(iceCandidate, target);
                 }
-            },username);
+            }, username);
             webRTCClient.listener = this;
             callBack.onSuccess();
         });
     }
 
-    public void initLocalView(SurfaceViewRenderer view){
+    /**
+     * Initializes local video view.
+     *
+     * @param view SurfaceViewRenderer for local video display.
+     */
+    public void initLocalView(SurfaceViewRenderer view) {
         webRTCClient.initLocalSurfaceView(view);
     }
 
-    public void initRemoteView(SurfaceViewRenderer view){
+    /**
+     * Initializes remote video view.
+     *
+     * @param view SurfaceViewRenderer for remote video display.
+     */
+    public void initRemoteView(SurfaceViewRenderer view) {
         webRTCClient.initRemoteSurfaceView(view);
         this.remoteView = view;
     }
 
-    public void startCall(String target){
+    /**
+     * Initiates a call to the target user.
+     *
+     * @param target Username of the target user.
+     */
+    public void startCall(String target) {
         webRTCClient.call(target);
     }
 
+    /**
+     * Switches the camera between front and back.
+     */
     public void switchCamera() {
         webRTCClient.switchCamera();
     }
 
-    public void toggleSpeaker(Boolean shouldBeSpeaker){
+    /**
+     * Toggles the audio output device.
+     *
+     * @param shouldBeSpeaker True if speaker should be enabled, false otherwise.
+     */
+    public void toggleSpeaker(Boolean shouldBeSpeaker) {
         webRTCClient.switchAudioDevice(shouldBeSpeaker);
     }
 
-    public void toggleAudio(Boolean shouldBeMuted){
+    /**
+     * Toggles the audio mute state.
+     *
+     * @param shouldBeMuted True if audio should be muted, false otherwise.
+     */
+    public void toggleAudio(Boolean shouldBeMuted) {
         webRTCClient.toggleAudio(shouldBeMuted);
     }
-    public void toggleVideo(Boolean shouldBeMuted){
+
+    /**
+     * Toggles the video mute state.
+     *
+     * @param shouldBeMuted True if video should be muted, false otherwise.
+     */
+    public void toggleVideo(Boolean shouldBeMuted) {
         webRTCClient.toggleVideo(shouldBeMuted);
     }
-    public void sendCallRequest(String target, ErrorCallback errorCallBack){
-        firebaseClient.sendMessageToOtherUser(
-                new DataModel(target,currentUsername,null, DataModelType.StartCall),errorCallBack
-        );
+
+    /**
+     * Sends a call request to the target user.
+     *
+     * @param target        Username of the target user.
+     * @param errorCallBack Callback for error handling.
+     */
+    public void sendCallRequest(String target, ErrorCallback errorCallBack) {
+        firebaseClient.sendMessageToOtherUser(new DataModel(target, currentUsername, null, DataModelType.StartCall), errorCallBack);
     }
 
-    public void endCall(){
+    /**
+     * Ends an ongoing call.
+     */
+    public void endCall() {
         webRTCClient.closeConnection();
     }
 
-    public void subscribeForLatestEvent(NewEventCallback callBack){
+    /**
+     * Subscribes to the latest event from Firebase.
+     *
+     * @param callBack Callback for handling new events.
+     */
+    public void subscribeForLatestEvent(NewEventCallback callBack) {
         firebaseClient.observeIncomingLatestEvent(model -> {
-            switch (model.getType()){
+            switch (model.getType()) {
 
                 case Offer:
                     this.target = model.getSender();
-                    webRTCClient.onRemoteSessionReceived(new SessionDescription(
-                            SessionDescription.Type.OFFER,model.getData()
-                    ));
+                    webRTCClient.onRemoteSessionReceived(new SessionDescription(SessionDescription.Type.OFFER, model.getData()));
                     webRTCClient.answer(model.getSender());
                     break;
                 case Answer:
                     this.target = model.getSender();
-                    webRTCClient.onRemoteSessionReceived(new SessionDescription(
-                            SessionDescription.Type.ANSWER,model.getData()
-                    ));
+                    webRTCClient.onRemoteSessionReceived(new SessionDescription(SessionDescription.Type.ANSWER, model.getData()));
                     break;
                 case IceCandidate:
-                    try{
-                        IceCandidate candidate = gson.fromJson(model.getData(),IceCandidate.class);
+                    try {
+                        IceCandidate candidate = gson.fromJson(model.getData(), IceCandidate.class);
                         webRTCClient.addIceCandidate(candidate);
-                    }catch (Exception e){
-                        e.printStackTrace();
+                    } catch (Exception e) {
+                        Log.e("TAG", "subscribeForLatestEvent: ", e);
                     }
                     break;
                 case StartCall:
@@ -152,13 +236,29 @@ public class MainRepository implements WebRTCClient.Listener {
         });
     }
 
+    /**
+     * Callback method for transferring data to other peers.
+     *
+     * @param model DataModel object to be sent.
+     */
     @Override
     public void onTransferDataToOtherPeer(DataModel model) {
-        firebaseClient.sendMessageToOtherUser(model,()->{});
+        firebaseClient.sendMessageToOtherUser(model, () -> {
+        });
     }
 
-    public interface Listener{
+    /**
+     * Interface for listening to WebRTC events.
+     */
+    public interface Listener {
+        /**
+         * Invoked when WebRTC connection is established.
+         */
         void webrtcConnected();
+
+        /**
+         * Invoked when WebRTC connection is closed.
+         */
         void webrtcClosed();
     }
 }

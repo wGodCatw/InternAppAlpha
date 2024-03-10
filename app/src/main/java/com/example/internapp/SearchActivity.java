@@ -22,15 +22,26 @@ import java.util.ArrayList;
 public class SearchActivity extends AppCompatActivity {
     final static ArrayList<String> filtersUniversities = new ArrayList<>();
     final static ArrayList<String> filtersFaculties = new ArrayList<>();
-    private static ChipGroup chipGroup;
     private static final ArrayList<University> universities = new ArrayList<>();
     private static final ArrayList<University> faculties = new ArrayList<>();
-    public TextView filtersTxt;
     static final UniversitiesRecViewAdapter uniAdapter = new UniversitiesRecViewAdapter(universities, faculties);
     static final UniversitiesRecViewAdapter facultyAdapter = new UniversitiesRecViewAdapter(universities, faculties);
+    private static ChipGroup chipGroup;
+    public TextView filtersTxt;
 
-
-    public static void createChip(ArrayList<University> faculties, ArrayList<University> universities, String text, View view, UniversitiesRecViewAdapter uniAdapter, UniversitiesRecViewAdapter facultyAdapter ) {
+    /**
+     * Creates a Chip (a small UI component that displays information) for the given text.
+     * The Chip represents either a university or a faculty and is added to the ChipGroup.
+     * If the Chip already exists, it is removed from the ChipGroup and the corresponding filter list.
+     *
+     * @param faculties      The list of faculties to filter.
+     * @param universities   The list of universities to filter.
+     * @param text           The text to display on the Chip.
+     * @param view           The View object used to inflate the Chip layout.
+     * @param uniAdapter     The adapter for the university RecyclerView.
+     * @param facultyAdapter The adapter for the faculty RecyclerView.
+     */
+    public static void createChip(ArrayList<University> faculties, ArrayList<University> universities, String text, View view, UniversitiesRecViewAdapter uniAdapter, UniversitiesRecViewAdapter facultyAdapter) {
         Chip chip = (Chip) LayoutInflater.from(view.getContext()).inflate(R.layout.chip_layout, chipGroup, false);
 
         if (!filtersFaculties.contains(text) && !filtersUniversities.contains(text)) {
@@ -38,15 +49,13 @@ public class SearchActivity extends AppCompatActivity {
             chip.setId(ViewCompat.generateViewId());
             chipGroup.addView(chip);
 
-            for (University uni :
-                    universities) {
+            for (University uni : universities) {
                 if (uni.getName().equals(text)) {
                     filtersUniversities.add(text);
                 }
             }
 
-            for (University uni :
-                    faculties) {
+            for (University uni : faculties) {
                 if (uni.getName().equals(text)) {
                     filtersFaculties.add(text);
                 }
@@ -66,9 +75,9 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             // Remove the text from the filters list
-            if(filtersUniversities.contains(text)){
+            if (filtersUniversities.contains(text)) {
                 filtersUniversities.remove(text);
-            } else{
+            } else {
                 filtersFaculties.remove(text);
             }
 
@@ -81,7 +90,7 @@ public class SearchActivity extends AppCompatActivity {
             for (University faculty : faculties) {
                 if (faculty.getName().equals(text)) {
                     filtersFaculties.remove(text);
-                    // update the RecyclerView item
+                    // Update the RecyclerView item
                     facultyAdapter.notifyItemChanged(faculties.indexOf(faculty));
                 }
             }
@@ -90,13 +99,17 @@ public class SearchActivity extends AppCompatActivity {
             for (University university : universities) {
                 if (university.getName().equals(text)) {
                     filtersUniversities.remove(text);
-                    // update the RecyclerView item
+                    // Update the RecyclerView item
                     uniAdapter.notifyItemChanged(universities.indexOf(university));
                 }
             }
         });
     }
 
+    /**
+     * Called when the activity resumes.
+     * Clears the ChipGroup, filter lists, and notifies the RecyclerView adapters of data changes.
+     */
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onResume() {
@@ -121,6 +134,7 @@ public class SearchActivity extends AppCompatActivity {
         final RecyclerView facultiesRecView = findViewById(R.id.FacultiesRecView);
         final RecyclerView universitiesRecView = findViewById(R.id.UniversitiesRecView);
 
+        // Add sample universities and faculties to the respective lists
         universities.add(new University("Tel Aviv", "https://img.haarets.co.il/bs/00000184-9ebe-d710-a7c6-deff5e1e0000/2e/b4/0de8269e4f0a88c02a847a3bc529/49436148.JPG?precrop=4961,3307,x0,y0&height=1280&width=1920"));
         universities.add(new University("Bar-Ilan", "https://cdn.jns.org/uploads/2019/11/Bar-Ilan-University-Psychology-Department-scaled.jpg"));
         universities.add(new University("Ben Gurion", "https://www.abidat.in/images/Ben-Gurion-University-of-the-Negev.jpg"));
@@ -143,7 +157,8 @@ public class SearchActivity extends AppCompatActivity {
         faculties.add(new University("Journalism", "https://www.rollingstone.com/wp-content/uploads/2022/06/JRN_Module2_in-article-image.jpg?w=1581&h=1054&crop=1"));
         faculties.add(new University("Biology", "https://marvel-b1-cdn.bc0a.com/f00000000290162/images.ctfassets.net/2htm8llflwdx/7sTZ1yfHmDZgSzW5eglpvc/cc0db8624510f74fcfc2a57d60f1518f/Classroom_StudentGroup_ScienceLab_Indoor_GettyImages-1188549344.jpg?fit=thumb"));
         faculties.add(new University("Visual arts", "https://res.cloudinary.com/highereducation/images/w_1024,h_683,c_scale/f_auto,q_auto/v1671826076/BestColleges.com/hubs/art-hub/art-hub-1024x683.jpg"));
-
+        faculties.add(new University("Business", "https://media.istockphoto.com/id/541114144/photo/bound-by-business.jpg?s=612x612&w=0&k=20&c=sRpFWa216olf8SZkAK3MTwyNAfHNt4G5eGZPHNfOvvQ="));
+        faculties.add(new University("Health", "https://www.hhmglobal.com/wp-content/uploads/news/21610/medical-students.jpg"));
 
         uniAdapter.setUniversities(universities);
         universitiesRecView.setAdapter(uniAdapter);
@@ -156,6 +171,7 @@ public class SearchActivity extends AppCompatActivity {
 
         Button goToSearchBtn = findViewById(R.id.goToSearchBtn);
         goToSearchBtn.setOnClickListener(v -> {
+            // Start the SearchStudents activity and pass the filter lists as extras
             Intent intent = new Intent(getApplicationContext(), SearchStudents.class);
             intent.putExtra("filtersFaculties", filtersFaculties);
             intent.putExtra("filtersUniversities", filtersUniversities);
@@ -164,6 +180,7 @@ public class SearchActivity extends AppCompatActivity {
 
 
         SpeedDialView speedDialView = findViewById(R.id.speedDialView);
+        // Initialize the SpeedDial view (a floating action button with expandable options)
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), SearchActivity.this);
 
     }

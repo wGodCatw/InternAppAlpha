@@ -26,25 +26,32 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Adapter for ViewPager in StudentProfileActivity.
+ */
 public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.ViewHolder> {
 
     private final ArrayList<ViewPagerItem> viewPagerItemArrayList;
     private final Context context;
-    private final Activity a;
+    private final Activity activity;
 
-
-    public ViewPagerAdapter(Activity a, final ArrayList<ViewPagerItem> viewPagerItemArrayList, Context context) {
+    /**
+     * Constructor for ViewPagerAdapter.
+     *
+     * @param activity               The activity context.
+     * @param viewPagerItemArrayList The list of ViewPagerItems.
+     * @param context                The context.
+     */
+    public ViewPagerAdapter(Activity activity, final ArrayList<ViewPagerItem> viewPagerItemArrayList, Context context) {
         this.viewPagerItemArrayList = viewPagerItemArrayList;
-        this.a = a;
+        this.activity = activity;
         this.context = context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewpager_item, parent, false);
-
         return new ViewHolder(view);
     }
 
@@ -53,7 +60,8 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
         final ViewPagerItem viewPagerItem = viewPagerItemArrayList.get(position);
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        //check if student is already in favorites
+        // Check if student is already in favorites
+        assert firebaseUser != null;
         DatabaseReference referenceImage = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid());
         referenceImage.child("favoriteStudents").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -69,6 +77,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
                                 for (DataSnapshot snap : snapshot.getChildren()) {
                                     UID = snap.getKey();
                                 }
+                                assert favoriteStr != null;
                                 ArrayList<String> favoritesList = new ArrayList<>(Arrays.asList(favoriteStr.split(",")));
                                 if (favoritesList.contains(UID)) {
                                     holder.addToFavorites.setImageResource(R.drawable.ic_favorites_added);
@@ -92,10 +101,13 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
             }
         });
 
+        // Set text data for ViewPagerItem
         holder.txtUsername.setText("@" + viewPagerItem.getUsername());
         holder.txtName.setText(viewPagerItem.getName());
         holder.txtFaculty.setText(viewPagerItem.getFaculty());
         holder.txtUniversity.setText(viewPagerItem.getUniversity());
+
+        // Handle profile button click
         holder.btnProfile.setOnClickListener(v -> {
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
             reference.orderByChild("username").equalTo(viewPagerItem.getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -119,19 +131,23 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
                 }
             });
         });
+
+        // Handle WhatsApp link click
         holder.whatsappLink.setOnClickListener(v -> {
+            // Open WhatsApp chat with student
             String url = "https://api.whatsapp.com/send?phone=" + viewPagerItem.getWhatsappNumber();
             try {
-                PackageManager pm = context.getApplicationContext().getPackageManager();
+                PackageManager pm = context.getPackageManager();
                 pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
-                a.startActivity(i);
+                activity.startActivity(i);
             } catch (PackageManager.NameNotFoundException e) {
-                a.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             }
         });
 
+        // Handle favorites button click
         holder.addToFavorites.setOnClickListener(v -> {
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid());
@@ -229,7 +245,8 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
             });
         });
 
-        if(!viewPagerItemArrayList.get(position).getImageUrl().equals("none")){
+        // Load student image if available
+        if (!viewPagerItemArrayList.get(position).getImageUrl().equals("none")) {
             Picasso.get().load(viewPagerItemArrayList.get(position).getImageUrl()).into(holder.imgStudentSearch);
         }
     }
@@ -239,11 +256,19 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
         return viewPagerItemArrayList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    /**
+     * ViewHolder class for ViewPagerAdapter.
+     */
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView imgStudentSearch, whatsappLink, addToFavorites, btnProfile;
         private final TextView txtName, txtFaculty, txtUsername, txtUniversity;
 
+        /**
+         * Constructor for ViewHolder.
+         *
+         * @param itemView The view item.
+         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 

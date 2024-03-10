@@ -30,17 +30,33 @@
                 android:id="@+id/txtName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Student Name"
+                android:layout_marginTop="40dp"
                 android:fontFamily="@font/montserrat"
+                android:text="Student Name"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.86"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/txtUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:text="Student username"
+                android:textColor="@color/black"
+                android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@+id/txtEmail"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.835"
+                app:layout_constraintHorizontal_bias="0.829"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.258">
+                app:layout_constraintTop_toBottomOf="@id/txtName"
+                app:layout_constraintVertical_bias="0.576">
 
             </TextView>
 
@@ -48,15 +64,15 @@
                 android:id="@+id/txtEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="28dp"
+                android:layout_marginBottom="32dp"
+                android:fontFamily="@font/montserrat"
                 android:text="Student Email"
                 android:textColor="@color/black"
-                android:fontFamily="@font/montserrat"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.821"
+                app:layout_constraintHorizontal_bias="0.849"
                 app:layout_constraintStart_toStartOf="parent">
 
             </TextView>
@@ -67,7 +83,7 @@
                 android:layout_height="150dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="10dp"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/ic_profile"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/txtEmail"

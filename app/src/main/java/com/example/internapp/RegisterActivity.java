@@ -38,6 +38,9 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Activity for user registration.
+ */
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
     private final String[] universities = {"Tel Aviv", "Bar-Ilan", "Ben Gurion", "Technion", "Haifa", "Weizmann", "Reichman", "Hebrew", "Open University", "Ariel"};
@@ -59,6 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        // Initializing UI elements
         editTextRegisterFullName = findViewById(R.id.edt_register_full_name);
         editTextRegisterEmail = findViewById(R.id.edt_register_email);
         editTextRegisterPwd = findViewById(R.id.edt_register_pwd);
@@ -67,38 +71,33 @@ public class RegisterActivity extends AppCompatActivity {
         editTextRegisterPhone = findViewById(R.id.edt_register_mobile);
         text_register_dob = findViewById(R.id.result_dob_register);
         edt_username = findViewById(R.id.edt_username);
-
-
         layout_autoUni = findViewById(R.id.layout_coordinator_uni);
         layout_autoFaculty = findViewById(R.id.layout_coordinator_faculty);
-
         dateLayoutText = findViewById(R.id.text_register_dob);
-
         progressBar = findViewById(R.id.progress_bar);
-
         radioGroupRegisterRole = findViewById(R.id.radioGroup_registerRole);
-        radioGroupRegisterRole.clearCheck();
-
         layout_uni_company = findViewById(R.id.layout_register_uni_company);
         textUniCompany = findViewById(R.id.text_register_uni);
-
         autoUniversity = findViewById(R.id.uniSelect);
         autoFaculty = findViewById(R.id.facultySelect);
 
+        // Populating AutoCompleteTextViews
         ArrayAdapter<String> adapterUnis = new ArrayAdapter<>(this, R.layout.faculty_item, universities);
         ArrayAdapter<String> adapterFaculties = new ArrayAdapter<>(this, R.layout.faculty_item, faculties);
-
         autoUniversity.setAdapter(adapterUnis);
         autoFaculty.setAdapter(adapterFaculties);
 
         autoUniversity.setOnItemClickListener((parent, view, position, id) -> {
+            // Additional handling if needed
         });
 
         autoFaculty.setOnItemClickListener((parent, view, position, id) -> {
+            // Additional handling if needed
         });
 
         login = findViewById(R.id.loginFromRegister);
         login.setOnClickListener(v -> {
+            // Navigate to LoginActivity
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -123,13 +122,12 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-
         editTextDateOfBirth.setOnClickListener(v -> {
+            // Display date picker dialog
             final Calendar calendar = Calendar.getInstance();
             int day = calendar.get(Calendar.DAY_OF_MONTH);
             int month = calendar.get(Calendar.MONTH);
             int year = calendar.get(Calendar.YEAR);
-
             picker = new DatePickerDialog(RegisterActivity.this, (view, year1, month1, dayOfMonth) -> {
                 dateLayoutText.setVisibility(View.VISIBLE);
                 text_register_dob.setText(dayOfMonth + "/" + (month1 + 1) + "/" + year1);
@@ -139,25 +137,26 @@ public class RegisterActivity extends AppCompatActivity {
 
         Button buttonRegister = findViewById(R.id.button_register);
         buttonRegister.setOnClickListener(v -> {
+            // Register button click handling
             String textUsername = Objects.requireNonNull(edt_username.getText()).toString().trim();
-
 
             findSameUsernameHR(textUsername, isExist -> {
                 if (isExist) {
+                    // Notify user about existing username
                     Toast.makeText(RegisterActivity.this, "Username already exists", Toast.LENGTH_LONG).show();
                     edt_username.setError("Username already exists");
                     edt_username.requestFocus();
                 } else {
                     findSameUsernameStudent(textUsername, isExist1 -> {
                         if (isExist1) {
+                            // Notify user about existing username
                             Toast.makeText(RegisterActivity.this, "Username already exists", Toast.LENGTH_LONG).show();
                             edt_username.setError("Username already exists");
                             edt_username.requestFocus();
                         } else {
-
+                            // Proceed with registration
                             int selectedRoleId = radioGroupRegisterRole.getCheckedRadioButtonId();
                             radioButtonRegisterRoleSelected = findViewById(selectedRoleId);
-
                             String textFullName = Objects.requireNonNull(editTextRegisterFullName.getText()).toString();
                             String textEmail = Objects.requireNonNull(editTextRegisterEmail.getText()).toString();
                             String textDoB = Objects.requireNonNull(text_register_dob.getText()).toString();
@@ -170,82 +169,101 @@ public class RegisterActivity extends AppCompatActivity {
                             Pattern mobilePattern = Pattern.compile(mobileRegex);
                             mobileMatcher = mobilePattern.matcher(textMobile);
 
-
+                            // Validating user input
                             if (TextUtils.isEmpty(textFullName)) {
+                                // Notify user about empty field
                                 Toast.makeText(RegisterActivity.this, "Please enter your full name", Toast.LENGTH_LONG).show();
                                 editTextRegisterFullName.setError("Full name is required");
                                 editTextRegisterFullName.requestFocus();
                             } else if (TextUtils.isEmpty(textUsername)) {
+                                // Notify user about empty field
                                 Toast.makeText(RegisterActivity.this, "Please re-enter your username", Toast.LENGTH_LONG).show();
                                 editTextRegisterFullName.setError("Username is too short");
                                 editTextRegisterFullName.requestFocus();
                             } else if (textUsername.length() < 6) {
+                                // Notify user about username length requirement
                                 Toast.makeText(RegisterActivity.this, "Username must be at least 6 characters", Toast.LENGTH_SHORT).show();
                                 edt_username.setError("Username is too short");
                                 edt_username.requestFocus();
                             } else if (textUsername.contains(" ") || textUsername.contains("&") || textUsername.contains("#")) {
+                                // Notify user about disallowed characters in username
                                 Toast.makeText(RegisterActivity.this, "Username cannot contain special characters", Toast.LENGTH_LONG).show();
                                 edt_username.setError("Username cannot contain special characters");
                                 edt_username.requestFocus();
                             } else if (TextUtils.isEmpty(textEmail)) {
+                                // Notify user about empty field
                                 Toast.makeText(RegisterActivity.this, "Please enter your email", Toast.LENGTH_LONG).show();
                                 editTextRegisterEmail.setError("Email is required");
                                 editTextRegisterEmail.requestFocus();
                             } else if (!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()) {
+                                // Notify user about invalid email format
                                 Toast.makeText(RegisterActivity.this, "Please re-enter your email", Toast.LENGTH_LONG).show();
                                 editTextRegisterEmail.setError("Valid email is required");
                                 editTextRegisterEmail.requestFocus();
                             } else if (TextUtils.isEmpty(textDoB)) {
+                                // Notify user about empty field
                                 Toast.makeText(RegisterActivity.this, "Please enter your date of birth", Toast.LENGTH_LONG).show();
                                 text_register_dob.setError("Date of birth is required");
                                 editTextDateOfBirth.requestFocus();
                             } else if (TextUtils.isEmpty(textMobile)) {
+                                // Notify user about empty field
                                 Toast.makeText(RegisterActivity.this, "Please enter your phone number", Toast.LENGTH_LONG).show();
                                 editTextRegisterPhone.setError("Phone number is required");
                                 editTextRegisterPhone.requestFocus();
                             } else if (textMobile.length() != 9) {
+                                // Notify user about invalid phone number length
                                 Toast.makeText(RegisterActivity.this, "Please re-enter your phone number", Toast.LENGTH_LONG).show();
                                 editTextRegisterPhone.setError("Please enter valid phone number");
                                 editTextRegisterPhone.requestFocus();
                             } else if (!mobileMatcher.find()) {
+                                // Notify user about invalid phone number format
                                 Toast.makeText(RegisterActivity.this, "Phone number is not valid", Toast.LENGTH_LONG).show();
                                 editTextRegisterPhone.setError("Not a valid phone number");
                                 editTextRegisterPhone.requestFocus();
                             } else if (TextUtils.isEmpty(textPassword)) {
+                                // Notify user about empty field
                                 Toast.makeText(RegisterActivity.this, "Please enter your password", Toast.LENGTH_LONG).show();
                                 editTextRegisterPwd.setError("Password is required");
                                 editTextRegisterPwd.requestFocus();
                             } else if (textPassword.length() < 6) {
+                                // Notify user about weak password
                                 Toast.makeText(RegisterActivity.this, "Password has to be at least 6 digits", Toast.LENGTH_LONG).show();
-                                editTextRegisterPwd.setError("Password is to weak");
+                                editTextRegisterPwd.setError("Password is too weak");
                                 editTextRegisterPwd.requestFocus();
                             } else if (TextUtils.isEmpty(textConfirmPassword)) {
+                                // Notify user about empty field
                                 Toast.makeText(RegisterActivity.this, "Please confirm your password", Toast.LENGTH_LONG).show();
                                 editTextRegisterConfirmPwd.setError("Password confirmation is required");
                                 editTextRegisterConfirmPwd.requestFocus();
                             } else if (!textPassword.equals(textConfirmPassword)) {
-                                Toast.makeText(RegisterActivity.this, "Password and confirm password doesn't match", Toast.LENGTH_LONG).show();
+                                // Notify user about password mismatch
+                                Toast.makeText(RegisterActivity.this, "Password and confirm password don't match", Toast.LENGTH_LONG).show();
                                 editTextRegisterConfirmPwd.setError("Password confirmation is required");
                                 editTextRegisterConfirmPwd.requestFocus();
                                 editTextRegisterPwd.clearComposingText();
                                 editTextRegisterConfirmPwd.clearComposingText();
                             } else if (radioGroupRegisterRole.getCheckedRadioButtonId() == -1) {
+                                // Notify user about role selection requirement
                                 Toast.makeText(RegisterActivity.this, "Please select your role", Toast.LENGTH_LONG).show();
                                 radioGroupRegisterRole.requestFocus();
                             } else {
+                                // User input is valid, proceed with registration
                                 textRole = radioButtonRegisterRoleSelected.getText().toString();
                                 progressBar.setVisibility(View.VISIBLE);
 
                                 if (textRole.equals("Student")) {
                                     if (TextUtils.isEmpty(autoUniversity.getText())) {
+                                        // Notify user about empty field
                                         Toast.makeText(RegisterActivity.this, "Please specify which university you're studying in", Toast.LENGTH_LONG).show();
                                         autoUniversity.requestFocus();
                                         autoUniversity.setError("University not specified");
                                     } else if (TextUtils.isEmpty(autoFaculty.getText())) {
+                                        // Notify user about empty field
                                         Toast.makeText(RegisterActivity.this, "Please specify which faculty you're studying in", Toast.LENGTH_LONG).show();
                                         autoFaculty.requestFocus();
                                         autoFaculty.setError("Faculty not specified");
                                     } else {
+                                        // Proceed with student registration
                                         UniCompany = autoUniversity.getText().toString();
                                         Faculty = autoFaculty.getText().toString();
                                         registerUser(textUsername.trim(), textFullName.trim(), textEmail, textDoB, textRole, "+972" + textMobile, textPassword, UniCompany, Faculty);
@@ -253,10 +271,12 @@ public class RegisterActivity extends AppCompatActivity {
                                 }
                                 if (textRole.equals("HR Specialist")) {
                                     if (TextUtils.isEmpty(textUniCompany.getText())) {
+                                        // Notify user about empty field
                                         Toast.makeText(RegisterActivity.this, "Please specify which company you're working in", Toast.LENGTH_LONG).show();
                                         textUniCompany.requestFocus();
                                         textUniCompany.setError("Company not specified");
                                     } else {
+                                        // Proceed with HR specialist registration
                                         UniCompany = textUniCompany.getText().toString();
                                         registerUser(textUsername.trim(), textFullName.trim(), textEmail, textDoB, textRole, "+972" + textMobile, textPassword, UniCompany);
                                     }
@@ -266,11 +286,9 @@ public class RegisterActivity extends AppCompatActivity {
                     });
                 }
             });
-
-
         });
-
     }
+
 
     private void findSameUsernameHR(String textUsername, CustomCallback callback) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
@@ -282,11 +300,17 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Handle onCancelled event
             }
         });
     }
 
+    /**
+     * Searches for a username in the Students registered users.
+     *
+     * @param textUsername The username to search for.
+     * @param callback     Callback interface to handle the result.
+     */
     private void findSameUsernameStudent(String textUsername, CustomCallback callback) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
         reference.orderByChild("username").equalTo(textUsername).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -297,11 +321,23 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Handle onCancelled event
             }
         });
     }
 
+    /**
+     * Registers a user.
+     *
+     * @param textUsername The username of the user.
+     * @param textFullName The full name of the user.
+     * @param textEmail    The email of the user.
+     * @param textDoB      The date of birth of the user.
+     * @param textRole     The role of the user.
+     * @param textMobile   The mobile number of the user.
+     * @param textPassword The password of the user.
+     * @param UniCompany   The company or university of the user.
+     */
     private void registerUser(String textUsername, String textFullName, String textEmail, String textDoB, String textRole, String textMobile, String textPassword, String UniCompany) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         auth.createUserWithEmailAndPassword(textEmail, textPassword).addOnCompleteListener(RegisterActivity.this, task -> {
@@ -317,9 +353,7 @@ public class RegisterActivity extends AppCompatActivity {
                 ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textUsername, textFullName, textDoB, textRole, textMobile, UniCompany, userPic);
                 DatabaseReference referenceProfile;
 
-
                 referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
-
 
                 referenceProfile.child(firebaseUser.getUid()).setValue(writeUserDetails).addOnCompleteListener(task1 -> {
 
@@ -338,8 +372,6 @@ public class RegisterActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
 
                 });
-
-
             } else {
                 try {
                     throw Objects.requireNonNull(task.getException());
@@ -351,13 +383,25 @@ public class RegisterActivity extends AppCompatActivity {
                     editTextRegisterEmail.requestFocus();
                 } catch (Exception e) {
                     Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-
                 }
                 progressBar.setVisibility(View.GONE);
             }
         });
     }
 
+    /**
+     * Registers a user with additional faculty information.
+     *
+     * @param textUsername The username of the user.
+     * @param textFullName The full name of the user.
+     * @param textEmail    The email of the user.
+     * @param textDoB      The date of birth of the user.
+     * @param textRole     The role of the user.
+     * @param textMobile   The mobile number of the user.
+     * @param textPassword The password of the user.
+     * @param UniCompany   The company or university of the user.
+     * @param Faculty      The faculty information of the user.
+     */
     private void registerUser(String textUsername, String textFullName, String textEmail, String textDoB, String textRole, String textMobile, String textPassword, String UniCompany, String Faculty) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         auth.createUserWithEmailAndPassword(textEmail, textPassword).addOnCompleteListener(RegisterActivity.this, task -> {
@@ -373,9 +417,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String userPic = "none";
                 ReadWriteUserDetails writeUserDetails = new ReadWriteUserDetails(textUsername, textFullName, textDoB, textRole, textMobile, UniCompany, Faculty, userPic);
 
-
                 DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-
 
                 referenceProfile.child(firebaseUser.getUid()).setValue(writeUserDetails).addOnCompleteListener(task1 -> {
 
@@ -394,8 +436,6 @@ public class RegisterActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
 
                 });
-
-
             } else {
                 try {
                     throw Objects.requireNonNull(task.getException());
@@ -407,7 +447,6 @@ public class RegisterActivity extends AppCompatActivity {
                     editTextRegisterEmail.requestFocus();
                 } catch (Exception e) {
                     Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-
                 }
                 progressBar.setVisibility(View.GONE);
             }

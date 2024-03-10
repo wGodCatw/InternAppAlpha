@@ -10,8 +10,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
@@ -19,6 +19,9 @@ import com.leinardi.android.speeddial.SpeedDialView;
 
 import java.util.Objects;
 
+/**
+ * Activity for handling password reset functionality.
+ */
 public class ForgotPasswordActivity extends AppCompatActivity {
     private final static String TAG = "ForgotPasswordActivity";
     private TextInputEditText edtResetPassword;
@@ -56,6 +59,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Resets password for the given email.
+     *
+     * @param email The email for which the password is to be reset.
+     */
     private void resetPassword(String email) {
         authProfile = FirebaseAuth.getInstance();
 

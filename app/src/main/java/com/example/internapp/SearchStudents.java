@@ -1,6 +1,5 @@
 package com.example.internapp;
 
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -20,6 +19,9 @@ import com.leinardi.android.speeddial.SpeedDialView;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Activity to search for students based on selected universities and faculties.
+ */
 public class SearchStudents extends AppCompatActivity {
 
     private final ArrayList<String> allUniversities = new ArrayList<>();
@@ -31,13 +33,17 @@ public class SearchStudents extends AppCompatActivity {
     private ArrayList<String> filtersFaculties = new ArrayList<>();
     private ArrayList<String> filtersUniversities = new ArrayList<>();
 
+    /**
+     * Clears filters for universities and faculties when back button is pressed.
+     *
+     * @return Returns OnBackInvokedDispatcher for back button handling.
+     */
     @NonNull
     @Override
     public OnBackInvokedDispatcher getOnBackInvokedDispatcher() {
         SearchActivity.filtersFaculties.clear();
         SearchActivity.filtersUniversities.clear();
-        //make all items in faculty and university recyclerview have grey background and black text
-
+        // Make all items in faculty and university recyclerview have grey background and black text
         return super.getOnBackInvokedDispatcher();
     }
 
@@ -52,7 +58,6 @@ public class SearchStudents extends AppCompatActivity {
             filtersFaculties = extras.getStringArrayList("filtersFaculties");
         }
 
-
         final ViewPager2 viewPager2 = findViewById(R.id.viewpager);
         final ArrayList<ViewPagerItem> viewPagerItemArrayList = new ArrayList<>();
         studentsByFacultiesID.clear();
@@ -62,7 +67,6 @@ public class SearchStudents extends AppCompatActivity {
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), SearchStudents.this);
         ArrayList<Student> students = new ArrayList<>();
         ArrayList<String> studentIDs = new ArrayList<>();
-
 
         if (filtersUniversities.isEmpty() && !filtersFaculties.isEmpty()) {
             filterAllFaculties(filtersFaculties, value -> {
@@ -74,7 +78,7 @@ public class SearchStudents extends AppCompatActivity {
                         txtNoStudentsFound.setVisibility(View.VISIBLE);
                     } else {
                         txtNoStudentsFound.setVisibility(View.GONE);
-                        //remove all duplicate values from the array list students
+                        // Remove all duplicate values from the array list students
                         for (int i = 0; i < students.size(); i++) {
                             for (int j = i + 1; j < students.size(); j++) {
                                 if (students.get(i).username.equals(students.get(j).username)) {
@@ -99,7 +103,7 @@ public class SearchStudents extends AppCompatActivity {
 
             });
         } else if (filtersFaculties.isEmpty() && !filtersUniversities.isEmpty()) {
-
+            // Implementation when faculties are empty and universities are selected
             filterAllUniversities(filtersUniversities, value -> {
                 studentIDs.addAll(value);
 
@@ -135,6 +139,7 @@ public class SearchStudents extends AppCompatActivity {
 
             });
         } else if (!filtersFaculties.isEmpty()) {
+            // Implementation when both faculties and universities are selected
             filterAllUniversities(filtersUniversities, value -> {
                 studentIDs.addAll(value);
 
@@ -173,14 +178,17 @@ public class SearchStudents extends AppCompatActivity {
                     });
                 });
             });
-
-
         } else {
             txtNoStudentsFound.setVisibility(View.VISIBLE);
         }
-
     }
 
+    /**
+     * Filters students by faculty from Firebase database.
+     *
+     * @param faculty    The faculty to filter by.
+     * @param myCallback Callback to return filtered student IDs.
+     */
     private void filterByFaculty(String faculty, final UserCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
         referenceProfile.orderByChild("faculty").equalTo(faculty).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -193,7 +201,6 @@ public class SearchStudents extends AppCompatActivity {
                     }
                 }
                 myCallback.onCallback(studentsByFacultiesID);
-
             }
 
             @Override
@@ -203,6 +210,12 @@ public class SearchStudents extends AppCompatActivity {
         });
     }
 
+    /**
+     * Filters students by university from Firebase database.
+     *
+     * @param university The university to filter by.
+     * @param myCallback Callback to return filtered student IDs.
+     */
     private void filterByUniversity(String university, final UserCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
         referenceProfile.orderByChild("university").equalTo(university).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -216,7 +229,6 @@ public class SearchStudents extends AppCompatActivity {
                     }
                 }
                 myCallback.onCallback(studentsByUniversitiesID);
-
             }
 
             @Override
@@ -226,6 +238,12 @@ public class SearchStudents extends AppCompatActivity {
         });
     }
 
+    /**
+     * Filters students by a list of universities.
+     *
+     * @param universities The list of universities to filter by.
+     * @param myCallback   Callback to return filtered student IDs.
+     */
     private void filterAllUniversities(ArrayList<String> universities, final UserCallback myCallback) {
         final AtomicInteger counter = new AtomicInteger(universities.size());
         for (String university : universities) {
@@ -235,13 +253,19 @@ public class SearchStudents extends AppCompatActivity {
                     if (counter.decrementAndGet() == 0) {
                         myCallback.onCallback(allUniversities);
                     }
-                } else{
+                } else {
                     txtNoStudentsFound.setVisibility(View.VISIBLE);
                 }
             });
         }
     }
 
+    /**
+     * Filters students by a list of faculties.
+     *
+     * @param faculties  The list of faculties to filter by.
+     * @param myCallback Callback to return filtered student IDs.
+     */
     private void filterAllFaculties(ArrayList<String> faculties, final UserCallback myCallback) {
         final AtomicInteger counter = new AtomicInteger(faculties.size());
         for (String faculty : faculties) {
@@ -251,14 +275,19 @@ public class SearchStudents extends AppCompatActivity {
                     if (counter.decrementAndGet() == 0) {
                         myCallback.onCallback(allFaculties);
                     }
-                }else{
+                } else {
                     txtNoStudentsFound.setVisibility(View.VISIBLE);
                 }
-
             });
         }
     }
 
+    /**
+     * Retrieves student details from Firebase based on student ID.
+     *
+     * @param studentId  The ID of the student to retrieve.
+     * @param myCallback Callback to return student details.
+     */
     private void getStudentFromId(String studentId, final UserFinalCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
         referenceProfile.orderByKey().equalTo(studentId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -285,6 +314,12 @@ public class SearchStudents extends AppCompatActivity {
         });
     }
 
+    /**
+     * Retrieves list of students from Firebase based on list of student IDs.
+     *
+     * @param studentIDs The list of student IDs to retrieve.
+     * @param myCallback Callback to return list of students.
+     */
     private void getStudentsFromIDList(ArrayList<String> studentIDs, final UserListCallback myCallback) {
         ArrayList<Student> students = new ArrayList<>();
         final AtomicInteger counter = new AtomicInteger(studentIDs.size());
@@ -299,16 +334,24 @@ public class SearchStudents extends AppCompatActivity {
         }
     }
 
+    /**
+     * Callback interface for returning filtered student IDs.
+     */
     public interface UserCallback {
         void onCallback(ArrayList<String> value);
     }
 
+    /**
+     * Callback interface for returning individual student details.
+     */
     public interface UserFinalCallback {
         void onCallback(Student value);
     }
 
+    /**
+     * Callback interface for returning list of students.
+     */
     public interface UserListCallback {
         void onCallback(ArrayList<Student> value);
     }
-
 }
