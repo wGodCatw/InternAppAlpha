@@ -43,8 +43,15 @@ import com.squareup.picasso.Picasso;
 import java.util.Calendar;
 import java.util.Objects;
 
+/**
+ * The UserProfileActivity class is an AppCompatActivity that displays and allows editing of user profile information.
+ * It fetches and displays user data from Firebase Realtime Database, and provides functionality for updating user profile details.
+ */
 public class UserProfileActivity extends AppCompatActivity {
 
+    /**
+     * BroadcastReceiver to monitor WiFi state changes and update the WiFi icon accordingly.
+     */
     BroadcastReceiver broadcastReceiverWifi = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -57,10 +64,10 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         }
     };
+
     private TextInputEditText edt_fullName, edt_email, edt_phone, edt_role, edt_dob, edt_uniCompany, edt_faculty, edt_username;
     private ProgressBar progressBar;
     private DatePickerDialog picker;
-    private Button callBtn;
     private TextInputLayout layout_faculty;
     private TextInputLayout layout_uniCompany;
     private ImageView profilePic, wifiState;
@@ -69,6 +76,9 @@ public class UserProfileActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeContainer;
     private MainRepository mainRepository;
 
+    /**
+     * Creates a notification channel for incoming call notifications.
+     */
     private void createNotificationChannel() {
         CharSequence name = "Call Channel";
         String description = "Channel for incoming calls notifications";
@@ -90,6 +100,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
         createNotificationChannel();
 
+        // Start the BackgroundCheck service if it's not running
         Intent backgroundCheck = new Intent(this, BackgroundCheck.class);
         if (!BackgroundCheck.isServiceRunning()) {
             startService(backgroundCheck);
@@ -112,7 +123,9 @@ public class UserProfileActivity extends AppCompatActivity {
         edt_username = findViewById(R.id.username);
         TextInputLayout layout_fullName = findViewById(R.id.layout_fullName);
         TextInputLayout layout_dateOfBirth = findViewById(R.id.layout_dateOfBirth);
-        callBtn = findViewById(R.id.callBtn);
+        Button callBtn = findViewById(R.id.callBtn);
+
+        // Request necessary permissions for camera, audio, and notifications
         PermissionX.init(this).permissions(android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.POST_NOTIFICATIONS).request(((allGranted, grantedList, deniedList) -> {
             if (allGranted) {
                 Toast.makeText(this, "Thanks!", Toast.LENGTH_SHORT).show();
@@ -121,18 +134,20 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         }));
 
+        /*
+          Starts the VideoCallActivity when the callBtn is clicked.
+          Retrieves the user's username from the Firebase database and logs in using the MainRepository before starting the activity.
+         */
         callBtn.setOnClickListener(v -> {
-            //all permissions are granted
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
+            assert firebaseUser != null;
             reference.orderByKey().equalTo(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
                         for (DataSnapshot snap : snapshot.getChildren()) {
-                            String username = snap.child("username").getValue().toString();
-                            mainRepository.login(username, getApplicationContext(), () -> {
-                                startActivity(new Intent(UserProfileActivity.this, VideoCallActivity.class));
-                            });
+                            String username = Objects.requireNonNull(snap.child("username").getValue()).toString();
+                            mainRepository.login(username, getApplicationContext(), () -> startActivity(new Intent(UserProfileActivity.this, VideoCallActivity.class)));
                         }
 
                     } else {
@@ -142,10 +157,8 @@ public class UserProfileActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
                                     for (DataSnapshot snap : snapshot.getChildren()) {
-                                        String username = snap.child("username").getValue().toString();
-                                        mainRepository.login(username, getApplicationContext(), () -> {
-                                            startActivity(new Intent(UserProfileActivity.this, VideoCallActivity.class));
-                                        });
+                                        String username = Objects.requireNonNull(snap.child("username").getValue()).toString();
+                                        mainRepository.login(username, getApplicationContext(), () -> startActivity(new Intent(UserProfileActivity.this, VideoCallActivity.class)));
                                     }
 
                                 }
@@ -166,6 +179,9 @@ public class UserProfileActivity extends AppCompatActivity {
             });
         });
 
+        /*
+          Starts the UploadUserPicActivity when the profilePic is clicked, allowing the user to upload a new profile picture.
+         */
         profilePic.setOnClickListener(v -> {
             Intent intent = new Intent(UserProfileActivity.this, UploadUserPicActivity.class);
             startActivity(intent);
@@ -185,6 +201,10 @@ public class UserProfileActivity extends AppCompatActivity {
             showUserProfile(firebaseUser);
         }
 
+        /*
+          Updates the user's full name in Firebase Authentication and Firebase Realtime Database.
+          @param v The View that was clicked.
+         */
         layout_fullName.setEndIconOnClickListener(v -> {
             String textFullName = Objects.requireNonNull(edt_fullName.getText()).toString();
             if (TextUtils.isEmpty(textFullName)) {
@@ -197,11 +217,9 @@ public class UserProfileActivity extends AppCompatActivity {
                 assert firebaseUser != null;
                 firebaseUser.updateProfile(profileChangeRequest).addOnCompleteListener(task -> Toast.makeText(UserProfileActivity.this, "Name updated, it is now " + firebaseUser.getDisplayName(), Toast.LENGTH_LONG).show());
                 DatabaseReference referenceProfile;
-                if (TextUtils.equals(edt_role.getText().toString(), "HR Specialist")) {
-                    assert firebaseUser != null;
+                if (TextUtils.equals(Objects.requireNonNull(edt_role.getText()).toString(), "HR Specialist")) {
                     referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid() + "/name");
                 } else {
-                    assert firebaseUser != null;
                     referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid() + "/name");
                 }
                 progressBar.setVisibility(View.VISIBLE);
@@ -221,6 +239,10 @@ public class UserProfileActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
             }
         });
+
+        /*
+          Displays a date picker dialog when the edt_dob EditText is clicked, allowing the user to select their date of birth.
+         */
         edt_dob.setOnClickListener(v -> {
             final Calendar calendar = Calendar.getInstance();
             int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -231,6 +253,10 @@ public class UserProfileActivity extends AppCompatActivity {
             picker.show();
         });
 
+        /*
+          Updates the user's date of birth in the Firebase Realtime Database.
+          @param v The View that was clicked.
+         */
         layout_dateOfBirth.setEndIconOnClickListener(v -> {
             if (TextUtils.isEmpty(Objects.requireNonNull(edt_dob.getText()).toString())) {
                 Toast.makeText(UserProfileActivity.this, "Please enter your date of birth", Toast.LENGTH_LONG).show();
@@ -239,7 +265,7 @@ public class UserProfileActivity extends AppCompatActivity {
             } else {
                 dateBirth = edt_dob.getText().toString();
                 DatabaseReference referenceProfile;
-                if (TextUtils.equals(edt_role.getText().toString(), "HR Specialist")) {
+                if (TextUtils.equals(Objects.requireNonNull(edt_role.getText()).toString(), "HR Specialist")) {
                     assert firebaseUser != null;
                     referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid() + "/doB");
                 } else {
@@ -265,12 +291,18 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
+        /*
+          Starts the UpdateEmailActivity when the edt_email EditText is clicked, allowing the user to update their email address.
+         */
         edt_email.setOnClickListener(v -> {
             Intent intent = new Intent(UserProfileActivity.this, UpdateEmailActivity.class);
             startActivity(intent);
         });
     }
 
+    /**
+     * Sets up a SwipeRefreshLayout to allow refreshing the activity by swiping down.
+     */
     private void swipeToRefresh() {
         swipeContainer = findViewById(R.id.swipe_container);
 
@@ -282,12 +314,19 @@ public class UserProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Checks if the user's email is verified, and displays an alert dialog prompting the user to verify their email if it is not verified.
+     * @param firebaseUser The current FirebaseUser instance.
+     */
     private void checkEmailVerified(FirebaseUser firebaseUser) {
         if (!firebaseUser.isEmailVerified()) {
             showAlertDialog();
         }
     }
 
+    /**
+     * Displays an alert dialog prompting the user to verify their email.
+     */
     private void showAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(UserProfileActivity.this);
         builder.setTitle("Email not verified");
@@ -304,96 +343,105 @@ public class UserProfileActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void showUserProfile(FirebaseUser firebaseUser) {
-        DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
-        String userID = firebaseUser.getUid();
-        referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
+/**
+ * Retrieves and displays the user's profile information from the Firebase Realtime Database.
+ * @param firebaseUser The current FirebaseUser instance.
+ */
+private void showUserProfile(FirebaseUser firebaseUser) {
+    DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
+    String userID = firebaseUser.getUid();
+    referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if (snapshot.exists()) {
+                ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
 
-                    if (readUserDetails != null) {
-                        username = readUserDetails.username;
-                        fullName = firebaseUser.getDisplayName();
-                        email = firebaseUser.getEmail();
-                        dob = readUserDetails.doB;
-                        role = readUserDetails.role;
-                        phone = readUserDetails.mobile;
-                        uniCompany = readUserDetails.company;
+                if (readUserDetails != null) {
+                    username = readUserDetails.username;
+                    fullName = firebaseUser.getDisplayName();
+                    email = firebaseUser.getEmail();
+                    dob = readUserDetails.doB;
+                    role = readUserDetails.role;
+                    phone = readUserDetails.mobile;
+                    uniCompany = readUserDetails.company;
 
-                        Uri uri = firebaseUser.getPhotoUrl();
-                        if(!uri.toString().equals("none")){
-                            Picasso.get().load(uri).into(profilePic);
-                        }
-
-                        edt_username.setText("@" + username);
-                        layout_uniCompany.setHint("Company");
-                        edt_uniCompany.setText(uniCompany);
-                        edt_fullName.setText(fullName);
-                        edt_email.setText(email);
-                        edt_dob.setText(dob);
-                        edt_role.setText(role);
-                        edt_phone.setText(phone);
-
-                    } else {
-                        Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
-                    }
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-
-        referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
-
-                    if (readUserDetails != null) {
-                        username = readUserDetails.username;
-                        fullName = firebaseUser.getDisplayName();
-                        email = firebaseUser.getEmail();
-                        dob = readUserDetails.doB;
-                        role = readUserDetails.role;
-                        phone = readUserDetails.mobile;
-                        uniCompany = readUserDetails.university;
-                        faculty = readUserDetails.faculty;
-                        String userPic = readUserDetails.userPic;
-
-                        Uri uri = firebaseUser.getPhotoUrl();
+                    // Load user's profile picture from Firebase Storage
+                    Uri uri = firebaseUser.getPhotoUrl();
+                    assert uri != null;
+                    if(!uri.toString().equals("none")){
                         Picasso.get().load(uri).into(profilePic);
-
-                        edt_username.setText("@" + username);
-                        edt_uniCompany.setText(uniCompany);
-                        layout_uniCompany.setHint("University");
-                        layout_faculty.setVisibility(View.VISIBLE);
-                        edt_faculty.setText(faculty);
-                        edt_fullName.setText(fullName);
-                        edt_email.setText(email);
-                        edt_dob.setText(dob);
-                        edt_role.setText(role);
-                        edt_phone.setText(phone);
                     }
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
+                    edt_username.setText("@" + username);
+                    layout_uniCompany.setHint("Company");
+                    edt_uniCompany.setText(uniCompany);
+                    edt_fullName.setText(fullName);
+                    edt_email.setText(email);
+                    edt_dob.setText(dob);
+                    edt_role.setText(role);
+                    edt_phone.setText(phone);
+
+                } else {
+                    Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
+                }
                 progressBar.setVisibility(View.GONE);
             }
-        });
-    }
+        }
 
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
+            progressBar.setVisibility(View.GONE);
+        }
+    });
+
+    referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+    referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if (snapshot.exists()) {
+                ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
+
+                if (readUserDetails != null) {
+                    username = readUserDetails.username;
+                    fullName = firebaseUser.getDisplayName();
+                    email = firebaseUser.getEmail();
+                    dob = readUserDetails.doB;
+                    role = readUserDetails.role;
+                    phone = readUserDetails.mobile;
+                    uniCompany = readUserDetails.university;
+                    faculty = readUserDetails.faculty;
+
+                    // Load user's profile picture from Firebase Storage
+                    Uri uri = firebaseUser.getPhotoUrl();
+                    Picasso.get().load(uri).into(profilePic);
+
+                    edt_username.setText("@" + username);
+                    edt_uniCompany.setText(uniCompany);
+                    layout_uniCompany.setHint("University");
+                    layout_faculty.setVisibility(View.VISIBLE);
+                    edt_faculty.setText(faculty);
+                    edt_fullName.setText(fullName);
+                    edt_email.setText(email);
+                    edt_dob.setText(dob);
+                    edt_role.setText(role);
+                    edt_phone.setText(phone);
+                }
+                progressBar.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
+            progressBar.setVisibility(View.GONE);
+        }
+    });
+}
+
+    /**
+     * Registers the broadcastReceiverWifi to listen for WiFi state changes when the activity starts.
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -401,6 +449,9 @@ public class UserProfileActivity extends AppCompatActivity {
         registerReceiver(broadcastReceiverWifi, intentFilter);
     }
 
+    /**
+     * Unregisters the broadcastReceiverWifi when the activity stops.
+     */
     @Override
     protected void onStop() {
         super.onStop();
