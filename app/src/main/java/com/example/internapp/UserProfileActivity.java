@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -50,20 +50,34 @@ import java.util.Objects;
 public class UserProfileActivity extends AppCompatActivity {
 
     /**
-     * BroadcastReceiver to monitor WiFi state changes and update the WiFi icon accordingly.
+     * BroadcastReceiver to monitor network state changes and update the WiFi icon accordingly.
      */
     BroadcastReceiver broadcastReceiverWifi = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            if (activeNetwork != null) {
-                wifiState.setImageResource(R.drawable.ic_wifi_enabled);
-            } else {
-                wifiState.setImageResource(R.drawable.ic_wifi_disabled);
+
+            if (cm != null) {
+                NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
+                if (capabilities != null) {
+                    boolean hasWifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
+                    boolean hasMobile = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR);
+
+                    if (!hasWifi && !hasMobile) {
+                        // No WiFi and no mobile network available
+                        wifiState.setImageResource(R.drawable.ic_wifi_disabled);
+                    } else {
+                        // Either WiFi or mobile network is available
+                        wifiState.setImageResource(R.drawable.ic_wifi_enabled);
+                    }
+                } else {
+                    // No active network
+                    wifiState.setImageResource(R.drawable.ic_wifi_disabled);
+                }
             }
         }
     };
+
 
     private TextInputEditText edt_fullName, edt_email, edt_phone, edt_role, edt_dob, edt_uniCompany, edt_faculty, edt_username;
     private ProgressBar progressBar;
@@ -455,6 +469,22 @@ private void showUserProfile(FirebaseUser firebaseUser) {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Register the BroadcastReceiver to listen for changes in network connectivity
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(broadcastReceiverWifi, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Unregister the BroadcastReceiver when the activity is not in the foreground
         unregisterReceiver(broadcastReceiverWifi);
     }
+
 }
