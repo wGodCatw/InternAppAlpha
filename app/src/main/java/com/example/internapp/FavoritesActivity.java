@@ -1,7 +1,6 @@
 package com.example.internapp;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -47,9 +46,11 @@ public class FavoritesActivity extends AppCompatActivity {
 
           @param myCallback Callback to handle the retrieved list of favorite students.
          */
+
+
         getFavoriteStudents(value -> {
+
             if (value.isEmpty()) {
-                Log.e("VALUE", value.toString());
                 txtNoStudentsFound.setVisibility(TextView.VISIBLE);
                 favoriteStudentsRecView.setVisibility(RecyclerView.GONE);
             } else {
@@ -75,11 +76,13 @@ public class FavoritesActivity extends AppCompatActivity {
      * @param myCallback Callback to handle the retrieved list of favorite students.
      */
     private void getFavoriteStudents(final StudentListCallback myCallback) {
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid());
         reference.child("favoriteStudents").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
+
                     String favoritesStr = (String) snapshot.getValue();
                     assert favoritesStr != null;
                     ArrayList<String> favoritesUIDs = new ArrayList<>(Arrays.asList(favoritesStr.split(",")));
@@ -92,8 +95,8 @@ public class FavoritesActivity extends AppCompatActivity {
                         txtNoStudentsFound.setVisibility(TextView.GONE);
                         // Retrieve the list of FavoriteStudent objects from the list of student IDs
                         getStudentsFromIDList(favoritesUIDs, myCallback);
-                    }
 
+                    }
                 }
             }
 
@@ -113,10 +116,12 @@ public class FavoritesActivity extends AppCompatActivity {
     private void getStudentsFromIDList(ArrayList<String> studentIDs, final StudentListCallback myCallback) {
         ArrayList<FavoriteStudent> students = new ArrayList<>();
         final AtomicInteger counter = new AtomicInteger(studentIDs.size());
+
         if(studentIDs.isEmpty() || studentIDs.get(0).equals("")){
             txtNoStudentsFound.setVisibility(TextView.VISIBLE);
         } else{
             for (String id : studentIDs) {
+
                 // Retrieve the FavoriteStudent object for each student ID
                 getStudentFromId(id, value -> {
                     students.add(value);
@@ -143,6 +148,7 @@ public class FavoritesActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChildren()) {
                     for (DataSnapshot snap : snapshot.getChildren()) {
+
                         String name = (String) snap.child("name").getValue();
                         String userPic = (String) snap.child("userPic").getValue();
                         String faculty = (String) snap.child("faculty").getValue();

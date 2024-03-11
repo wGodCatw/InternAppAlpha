@@ -71,7 +71,7 @@ public class BackgroundCheck extends Service {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     for (DataSnapshot snap : snapshot.getChildren()) {
-                        String username = Objects.requireNonNull(snap.child("username").getValue()).toString();
+                        String username = (snap.child("username").getValue()).toString();
                         Log.e("service", username);
                         // Log in with the retrieved username
                         mainRepository.login(username, getApplicationContext(), () -> {

@@ -2,6 +2,7 @@ package com.example.internapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ public class FavoritesRecViewAdapter extends RecyclerView.Adapter<FavoritesRecVi
         // Bind the data from the FavoriteStudent object to the ViewHolder
         holder.txtName.setText(favoriteStudents.get(position).getName());
         holder.txtEmail.setText(favoriteStudents.get(position).getEmail());
+        Log.e("HERE", favoriteStudents.get(position).getUsername());
         holder.txtUsername.setText("@" + favoriteStudents.get(position).getUsername());
 
         // Set an OnClickListener for the CardView
@@ -77,7 +79,7 @@ public class FavoritesRecViewAdapter extends RecyclerView.Adapter<FavoritesRecVi
             });
         });
         // Load the image using Picasso library
-        if (!favoriteStudents.get(position).getImageUrl().toString().equals("none")) {
+        if (!favoriteStudents.get(position).getImageUrl().equals("none")) {
             Picasso.get().load(favoriteStudents.get(position).getImageUrl()).into(holder.image);
 
         }
