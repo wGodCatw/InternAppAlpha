@@ -381,8 +381,7 @@ private void showUserProfile(FirebaseUser firebaseUser) {
 
                     // Load user's profile picture from Firebase Storage
                     Uri uri = firebaseUser.getPhotoUrl();
-                    assert uri != null;
-                    if(!uri.toString().equals("none")){
+                    if(!(uri == null) &&!uri.toString().equals("none")){
                         Picasso.get().load(uri).into(profilePic);
                     }
 

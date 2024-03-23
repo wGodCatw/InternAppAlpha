@@ -102,7 +102,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                             if (snapshot.exists()) {
                                 for (DataSnapshot snap : snapshot.getChildren()) {
                                     Uri photo = Uri.parse(snap.child("userPic").getValue().toString());
-                                    if (!photo.toString().equals("none")) {
+                                    if (!(photo == null) && !photo.toString().equals("none")) {
                                         Picasso.get().load(photo).into(views.callerPic);
                                     }
 
@@ -115,7 +115,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                                         if (snapshot.exists()) {
                                             for (DataSnapshot snap : snapshot.getChildren()) {
                                                 Uri photo = Uri.parse(snap.child("userPic").getValue().toString());
-                                                if (!photo.toString().equals("none")) {
+                                                if (!(photo == null) && !photo.toString().equals("none")) {
                                                     Picasso.get().load(photo).into(views.callerPic);
                                                 }
                                             }

@@ -84,6 +84,8 @@ public class FavoritesActivity extends AppCompatActivity {
                 if (snapshot.exists()) {
 
                     String favoritesStr = (String) snapshot.getValue();
+                    // Split the comma-separated list of student IDs into a list
+
                     assert favoritesStr != null;
                     ArrayList<String> favoritesUIDs = new ArrayList<>(Arrays.asList(favoritesStr.split(",")));
                     //if favoritesUIDs is empty txtNoStudentsFound will be visible

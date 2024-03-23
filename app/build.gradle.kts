@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.internapp"
-        minSdk = 33
+        minSdk = 31
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
