@@ -223,6 +223,7 @@
                         android:paddingHorizontal="20dp"
                         android:paddingVertical="10dp"
                         app:layout_constraintEnd_toEndOf="parent"
+                        android:focusable="false"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/layout_email">
@@ -233,6 +234,8 @@
                             android:layout_height="wrap_content"
                             android:drawableStart="@drawable/ic_phone_txt"
                             android:drawablePadding="15sp"
+                            android:focusable="false"
+                            android:cursorVisible="false"
                             android:fontFamily="@font/montserrat"
                             android:hint="Phone number"
                             android:textColor="@color/black" />

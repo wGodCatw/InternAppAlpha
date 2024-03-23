@@ -25,12 +25,15 @@
         android:theme="@style/Theme.InternApp"
         tools:targetApi="34">
         <activity
+            android:name=".UploadProjectActivity"
+            android:exported="false" />
+        <activity
             android:name=".StudentProfileActivity"
             android:exported="false" />
         <activity
             android:name=".VideoCallActivity"
-            android:screenOrientation="portrait"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".DeleteUserActivity"
             android:exported="false" />
@@ -83,7 +86,6 @@
             android:name=".HomepageActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-
 
         <service
             android:name=".BackgroundCheck"

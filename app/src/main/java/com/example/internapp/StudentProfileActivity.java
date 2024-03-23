@@ -1,6 +1,7 @@
 package com.example.internapp;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -32,14 +33,14 @@ import java.util.Objects;
 public class StudentProfileActivity extends AppCompatActivity {
 
     // UI elements
-    private TextInputEditText edt_fullName, edt_phone, edt_role, edt_dob, edt_uniCompany, edt_username;
+    private TextInputEditText edt_fullName, edt_phone, edt_faculty, edt_role, edt_dob, edt_uniCompany, edt_username;
     private ProgressBar progressBar;
     private TextInputLayout layout_uniCompany;
     private ImageView profilePic;
     private SwipeRefreshLayout swipeContainer;
 
     // Variables
-    private String fullName, phone, role, dob, uniCompany, username;
+    private String fullName, phone, role, dob, uniCompany, faculty,username;
 
     /**
      * Called when the activity is starting.
@@ -66,6 +67,7 @@ public class StudentProfileActivity extends AppCompatActivity {
         edt_dob = findViewById(R.id.dateOfBirth);
         progressBar = findViewById(R.id.progressBar);
         edt_uniCompany = findViewById(R.id.uni_company);
+        edt_faculty = findViewById(R.id.faculty);
         layout_uniCompany = findViewById(R.id.layout_uni_company);
         profilePic = findViewById(R.id.profilePicture);
         edt_username = findViewById(R.id.username);
@@ -77,6 +79,20 @@ public class StudentProfileActivity extends AppCompatActivity {
             Intent call = new Intent(StudentProfileActivity.this, VideoCallActivity.class);
             call.putExtra("studentUsername", studentUsername);
             startActivity(call);
+        });
+
+        edt_phone.setOnClickListener(v -> {
+            // Open WhatsApp chat with student
+            String url = "https://api.whatsapp.com/send?phone=" + phone;
+            try {
+                PackageManager pm = getApplication().getPackageManager();
+                pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                this.startActivity(i);
+            } catch (PackageManager.NameNotFoundException e) {
+                this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            }
         });
 
         // Initialize floating action button
@@ -130,6 +146,7 @@ public class StudentProfileActivity extends AppCompatActivity {
                         role = readUserDetails.role;
                         phone = readUserDetails.mobile;
                         uniCompany = readUserDetails.university;
+                        faculty = readUserDetails.faculty;
 
                         Uri uri = Uri.parse(readUserDetails.userPic);
 
@@ -143,6 +160,7 @@ public class StudentProfileActivity extends AppCompatActivity {
                         layout_uniCompany.setHint("University");
                         edt_uniCompany.setText(uniCompany);
                         edt_fullName.setText(fullName);
+                        edt_faculty.setText(faculty);
                         edt_dob.setText(dob);
                         edt_role.setText(role);
                         edt_phone.setText(phone);
