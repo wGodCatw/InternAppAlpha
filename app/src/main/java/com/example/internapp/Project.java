@@ -6,7 +6,7 @@ package com.example.internapp;
 public class Project {
     private final String imageUrl;
     private final String title;
-
+    private final String StudentID;
     private final String description;
     private final String link;
 
@@ -18,9 +18,10 @@ public class Project {
      * @param imageUrl    The URL of the image associated with the project.
      * @param description The description of the project.
      */
-    public Project(String title, String link, String imageUrl, String description) {
+    public Project(String StudentID, String title, String link, String imageUrl, String description) {
         this.title = title;
         this.link = link;
+        this.StudentID = StudentID;
         this.imageUrl = imageUrl;
         this.description = description;
     }
@@ -31,6 +32,10 @@ public class Project {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getStudentID() {
+        return StudentID;
     }
 
     public String getDescription() {

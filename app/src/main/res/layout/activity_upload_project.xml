@@ -7,6 +7,44 @@
     android:layout_height="match_parent"
     tools:context=".UploadProjectActivity">
 
+    <ActionMenuView
+        android:id="@+id/amv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <com.leinardi.android.speeddial.SpeedDialOverlayLayout
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.leinardi.android.speeddial.SpeedDialView
+        android:id="@+id/speedDialView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="28dp"
+        android:animateLayoutChanges="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.906"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_wrapBehaviorInParent="horizontal_only"
+        app:sdMainFabClosedBackgroundColor="@color/orange"
+        app:sdMainFabClosedIconColor="@color/white"
+        app:sdMainFabClosedSrc="@drawable/ic_sdclosednew"
+        app:sdMainFabOpenedBackgroundColor="@color/orange"
+        app:sdMainFabOpenedIconColor="@color/white"
+        app:sdOverlayLayout="@id/overlay">
+
+    </com.leinardi.android.speeddial.SpeedDialView>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,7 +74,32 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_projectLink"
+                android:id="@+id/layout_projectDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="10dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="150"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_projectLink">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/projectDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_send"
+                    android:drawablePadding="15sp"
+                    android:fontFamily="@font/montserrat"
+                    android:hint="Project description"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_projectTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="20dp"
@@ -45,6 +108,28 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/addProjectTitle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/projectTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_send"
+                    android:drawablePadding="15sp"
+                    android:fontFamily="@font/montserrat"
+                    android:hint="Project title"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_projectLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_projectTitle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/projectLink"
@@ -57,19 +142,53 @@
                     android:textColor="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <LinearLayout
+                android:id="@+id/layout_imageAdd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_projectDescription">
+
+
+                <ImageView
+                    android:id="@+id/imgProject"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="20dp"
+                    android:padding="10sp"
+                    android:src="@drawable/ic_projects" />
+
+                <Button
+                    android:id="@+id/buttonProjectPicture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/montserrat"
+                    android:padding="20sp"
+                    android:text="Choose picture"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+
+
             <Button
                 android:id="@+id/buttonProjectUpload"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="20sp"
+                android:layout_marginHorizontal="20sp"
                 android:layout_marginTop="52dp"
                 android:fontFamily="@font/montserrat"
                 android:padding="10sp"
-                android:text="Add project"
+                android:text="Add project!"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layout_projectLink" />
+                app:layout_constraintTop_toBottomOf="@+id/layout_imageAdd" />
 
 
             <TextView

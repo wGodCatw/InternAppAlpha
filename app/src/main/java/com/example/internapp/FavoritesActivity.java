@@ -31,7 +31,6 @@ public class FavoritesActivity extends AppCompatActivity {
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     TextView txtNoStudentsFound;
 
-    //TODO if HR put you as favorite send notification to the student
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

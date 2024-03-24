@@ -2,7 +2,7 @@ package com.example.internapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -28,7 +23,7 @@ import java.util.ArrayList;
 public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecViewAdapter.ViewHolder> {
 
     private final Context context;
-    private ArrayList<FavoriteStudent> projects = new ArrayList<>();
+    private final ArrayList<Project> projects = new ArrayList<>();
 
     /**
      * Constructor for the FavoritesRecViewAdapter.
@@ -42,42 +37,24 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.favorites_list_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.project_list_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        // Bind the data from the FavoriteStudent object to the ViewHolder
-        holder.txtName.setText(projects.get(position).getName());
-        holder.txtEmail.setText(projects.get(position).getEmail());
-        Log.e("HERE", projects.get(position).getUsername());
-        holder.txtUsername.setText("@" + projects.get(position).getUsername());
+        // Bind the data from the Project object to the ViewHolder
+        holder.txtTitle.setText(projects.get(position).getTitle());
+        holder.txtDescription.setText(projects.get(position).getDescription());
 
         // Set an OnClickListener for the CardView
         holder.parent.setOnClickListener(v -> {
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-            reference.orderByChild("username").equalTo(projects.get(position).getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        String UID = "";
-                        for (DataSnapshot snap : snapshot.getChildren()) {
-                            UID = snap.getKey();
-                        }
-                        Intent intent = new Intent(context, StudentProfileActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra("UID", UID);
-                        context.startActivity(intent);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
+            //open link
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(projects.get(position).getLink()));
+            context.startActivity(intent);
         });
+
         // Load the image using Picasso library
         if (!projects.get(position).getImageUrl().equals("none")) {
             Picasso.get().load(projects.get(position).getImageUrl()).into(holder.image);
@@ -91,22 +68,21 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
     }
 
     /**
-     * Set the list of favorite students to be displayed in the RecyclerView.
+     * Set the list of projects to be displayed in the RecyclerView.
      *
-     * @param favoriteStudents The list of FavoriteStudent objects to be displayed.
+     * @param project The Project object to be displayed.
      */
-    public void setFavoriteStudents(ArrayList<FavoriteStudent> favoriteStudents) {
-        this.projects = favoriteStudents;
-        notifyDataSetChanged();
+    public void addProject(Project project) {
+        this.projects.add(project);
+        notifyItemChanged(0);
     }
 
     /**
      * ViewHolder class for the RecyclerView.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView txtName;
-        private final TextView txtUsername;
-        private final TextView txtEmail;
+        private final TextView txtDescription;
+        private final TextView txtTitle;
         private final CardView parent;
         private final ImageView image;
 
@@ -117,11 +93,10 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
          */
         public ViewHolder(View itemView) {
             super(itemView);
-            txtUsername = itemView.findViewById(R.id.txtUsername);
-            txtName = itemView.findViewById(R.id.txtName);
-            image = itemView.findViewById(R.id.universityImg);
+            txtTitle = itemView.findViewById(R.id.txtTitle);
+            txtDescription = itemView.findViewById(R.id.txtDescription);
+            image = itemView.findViewById(R.id.projectImg);
             parent = itemView.findViewById(R.id.parent);
-            txtEmail = itemView.findViewById(R.id.txtEmail);
         }
     }
 }
