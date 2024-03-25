@@ -17,10 +17,10 @@
         android:title="Homepage"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_schedule"
-        android:icon="@drawable/ic_schedule"
+        android:id="@+id/action_projects"
+        android:icon="@drawable/ic_projects"
         android:orderInCategory="100"
-        android:title="Schedule"
+        android:title="Projects"
         app:showAsAction="always" />
 
     <item

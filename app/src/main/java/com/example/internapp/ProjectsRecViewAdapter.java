@@ -74,7 +74,7 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
      */
     public void addProject(Project project) {
         this.projects.add(project);
-        notifyItemChanged(0);
+        notifyDataSetChanged();
     }
 
     /**

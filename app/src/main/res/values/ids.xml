@@ -2,7 +2,7 @@
 <resources>
     <item name="fab_settings" type="id"/>
     <item name="fab_home" type="id"/>
-    <item name="fab_schedule" type="id"/>
+    <item name="fab_projects" type="id"/>
     <item name="fab_favorites" type="id"/>
     <item name="fab_search" type="id"/>
 </resources>

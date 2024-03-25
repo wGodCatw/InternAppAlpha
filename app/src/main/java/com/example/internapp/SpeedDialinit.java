@@ -41,7 +41,7 @@ public class SpeedDialinit {
                 .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
                 .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
 
-        fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_schedule, R.drawable.ic_schedule)
+        fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_projects, R.drawable.ic_projects)
                 .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
                 .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
 
@@ -99,10 +99,17 @@ public class SpeedDialinit {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     ContextCompat.startActivity(context, intent, null);
                 }
-            } else if (actionItem.getId() == R.id.action_schedule) {
-                // Display a toast for action_schedule
-                Toast.makeText(context, "You clicked Schedule!", Toast.LENGTH_SHORT).show();
-                fab.close(true);
+            } else if (actionItem.getId() == R.id.action_projects) {
+                // Check if already on UploadProjectActivity
+                if (activity.getClass() == UploadProjectActivity.class)
+                    Toast.makeText(context, "You're here already!", Toast.LENGTH_SHORT).show();
+                else {
+                    fab.close(true);
+                    // Start UploadProjectActivity
+                    Intent intent = new Intent(context, UploadProjectActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    ContextCompat.startActivity(context, intent, null);
+                }
             } else if (actionItem.getId() == R.id.action_search) {
                 // Check if already on SearchActivity
                 if (activity.getClass() == SearchActivity.class)
