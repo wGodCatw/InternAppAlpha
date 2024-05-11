@@ -45,7 +45,7 @@
     </com.leinardi.android.speeddial.SpeedDialView>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/FavoriteStudentsRecView"
+        android:id="@+id/StudentProjectsRecView"
         android:layout_width="388dp"
         android:layout_height="791dp"
         android:layout_margin="10dp"
@@ -53,11 +53,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.484"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/FavoritesTitle"
+        app:layout_constraintTop_toBottomOf="@+id/StudentProjectsTitle"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/FavoritesTitle"
+        android:id="@+id/StudentProjectsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat"
@@ -70,14 +70,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/txtNoStudentsFound"
+        android:id="@+id/txtNoProjectsFound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="40sp"
         android:visibility="gone"
         android:textAlignment="center"
         android:fontFamily="@font/montserrat"
-        android:text="You didn't add any students to your favorites list"
+        android:text="The student doesn't have any projects"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

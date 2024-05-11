@@ -25,6 +25,9 @@
         android:theme="@style/Theme.InternApp"
         tools:targetApi="34">
         <activity
+            android:name=".StudentProjectsActivity"
+            android:exported="false" />
+        <activity
             android:name=".UploadProjectActivity"
             android:exported="false" />
         <activity

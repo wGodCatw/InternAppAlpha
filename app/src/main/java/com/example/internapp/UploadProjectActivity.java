@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -30,7 +29,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.leinardi.android.speeddial.SpeedDialView;
+
+import java.util.Objects;
 
 /**
  * Activity that displays a list of favorite students for the current HR user.
@@ -38,13 +41,13 @@ import com.leinardi.android.speeddial.SpeedDialView;
 public class UploadProjectActivity extends AppCompatActivity {
 
 
+    private final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    private final ProjectsRecViewAdapter adapter = new ProjectsRecViewAdapter(UploadProjectActivity.this);
     private Button btnUploadProject, btnChoosePicture;
     private TextInputEditText projectLink, projectDescription, projectTitle;
     private ImageView projectImage;
     private ProgressBar progressBar;
-    private final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private String username = "";
-
     private Uri uriImage;
     /**
      * Activity result launcher to handle the result of image picking intent.
@@ -61,7 +64,6 @@ public class UploadProjectActivity extends AppCompatActivity {
             }
         }
     });
-    private final ProjectsRecViewAdapter adapter = new ProjectsRecViewAdapter(UploadProjectActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,71 +83,69 @@ public class UploadProjectActivity extends AppCompatActivity {
 
         btnChoosePicture.setOnClickListener(v -> openFileChooser());
 
-
         btnUploadProject.setOnClickListener(v -> {
-            Log.e("HERE", "HERE");
-
             if (TextUtils.isEmpty(projectTitle.getText())) {
                 projectTitle.setError("Title can't be empty");
+                Toast.makeText(UploadProjectActivity.this, "Project title can't be empty", Toast.LENGTH_SHORT).show();
             } else if (TextUtils.isEmpty(projectLink.getText())) {
                 projectLink.setError("Link to project can't be empty");
+                Toast.makeText(UploadProjectActivity.this, "Project link can't be empty", Toast.LENGTH_SHORT).show();
             } else if (!Patterns.WEB_URL.matcher(projectLink.getText()).matches()) {
                 projectLink.setError("Project link has to be a proper URL");
+                Toast.makeText(UploadProjectActivity.this, "Project link has to be a proper URL", Toast.LENGTH_SHORT).show();
             } else if (TextUtils.isEmpty(projectDescription.getText())) {
                 projectDescription.setError("Project description can't be empty");
-            } else if (TextUtils.isEmpty(uriImage.toString())) {
+                Toast.makeText(UploadProjectActivity.this, "Project description can't be empty", Toast.LENGTH_SHORT).show();
+            } else if (uriImage == null) {
                 Toast.makeText(UploadProjectActivity.this, "Project image can't be empty", Toast.LENGTH_SHORT).show();
             } else {
-                Log.e("HERE", "STARTED");
-                String title = projectTitle.getText().toString();
-                String link = projectLink.getText().toString();
-                String image = uriImage.toString();
-                String description = projectDescription.getText().toString();
-
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid());
-                ref.orderByChild("username").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            for (DataSnapshot snap : snapshot.getChildren()) {
-                                username = snapshot.child("username").getValue().toString();
-                                Log.e("HERE", username);
-                                Project project = new Project(username, title, link, image, description);
-                                progressBar.setVisibility(View.VISIBLE);
-                                uploadNewProject(project);
-                            }
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
+                uploadImageToFirebaseStorage(uriImage);
             }
-
         });
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Projects");
-        reference.orderByChild(username).addValueEventListener(new ValueEventListener() {
+
+
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid());
+        ref.orderByChild("username").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    for (DataSnapshot snap : snapshot.getChildren()) {
-                        Project project = snap.getValue(Project.class);
-                        adapter.addProject(project);
-                    }
+                    username = Objects.requireNonNull(snapshot.child("username").getValue()).toString();
+
+                    ProjectsRecViewAdapter.projects.clear();
+
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Projects/" + username);
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                for (DataSnapshot snap : snapshot.getChildren()) {
+                                    Project project = snap.getValue(Project.class);
+                                    adapter.addProject(project);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
                 }
+
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
+
+
         });
+
 
         projectsRecView.setVisibility(RecyclerView.VISIBLE);
         projectsRecView.setAdapter(adapter);
@@ -157,28 +157,66 @@ public class UploadProjectActivity extends AppCompatActivity {
 
     }
 
-    private void uploadNewProject(Project project) {
-        Log.e("HERE", "Uploading");
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Projects/" + project.getStudentUsername() + "/");
 
-        reference.setValue(project).addOnCompleteListener(task -> {
+    private void uploadNewProject(Project project) {
+        progressBar.setVisibility(View.VISIBLE);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Projects/" + project.getStudentUsername() + "/");
+        DatabaseReference newProjectRef = reference.push(); // This creates a unique ID for each new project
+
+        newProjectRef.setValue(project).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Log.e("HERE", "Uploaded");
                 Toast.makeText(UploadProjectActivity.this, "Project uploaded successfully!", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
-                projectDescription.clearComposingText();
+                projectDescription.setText("");
                 projectImage.setImageResource(R.drawable.ic_projects);
-                projectLink.clearComposingText();
-                projectTitle.clearComposingText();
-
+                projectLink.setText("");
+                projectTitle.setText("");
+                adapter.addProject(project);
             } else {
-                Log.e("HERE", "Not uploaded");
-                Toast.makeText(UploadProjectActivity.this, "Project upload the project, try again!", Toast.LENGTH_SHORT).show();
-
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(UploadProjectActivity.this, "Project upload failed, try again!", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
+
+
+
+    private void uploadImageToFirebaseStorage(Uri imageUri) {
+        if (imageUri != null) {
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference("images/" + System.currentTimeMillis() + ".jpg");
+            storageRef.putFile(imageUri)
+                    .addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        String imageUrl = uri.toString();
+                        saveProjectInfo(imageUrl);
+                    }))
+                    .addOnFailureListener(e -> Toast.makeText(UploadProjectActivity.this, "Failed to upload image", Toast.LENGTH_SHORT).show());
+        }
+    }
+
+    private void saveProjectInfo(String imageUrl) {
+        String title = projectTitle.getText().toString();
+        String link = projectLink.getText().toString();
+        String description = projectDescription.getText().toString();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid());
+        ref.orderByChild("username").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    username = Objects.requireNonNull(snapshot.child("username").getValue()).toString();
+                    Project project = new Project(username, title, link, imageUrl, description);
+                    uploadNewProject(project);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(UploadProjectActivity.this, "Failed to save project info", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 
     private void openFileChooser() {
         Intent intent = new Intent();

@@ -4,11 +4,11 @@ package com.example.internapp;
  * Represents a project of the student with title, link, description and image URL.
  */
 public class Project {
-    private final String imageUrl;
-    private final String title;
-    private final String StudentUsername;
-    private final String description;
-    private final String link;
+    private String imageUrl;
+    private String title;
+    private String StudentUsername;
+    private String description;
+    private String link;
 
     /**
      * Constructs a new Project object with the given title, description, link, and image URL.
@@ -24,6 +24,9 @@ public class Project {
         this.StudentUsername = StudentUsername;
         this.imageUrl = imageUrl;
         this.description = description;
+    }
+
+    public Project() {
     }
 
     public String getImageUrl() {
@@ -45,4 +48,5 @@ public class Project {
     public String getLink() {
         return link;
     }
+
 }

@@ -106,6 +106,17 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
         holder.txtName.setText(viewPagerItem.getName());
         holder.txtFaculty.setText(viewPagerItem.getFaculty());
         holder.txtUniversity.setText(viewPagerItem.getUniversity());
+        holder.btnProjects.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(context, StudentProjectsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("username", viewPagerItem.getUsername());
+                context.startActivity(intent);
+            }
+        });
+
 
         // Handle profile button click
         holder.btnProfile.setOnClickListener(v -> {
@@ -261,7 +272,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final ImageView imgStudentSearch, whatsappLink, addToFavorites, btnProfile;
+        private final ImageView imgStudentSearch, whatsappLink, addToFavorites, btnProfile, btnProjects;
         private final TextView txtName, txtFaculty, txtUsername, txtUniversity;
 
         /**
@@ -273,6 +284,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
             super(itemView);
 
             btnProfile = itemView.findViewById(R.id.btnProfile);
+            btnProjects = itemView.findViewById(R.id.btnProjects);
             addToFavorites = itemView.findViewById(R.id.addToFavorites);
             txtUniversity = itemView.findViewById(R.id.studentUniversitySearch);
             whatsappLink = itemView.findViewById(R.id.whatsappLink);

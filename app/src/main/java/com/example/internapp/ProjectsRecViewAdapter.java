@@ -1,13 +1,16 @@
 package com.example.internapp;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -23,7 +26,7 @@ import java.util.ArrayList;
 public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecViewAdapter.ViewHolder> {
 
     private final Context context;
-    private final ArrayList<Project> projects = new ArrayList<>();
+    static ArrayList<Project> projects = new ArrayList<>();
 
     /**
      * Constructor for the FavoritesRecViewAdapter.
@@ -49,10 +52,21 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
 
         // Set an OnClickListener for the CardView
         holder.parent.setOnClickListener(v -> {
-            //open link
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(projects.get(position).getLink()));
-            context.startActivity(intent);
+            String url = projects.get(position).getLink();
+            Log.d("URL", "Project URL: " + url);
+            if (!url.equals("")) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                try {
+                    context.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(context, "No application found to open the link", Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                Log.e("URL Error", "URL is empty or invalid");
+            }
+
         });
 
         // Load the image using Picasso library
@@ -76,6 +90,12 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
         this.projects.add(project);
         notifyDataSetChanged();
     }
+
+    public boolean containsProject(Project project) {
+        return projects.contains(project);
+    }
+
+
 
     /**
      * ViewHolder class for the RecyclerView.
