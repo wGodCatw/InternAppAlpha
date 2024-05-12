@@ -142,7 +142,6 @@ public class UserProfileActivity extends AppCompatActivity {
         // Request necessary permissions for camera, audio, and notifications
         PermissionX.init(this).permissions(android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.POST_NOTIFICATIONS).request(((allGranted, grantedList, deniedList) -> {
             if (allGranted) {
-                Toast.makeText(this, "Thanks!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "You won't be able to make calls", Toast.LENGTH_SHORT).show();
             }

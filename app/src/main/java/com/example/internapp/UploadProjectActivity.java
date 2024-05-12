@@ -90,6 +90,9 @@ public class UploadProjectActivity extends AppCompatActivity {
             } else if (TextUtils.isEmpty(projectLink.getText())) {
                 projectLink.setError("Link to project can't be empty");
                 Toast.makeText(UploadProjectActivity.this, "Project link can't be empty", Toast.LENGTH_SHORT).show();
+            } else if (projectDescription.getText().toString().length() > 150) {
+                projectDescription.setError("Project description can't be longer than 150 characters");
+                Toast.makeText(UploadProjectActivity.this, "Project description can't be longer than 150 characters", Toast.LENGTH_SHORT).show();
             } else if (!Patterns.WEB_URL.matcher(projectLink.getText()).matches()) {
                 projectLink.setError("Project link has to be a proper URL");
                 Toast.makeText(UploadProjectActivity.this, "Project link has to be a proper URL", Toast.LENGTH_SHORT).show();

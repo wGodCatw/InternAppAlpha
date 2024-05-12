@@ -5,10 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +52,11 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         // Bind the data from the Project object to the ViewHolder
         holder.txtTitle.setText(projects.get(position).getTitle());
-        holder.txtDescription.setText(projects.get(position).getDescription());
+//        holder.txtDescription.setText(projects.get(position).getDescription());
+
+        String description = projects.get(position).getDescription();
+
+        holder.txtDescription.setOnClickListener(v -> onButtonShowPopupWindowClick(v, description));
 
         // Set an OnClickListener for the CardView
         holder.parent.setOnClickListener(v -> {
@@ -75,6 +83,37 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
 
         }
     }
+
+    public void onButtonShowPopupWindowClick(View view, String text) {
+
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View popupView = inflater.inflate(R.layout.popup_window, null);
+
+        TextView descriptionView = popupView.findViewById(R.id.descriptionText);
+        descriptionView.setText(text);
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.MATCH_PARENT;
+        int height = LinearLayout.LayoutParams.MATCH_PARENT;
+        boolean focusable = true; // lets taps outside the popup also dismiss it
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // show the popup window
+        // which view you pass in doesn't matter, it is only used for the window tolken
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        // dismiss the popup window when touched
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+                return true;
+            }
+        });
+    }
+
 
     @Override
     public int getItemCount() {
@@ -119,4 +158,7 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
             parent = itemView.findViewById(R.id.parent);
         }
     }
+
+
 }
+
