@@ -122,7 +122,6 @@
 
         <ProgressBar
             android:id="@+id/progress_bar_login"
-            style="@style/Widget.Material3.CircularProgressIndicator.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="10dp"

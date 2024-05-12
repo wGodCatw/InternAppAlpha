@@ -6,9 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,14 +37,55 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
     private ActivityVideoCallBinding views;
     private MainRepository mainRepository;
     private Boolean isSpeakerOn = false;
+
+    private ProgressBar progressBar;
+
+
+    private Handler callTimeoutHandler = new Handler(Looper.getMainLooper());
+    private Runnable callTimeoutRunnable;
+    private DataModel currentDataModel;
+
+
+
     private Boolean isCameraMuted = false;
     private Boolean isMicrophoneMuted = false;
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (callTimeoutRunnable != null) {
+            callTimeoutHandler.removeCallbacks(callTimeoutRunnable);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (currentDataModel != null) {
+            // Logic to delete the DataModel, e.g., remove from database
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
+            dbRef.child(currentDataModel.getTarget()).removeValue();
+            dbRef.child(currentDataModel.getSender()).removeValue();
+        }
+        if (progressBar.getVisibility() == View.VISIBLE) {
+            progressBar.setVisibility(View.GONE);
+        }
+        if (callTimeoutRunnable != null) {
+            callTimeoutHandler.removeCallbacks(callTimeoutRunnable);
+        }
+    }
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         views = ActivityVideoCallBinding.inflate(getLayoutInflater());
         setContentView(views.getRoot());
+
+        progressBar = findViewById(R.id.progress_bar);
 
         init();
     }
@@ -68,12 +112,40 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                 view = new View(VideoCallActivity.this);
             }
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            progressBar.setVisibility(View.VISIBLE);
+            Toast.makeText(VideoCallActivity.this, "Calling your target", Toast.LENGTH_LONG).show();
 
-            // Start a call request
-            mainRepository.sendCallRequest(views.targetUserNameEt.getText().toString().trim(), () -> {
+
+            // Start a call request with timeout
+            String targetUser = views.targetUserNameEt.getText().toString().trim();
+            DataModel callDataModel = new DataModel(targetUser, firebaseUser.getUid(), null, DataModelType.StartCall);
+            currentDataModel = callDataModel; // Save the current DataModel
+            mainRepository.sendCallRequest(targetUser, () -> {
                 Toast.makeText(this, "couldn't find the target", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
             });
+
+
+            // Setup the timeout for the call request
+            callTimeoutRunnable = () -> {
+                if (progressBar.getVisibility() == View.VISIBLE) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(VideoCallActivity.this, "Call did not succeed", Toast.LENGTH_LONG).show();
+                }
+            };
+            callTimeoutHandler.postDelayed(callTimeoutRunnable, 60000); // 1 minute timeout
         });
+
+
+//            // Start a call request
+//            mainRepository.sendCallRequest(views.targetUserNameEt.getText().toString().trim(), () -> {
+//                Toast.makeText(this, "couldn't find the target", Toast.LENGTH_SHORT).show();
+//                progressBar.setVisibility(View.GONE);
+//            });
+//        });
+
+
+        progressBar.setVisibility(View.GONE);
 
         // Initialization of local and remote views
         mainRepository.initLocalView(views.localView);
@@ -91,6 +163,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
         // Subscribing for latest event
         mainRepository.subscribeForLatestEvent(data -> {
             if (data.getType() == DataModelType.StartCall) {
+                currentDataModel = data; // Save the current DataModel
                 runOnUiThread(() -> {
                     // Setting up incoming call UI
                     views.incomingNameTV.setText(data.getSender());
@@ -252,6 +325,9 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
     @Override
     public void webrtcConnected() {
         runOnUiThread(() -> {
+            if (callTimeoutRunnable != null) {
+                callTimeoutHandler.removeCallbacks(callTimeoutRunnable);
+            }
             views.incomingCallLayout.setVisibility(View.GONE);
             views.whoToCallLayout.setVisibility(View.GONE);
             views.callLayout.setVisibility(View.VISIBLE);

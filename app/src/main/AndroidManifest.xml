@@ -85,10 +85,6 @@
             android:name=".FavoritesActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".HomepageActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
 
         <service
             android:name=".BackgroundCheck"

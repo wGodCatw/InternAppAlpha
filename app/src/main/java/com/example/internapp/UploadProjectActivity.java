@@ -43,7 +43,6 @@ public class UploadProjectActivity extends AppCompatActivity {
 
     private final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     private final ProjectsRecViewAdapter adapter = new ProjectsRecViewAdapter(UploadProjectActivity.this);
-    private Button btnUploadProject, btnChoosePicture;
     private TextInputEditText projectLink, projectDescription, projectTitle;
     private ImageView projectImage;
     private ProgressBar progressBar;
@@ -72,11 +71,11 @@ public class UploadProjectActivity extends AppCompatActivity {
 
 
         RecyclerView projectsRecView = findViewById(R.id.projectsRecView);
-        btnUploadProject = findViewById(R.id.buttonProjectUpload);
+        Button btnUploadProject = findViewById(R.id.buttonProjectUpload);
         projectImage = findViewById(R.id.imgProject);
         projectTitle = findViewById(R.id.projectTitle);
         projectLink = findViewById(R.id.projectLink);
-        btnChoosePicture = findViewById(R.id.buttonProjectPicture);
+        Button btnChoosePicture = findViewById(R.id.buttonProjectPicture);
         projectDescription = findViewById(R.id.projectDescription);
         progressBar = findViewById(R.id.progress_bar);
 
@@ -84,23 +83,32 @@ public class UploadProjectActivity extends AppCompatActivity {
         btnChoosePicture.setOnClickListener(v -> openFileChooser());
 
         btnUploadProject.setOnClickListener(v -> {
+
+            progressBar.setVisibility(View.VISIBLE);
+
             if (TextUtils.isEmpty(projectTitle.getText())) {
                 projectTitle.setError("Title can't be empty");
                 Toast.makeText(UploadProjectActivity.this, "Project title can't be empty", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
             } else if (TextUtils.isEmpty(projectLink.getText())) {
                 projectLink.setError("Link to project can't be empty");
                 Toast.makeText(UploadProjectActivity.this, "Project link can't be empty", Toast.LENGTH_SHORT).show();
-            } else if (projectDescription.getText().toString().length() > 150) {
-                projectDescription.setError("Project description can't be longer than 150 characters");
-                Toast.makeText(UploadProjectActivity.this, "Project description can't be longer than 150 characters", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
             } else if (!Patterns.WEB_URL.matcher(projectLink.getText()).matches()) {
                 projectLink.setError("Project link has to be a proper URL");
                 Toast.makeText(UploadProjectActivity.this, "Project link has to be a proper URL", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
             } else if (TextUtils.isEmpty(projectDescription.getText())) {
                 projectDescription.setError("Project description can't be empty");
                 Toast.makeText(UploadProjectActivity.this, "Project description can't be empty", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+            }else if (projectDescription.getText().toString().length() > 500) {
+                projectDescription.setError("Project description can't be longer than 500 characters");
+                Toast.makeText(UploadProjectActivity.this, "Project description can't be longer than 150 characters", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
             } else if (uriImage == null) {
                 Toast.makeText(UploadProjectActivity.this, "Project image can't be empty", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
             } else {
                 uploadImageToFirebaseStorage(uriImage);
             }
