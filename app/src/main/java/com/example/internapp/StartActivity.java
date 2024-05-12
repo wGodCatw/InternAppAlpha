@@ -24,6 +24,11 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
+
+        // Start the BackgroundCheck service
+        Intent serviceIntent = new Intent(this, BackgroundCheck.class);
+        startService(serviceIntent);
+
         // Create a delayed runnable to start LoginActivity after 2000 milliseconds (2 seconds)
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             // Create an intent to navigate to LoginActivity
