@@ -112,14 +112,16 @@ public class BackgroundCheck extends Service {
             Runnable hand = new Runnable() {
                 @Override
                 public void run() {
-                    if(!madeNotification){
-                        try {
-                            Log.e("service", "service running");
-                            // Subscribe to the latest event from the MainRepository
-                            mainRepository.subscribeForLatestEvent(data -> {
-                                // Check if the event type is StartCall
-                                if (data.getType() == DataModelType.StartCall) {
-                                    Log.e("service", data.getSender() + " is calling you");
+                    try {
+                        Log.e("service", "service running");
+                        // Subscribe to the latest event from the MainRepository
+                        mainRepository.subscribeForLatestEvent(data -> {
+                            // Check if the event type is StartCall
+                            if (data.getType() == DataModelType.StartCall) {
+                                Log.e("service", data.getSender() + " is calling you");
+
+                                // Check if a notification has not been created for this call event
+                                if (!madeNotification) {
                                     // Display a notification when a call is received
                                     NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                                     String text = data.getSender() + " is calling you";
@@ -130,13 +132,13 @@ public class BackgroundCheck extends Service {
                                             .setAutoCancel(true) // this will close the notification after it's clicked
                                             .build();
 
+                                    madeNotification = true; // Set the flag to indicate that a notification has been created
                                     notificationManager.notify(1, notification);
-                                    madeNotification = true;
                                 }
-                            });
-                        } catch (Exception e) {
-                            Log.e("service", Objects.requireNonNull(e.getMessage()));
-                        }
+                            }
+                        });
+                    } catch (Exception e) {
+                        Log.e("service", Objects.requireNonNull(e.getMessage()));
                     }
 
                     handler.postDelayed(this, 1000);
