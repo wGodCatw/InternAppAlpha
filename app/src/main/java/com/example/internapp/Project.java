@@ -1,5 +1,7 @@
 package com.example.internapp;
 
+import java.util.Objects;
+
 /**
  * Represents a project of the student with title, link, description and image URL.
  */
@@ -48,5 +50,17 @@ public class Project {
     public String getLink() {
         return link;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Project project = (Project) obj;
+        return Objects.equals(title, project.title) &&
+                Objects.equals(description, project.description) &&
+                Objects.equals(imageUrl, project.imageUrl) &&
+                Objects.equals(link, project.link);
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package com.example.internapp;
 
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -20,17 +21,26 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Adapter class for the RecyclerView displaying the list of favorite students.
  */
 public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecViewAdapter.ViewHolder> {
 
-    private final Context context;
     static ArrayList<Project> projects = new ArrayList<>();
+    private final Context context;
+    private static FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
     /**
      * Constructor for the FavoritesRecViewAdapter.
@@ -75,6 +85,17 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
                 Log.e("URL Error", "URL is empty or invalid");
             }
 
+        });
+
+        // Set long click listener on the parent CardView
+        holder.parent.setOnLongClickListener(v -> {
+            new AlertDialog.Builder(context).setTitle("Delete Project").setMessage("Do you want to delete this project?").setPositiveButton("Yes", (dialog, which) -> {
+                Project projectToRemove = projects.get(position);
+                holder.removeProjectFromFirebase(projectToRemove);
+                projects.remove(position);
+                notifyItemRemoved(position);
+            }).setNegativeButton("No", null).show();
+            return true; // Indicates the callback consumed the long click
         });
 
         // Load the image using Picasso library
@@ -126,14 +147,9 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
      * @param project The Project object to be displayed.
      */
     public void addProject(Project project) {
-        this.projects.add(project);
+        projects.add(project);
         notifyDataSetChanged();
     }
-
-    public boolean containsProject(Project project) {
-        return projects.contains(project);
-    }
-
 
 
     /**
@@ -156,9 +172,46 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
             txtDescription = itemView.findViewById(R.id.txtDescription);
             image = itemView.findViewById(R.id.projectImg);
             parent = itemView.findViewById(R.id.parent);
+
+
+        }
+
+        private void removeProjectFromFirebase(Project projectToRemove) {
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid());
+            ref.orderByChild("username").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String username = Objects.requireNonNull(snapshot.child("username").getValue()).toString();
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Projects/" + username);
+                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    for (DataSnapshot snap : snapshot.getChildren()) {
+                                        Project project = snap.getValue(Project.class);
+                                        if(project != null && project.equals(projectToRemove)){
+                                            snap.getRef().removeValue();
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
         }
     }
-
-
 }
-

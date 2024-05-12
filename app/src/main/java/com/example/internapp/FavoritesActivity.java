@@ -118,23 +118,18 @@ public class FavoritesActivity extends AppCompatActivity {
         ArrayList<FavoriteStudent> students = new ArrayList<>();
         final AtomicInteger counter = new AtomicInteger(studentIDs.size());
 
-        if(studentIDs.isEmpty() || studentIDs.get(0).equals("")){
-            txtNoStudentsFound.setVisibility(TextView.VISIBLE);
-        } else{
-            for (String id : studentIDs) {
-
-                // Retrieve the FavoriteStudent object for each student ID
-                getStudentFromId(id, value -> {
+        for (String id : studentIDs) {
+            getStudentFromId(id, value -> {
+                if (value != null) {
                     students.add(value);
-                    if (counter.decrementAndGet() == 0) {
-                        myCallback.onCallback(students);
-                    }
-                });
-            }
+                }
+                if (counter.decrementAndGet() == 0) {
+                    myCallback.onCallback(students);
+                }
+            });
         }
-
-
     }
+
 
     /**
      * Retrieves the FavoriteStudent object for the provided student ID from the Firebase database.
@@ -144,12 +139,11 @@ public class FavoritesActivity extends AppCompatActivity {
      */
     private void getStudentFromId(String studentId, final StudentCallback myCallback) {
         DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        referenceProfile.orderByKey().equalTo(studentId).addValueEventListener(new ValueEventListener() {
+        referenceProfile.orderByKey().equalTo(studentId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChildren()) {
                     for (DataSnapshot snap : snapshot.getChildren()) {
-
                         String name = (String) snap.child("name").getValue();
                         String userPic = (String) snap.child("userPic").getValue();
                         String faculty = (String) snap.child("faculty").getValue();
@@ -158,6 +152,9 @@ public class FavoritesActivity extends AppCompatActivity {
                         FavoriteStudent student = new FavoriteStudent(name, faculty, userPic, username);
                         myCallback.onCallback(student);
                     }
+                } else {
+                    // If the student ID is not found, call the callback with null
+                    myCallback.onCallback(null);
                 }
             }
 
@@ -167,6 +164,7 @@ public class FavoritesActivity extends AppCompatActivity {
             }
         });
     }
+
 
     /**
      * Callback interface to handle a single FavoriteStudent object.
