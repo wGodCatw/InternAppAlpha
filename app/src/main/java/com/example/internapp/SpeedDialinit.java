@@ -113,9 +113,8 @@ public class SpeedDialinit {
                     fab.close(true);
                     // Start SettingsActivity
                     Intent intent = new Intent(context, SettingsActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     ContextCompat.startActivity(context, intent, null);
-                    activity.finish();
                 }
             } else if (actionItem.getId() == R.id.action_home) {
                 // Check if already on UserProfileActivity

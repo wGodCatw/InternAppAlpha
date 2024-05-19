@@ -48,6 +48,10 @@ public class SettingsActivity extends AppCompatActivity {
         // OnClickListener for logging out the user
         logOut.setOnClickListener(v -> {
             authProfile.signOut();
+
+            Intent backgroundCheck = new Intent(this, BackgroundCheck.class);
+            stopService(backgroundCheck);
+
             Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);

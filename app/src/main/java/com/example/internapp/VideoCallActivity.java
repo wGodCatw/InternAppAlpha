@@ -52,6 +52,14 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
     private void init() {
         mainRepository = MainRepository.getInstance();
 
+        // Handling incoming call event
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String studentUsername = extras.getString("studentUsername");
+            views.targetUserNameEt.setText(studentUsername);
+            views.callBtn.performClick();
+        }
+
         views.remoteView.setOnClickListener(v -> {
             if (views.controls.getVisibility() == View.VISIBLE) {
                 views.controls.setVisibility(View.GONE);
@@ -80,13 +88,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
         mainRepository.initRemoteView(views.remoteView);
         mainRepository.listener = this;
 
-        // Handling incoming call event
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String studentUsername = extras.getString("studentUsername");
-            views.targetUserNameEt.setText(studentUsername);
-            views.callBtn.performClick();
-        }
+
 
         // Subscribing for latest event
         mainRepository.subscribeForLatestEvent(data -> {
