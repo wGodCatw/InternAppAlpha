@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.WindowCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -17,6 +19,14 @@ import com.google.firebase.auth.FirebaseUser;
  */
 public class StartActivity extends AppCompatActivity {
 
+    public int getStatusBarHeight() {
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return getResources().getDimensionPixelSize(resourceId);
+        }
+        return 0; // Default value if not found
+    }
+
     /**
      * Called when the activity is starting.
      * Sets the content view to the layout defined in activity_start.xml.
@@ -26,9 +36,18 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         setContentView(R.layout.activity_start);
 
-        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.white));
+        ConstraintLayout constraintLayout = findViewById(R.id.parentConstraint); // Replace with your actual layout ID
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) constraintLayout.getLayoutParams();
+        params.topMargin = getStatusBarHeight();
+
+
+//        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.white));
 
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();

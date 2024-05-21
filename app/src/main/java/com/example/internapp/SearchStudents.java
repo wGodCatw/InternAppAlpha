@@ -2,11 +2,14 @@ package com.example.internapp;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.WindowCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.firebase.database.DataSnapshot;
@@ -47,10 +50,28 @@ public class SearchStudents extends AppCompatActivity {
         return super.getOnBackInvokedDispatcher();
     }
 
+    public int getStatusBarHeight() {
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return getResources().getDimensionPixelSize(resourceId);
+        }
+        return 0; // Default value if not found
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         setContentView(R.layout.activity_search_students);
+
+        ConstraintLayout constraintLayout = findViewById(R.id.parentConstraint); // Replace with your actual layout ID
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) constraintLayout.getLayoutParams();
+        params.topMargin = getStatusBarHeight();
+
+
         txtNoStudentsFound = findViewById(R.id.txtNoStudentsFound);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

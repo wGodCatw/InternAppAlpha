@@ -8,12 +8,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 
 import com.example.internapp.databinding.ActivityVideoCallBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,11 +40,27 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
     private Boolean isCameraMuted = false;
     private Boolean isMicrophoneMuted = false;
 
+    public int getStatusBarHeight() {
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return getResources().getDimensionPixelSize(resourceId);
+        }
+        return 0; // Default value if not found
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         views = ActivityVideoCallBinding.inflate(getLayoutInflater());
         setContentView(views.getRoot());
+
+        RelativeLayout relativeLayout = findViewById(R.id.parentRelative); // Replace with your actual layout ID
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) relativeLayout.getLayoutParams();
+        params.topMargin = getStatusBarHeight();
 
         init();
     }

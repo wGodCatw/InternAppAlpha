@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.WindowCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
@@ -30,10 +33,23 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private TextInputEditText edtOldPassword, edtNewPassword, edtVerifyNewPwd;
     private Button btnUpdatePassword, btnAuth;
 
+    public int getStatusBarHeight() {
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return getResources().getDimensionPixelSize(resourceId);
+        }
+        return 0; // Default value if not found
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         setContentView(R.layout.activity_change_password);
+
+
 
         progressBar = findViewById(R.id.progressBar);
         txtAuthenticated = findViewById(R.id.titleUpdPwdAuth);
@@ -46,6 +62,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
         btnUpdatePassword.setEnabled(false);
         edtNewPassword.setEnabled(false);
         edtVerifyNewPwd.setEnabled(false);
+
+        ConstraintLayout constraintLayout = findViewById(R.id.parentConstraint); // Replace with your actual layout ID
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) constraintLayout.getLayoutParams();
+        params.topMargin = getStatusBarHeight();
+
+
 
         FirebaseAuth authProfile = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = authProfile.getCurrentUser();

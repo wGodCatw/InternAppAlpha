@@ -6,12 +6,15 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +33,14 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText emailField, pwdField;
     private ProgressBar progressBar;
 
+    public int getStatusBarHeight() {
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return getResources().getDimensionPixelSize(resourceId);
+        }
+        return 0; // Default value if not found
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -44,7 +55,16 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
+
         setContentView(R.layout.activity_login);
+
+        ScrollView scrollView = findViewById(R.id.parentScroll);
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) scrollView.getLayoutParams();
+        params.topMargin = getStatusBarHeight();
 
         emailField = findViewById(R.id.txtFieldEmail);
         pwdField = findViewById(R.id.txtFieldPassword);

@@ -15,6 +15,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,7 +25,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.WindowCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -49,6 +51,8 @@ import java.util.Objects;
  * It fetches and displays user data from Firebase Realtime Database, and provides functionality for updating user profile details.
  */
 public class UserProfileActivity extends AppCompatActivity {
+
+
 
     /**
      * BroadcastReceiver to monitor network state changes and update the WiFi icon accordingly.
@@ -104,15 +108,32 @@ public class UserProfileActivity extends AppCompatActivity {
         notificationManager.createNotificationChannel(channel);
     }
 
+    public int getStatusBarHeight() {
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return getResources().getDimensionPixelSize(resourceId);
+        }
+        return 0; // Default value if not found
+    }
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
         setContentView(R.layout.activity_user_profile);
         mainRepository = MainRepository.getInstance();
 
 
+        ConstraintLayout constraintLayout = findViewById(R.id.parentConstraint); // Replace with your actual layout ID
 
-        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.white));
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) constraintLayout.getLayoutParams();
+        params.topMargin = getStatusBarHeight();
+
 
         FirebaseAuth authProfile = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = authProfile.getCurrentUser();
@@ -140,14 +161,14 @@ public class UserProfileActivity extends AppCompatActivity {
         layout_uniCompany = findViewById(R.id.layout_uni_company);
         profilePic = findViewById(R.id.profilePicture);
         edt_username = findViewById(R.id.username);
+
         TextInputLayout layout_fullName = findViewById(R.id.layout_fullName);
         TextInputLayout layout_dateOfBirth = findViewById(R.id.layout_dateOfBirth);
         Button callBtn = findViewById(R.id.callBtn);
 
         // Request necessary permissions for camera, audio, and notifications
         PermissionX.init(this).permissions(android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.POST_NOTIFICATIONS).request(((allGranted, grantedList, deniedList) -> {
-            if (allGranted) {
-            } else {
+            if (!allGranted) {
                 Toast.makeText(this, "You won't be able to make calls", Toast.LENGTH_SHORT).show();
             }
         }));
