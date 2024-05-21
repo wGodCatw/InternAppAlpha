@@ -6,6 +6,10 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Activity that serves as the entry point of the application.
@@ -24,10 +28,17 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.white));
 
-        // Start the BackgroundCheck service
-        Intent serviceIntent = new Intent(this, BackgroundCheck.class);
-        startService(serviceIntent);
+
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        
+        if(firebaseUser != null){
+            // Start the BackgroundCheck service
+            Intent serviceIntent = new Intent(this, BackgroundCheck.class);
+            startService(serviceIntent);
+        }
+
 
         // Create a delayed runnable to start LoginActivity after 2000 milliseconds (2 seconds)
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
