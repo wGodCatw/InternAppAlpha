@@ -123,6 +123,15 @@ public class StudentProfileActivity extends AppCompatActivity {
             }
         });
 
+        TextInputLayout layout_phone = findViewById(R.id.layout_phone);
+        layout_phone.setEndIconOnClickListener(v -> {
+            //copy to clipboard
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("Phone number", phone);
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(StudentProfileActivity.this, "Phone number copied to clipboard!", Toast.LENGTH_SHORT).show();
+        });
+
         // Initialize floating action button
         SpeedDialView speedDialView = findViewById(R.id.speedDialView);
         SpeedDialinit.fab_init(speedDialView, getApplicationContext(), StudentProfileActivity.this);

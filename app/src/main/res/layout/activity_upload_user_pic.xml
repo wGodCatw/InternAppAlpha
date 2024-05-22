@@ -68,7 +68,7 @@
                     android:layout_marginTop="44dp"
                     android:fontFamily="@font/montserrat"
                     android:padding="5dp"
-                    android:text="Choose picture to upload to your profile. 4:3 is portrait is highly recommended"
+                    android:text="Choose picture to upload to your profile. 4:3 portrait is highly recommended"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="25sp"
