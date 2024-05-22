@@ -105,7 +105,7 @@ public class UploadUserPicActivity extends AppCompatActivity {
 
         // Loading current user's profile picture if available.
         Uri uri = firebaseUser.getPhotoUrl();
-        Picasso.get().load(uri).into(profilePic);
+        Picasso.get().load(uri).fit().centerCrop().into(profilePic);
 
         // Setting listeners for buttons.
         btnPicChoose.setOnClickListener(v -> openFileChooser());

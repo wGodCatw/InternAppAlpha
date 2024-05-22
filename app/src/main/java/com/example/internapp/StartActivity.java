@@ -41,13 +41,9 @@ public class StartActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_start);
 
-        ConstraintLayout constraintLayout = findViewById(R.id.parentConstraint); // Replace with your actual layout ID
-
+        ConstraintLayout constraintLayout = findViewById(R.id.parentConstraint);
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) constraintLayout.getLayoutParams();
         params.topMargin = getStatusBarHeight();
-
-
-//        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.white));
 
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();

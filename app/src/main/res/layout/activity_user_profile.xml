@@ -62,8 +62,6 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white">
 
-
-
                 <ProgressBar
                     android:id="@+id/progressBar"
                     android:layout_width="wrap_content"
@@ -88,27 +86,26 @@
 
                     <ImageView
                         android:id="@+id/profilePicture"
-                        android:layout_width="400dp"
+                        android:layout_width="300dp"
                         android:layout_height="400dp"
-                        android:layout_margin="20dp"
                         android:layout_marginTop="20dp"
                         android:padding="10dp"
                         android:src="@drawable/ic_profile"
+                        app:flow_verticalBias="0.5"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.454"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/wifi_state" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
                         android:id="@+id/wifi_state"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintHorizontal_bias="0.123"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintBottom_toTopOf="@+id/profilePicture"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.036"
                         app:srcCompat="@drawable/ic_wifi_enabled" />
 
                     <Button
@@ -116,9 +113,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="40dp"
-                        android:textColor="@color/white"
+                        android:layout_marginEnd="16dp"
                         android:text="Call"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toTopOf="@+id/profilePicture"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>

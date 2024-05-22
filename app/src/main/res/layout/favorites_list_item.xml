@@ -26,18 +26,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
+            <ImageView
+                android:id="@+id/isFavoriteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_favorites_added"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.954"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.079" />
+
             <TextView
                 android:id="@+id/txtName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="84dp"
                 android:fontFamily="@font/montserrat"
                 android:text="Student Name"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.86"
+                app:layout_constraintHorizontal_bias="0.835"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -53,10 +66,10 @@
                 android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@+id/txtEmail"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.829"
+                app:layout_constraintHorizontal_bias="0.805"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtName"
-                app:layout_constraintVertical_bias="0.576">
+                app:layout_constraintVertical_bias="0.56">
 
             </TextView>
 
@@ -66,13 +79,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 android:fontFamily="@font/montserrat"
-                android:text="Student Email"
+                android:text="Student faculty"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.849"
+                app:layout_constraintHorizontal_bias="0.856"
                 app:layout_constraintStart_toStartOf="parent">
 
             </TextView>

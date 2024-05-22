@@ -258,7 +258,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
 
         // Load student image if available
         if (!viewPagerItemArrayList.get(position).getImageUrl().equals("none")) {
-            Picasso.get().load(viewPagerItemArrayList.get(position).getImageUrl()).into(holder.imgStudentSearch);
+            Picasso.get().load(viewPagerItemArrayList.get(position).getImageUrl()).fit().centerCrop().into(holder.imgStudentSearch);
         }
     }
 

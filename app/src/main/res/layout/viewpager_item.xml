@@ -3,44 +3,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/studentPicSearch"
-            android:layout_width="417dp"
-            android:layout_height="590dp"
+            android:layout_width="400dp"
+            android:layout_height="533dp"
+            android:layout_margin="30dp"
+            android:padding="10dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_profile" />
+
 
         <TextView
             android:id="@+id/studentNameSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:fontFamily="@font/montserrat"
             android:text="Name"
             android:textColor="@color/black"
             android:textSize="30sp"
-            app:layout_constraintBottom_toTopOf="@+id/studentFacultySearch"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.086"
+            app:layout_constraintEnd_toStartOf="@+id/addToFavorites"
+            app:layout_constraintHorizontal_bias="0.141"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/studentPicSearch"
-            app:layout_constraintVertical_bias="0.082" />
-
+            app:layout_constraintTop_toBottomOf="@+id/studentPicSearch" />
 
         <TextView
             android:id="@+id/studentFacultySearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
             android:layout_marginVertical="12dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="12dp"
             android:fontFamily="@font/montserrat"
             android:text="Faculty"
             android:textColor="@color/black"
@@ -53,8 +57,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="64dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/studentPicSearch"
             app:srcCompat="@drawable/ic_favorites" />
@@ -63,17 +67,18 @@
             android:id="@+id/cardInfoStudent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:layout_marginTop="50dp"
-            app:layout_constraintTop_toBottomOf="@id/studentUniversitySearch"
+            app:cardBackgroundColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/studentUniversitySearch"
             tools:layout_editor_absoluteY="697dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:background="@color/white">
 
 
@@ -125,8 +130,9 @@
             android:id="@+id/studentUniversitySearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
             android:layout_marginVertical="12dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="12dp"
             android:fontFamily="@font/montserrat"
             android:text="University"
             android:textColor="@color/black"
@@ -138,9 +144,9 @@
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="10sp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginVertical="10dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="8dp"
             android:text="Username"
             android:textColor="@color/black"
             android:textSize="20sp"

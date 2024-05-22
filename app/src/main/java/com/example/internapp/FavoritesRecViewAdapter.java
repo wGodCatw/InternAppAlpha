@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Adapter class for the RecyclerView displaying the list of favorite students.
@@ -49,9 +52,9 @@ public class FavoritesRecViewAdapter extends RecyclerView.Adapter<FavoritesRecVi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         // Bind the data from the FavoriteStudent object to the ViewHolder
-        holder.txtName.setText(favoriteStudents.get(position).getName());
-        holder.txtEmail.setText(favoriteStudents.get(position).getEmail());
-        Log.e("HERE", favoriteStudents.get(position).getUsername());
+        holder.txtName.setText(favoriteStudents.get(holder.getAdapterPosition()).getName());
+        holder.txtEmail.setText(favoriteStudents.get(holder.getAdapterPosition()).getEmail());
+        Log.e("HERE", favoriteStudents.get(holder.getAdapterPosition()).getUsername());
         holder.txtUsername.setText("@" + favoriteStudents.get(position).getUsername());
 
         // Set an OnClickListener for the CardView
@@ -78,10 +81,86 @@ public class FavoritesRecViewAdapter extends RecyclerView.Adapter<FavoritesRecVi
                 }
             });
         });
+
+        holder.isFavoriteButton.setOnClickListener(v -> {
+
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid());
+            reference.child("favoriteStudents").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String favoriteStr = (String) snapshot.getValue();
+
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+                        ref.orderByChild("username").equalTo(favoriteStudents.get(holder.getAdapterPosition()).getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    String UID = "";
+                                    for (DataSnapshot snap : snapshot.getChildren()) {
+                                        UID = snap.getKey();
+                                    }
+                                    ArrayList<String> favoritesList = new ArrayList<>(Arrays.asList(favoriteStr.split(",")));
+
+
+                                    favoriteStudents.remove(holder.getAdapterPosition());
+                                    notifyItemRemoved(holder.getAdapterPosition());
+
+                                    favoritesList.remove(UID);
+
+
+                                    String newFavoriteStr = String.join(",", favoritesList);
+                                    reference.child("favoriteStudents").setValue(newFavoriteStr);
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
+                    } else {
+                        //get UID of the student from username of the viewpager item
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+                        reference.orderByChild("username").equalTo(favoriteStudents.get(holder.getAdapterPosition()).getUsername()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    String UID = "";
+                                    for (DataSnapshot snap : snapshot.getChildren()) {
+                                        UID = snap.getKey();
+                                    }
+                                    DatabaseReference referenceUser = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid());
+                                    referenceUser.child("favoriteStudents").setValue(UID);
+                                    holder.isFavoriteButton.setImageResource(R.drawable.ic_favorites_added);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        });
+
+
         // Load the image using Picasso library
         if (!favoriteStudents.get(position).getImageUrl().equals("none")) {
-            Picasso.get().load(favoriteStudents.get(position).getImageUrl()).into(holder.image);
-
+            Picasso.get().load(favoriteStudents.get(holder.getAdapterPosition()).getImageUrl()).fit().centerCrop().into(holder.image);
         }
     }
 
@@ -110,6 +189,8 @@ public class FavoritesRecViewAdapter extends RecyclerView.Adapter<FavoritesRecVi
         private final CardView parent;
         private final ImageView image;
 
+        private final ImageView isFavoriteButton;
+
         /**
          * Constructor for the ViewHolder.
          *
@@ -117,6 +198,7 @@ public class FavoritesRecViewAdapter extends RecyclerView.Adapter<FavoritesRecVi
          */
         public ViewHolder(View itemView) {
             super(itemView);
+            isFavoriteButton = itemView.findViewById(R.id.isFavoriteButton);
             txtUsername = itemView.findViewById(R.id.txtUsername);
             txtName = itemView.findViewById(R.id.txtName);
             image = itemView.findViewById(R.id.universityImg);

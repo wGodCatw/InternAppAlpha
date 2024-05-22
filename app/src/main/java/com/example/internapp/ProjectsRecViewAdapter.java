@@ -100,7 +100,7 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
 
         // Load the image using Picasso library
         if (!projects.get(position).getImageUrl().equals("none")) {
-            Picasso.get().load(projects.get(position).getImageUrl()).into(holder.image);
+            Picasso.get().load(projects.get(position).getImageUrl()).fit().into(holder.image);
 
         }
     }

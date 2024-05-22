@@ -91,6 +91,7 @@ public class StudentProfileActivity extends AppCompatActivity {
         profilePic = findViewById(R.id.profilePicture);
         edt_username = findViewById(R.id.username);
         ImageView btnCallStudent = findViewById(R.id.btnCallStudent);
+        ImageView btnProjectsStudent = findViewById(R.id.btnProjectsStudent);
 
         // Set click listener for calling the student
         btnCallStudent.setOnClickListener(v -> {
@@ -98,6 +99,14 @@ public class StudentProfileActivity extends AppCompatActivity {
             Intent call = new Intent(StudentProfileActivity.this, VideoCallActivity.class);
             call.putExtra("studentUsername", studentUsername);
             startActivity(call);
+        });
+
+        btnProjectsStudent.setOnClickListener(v -> {
+            String studentUsername = Objects.requireNonNull(edt_username.getText()).toString().substring(1);
+            Intent intent = new Intent(StudentProfileActivity.this, StudentProjectsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("username", studentUsername);
+            startActivity(intent);
         });
 
         edt_phone.setOnClickListener(v -> {
@@ -171,7 +180,7 @@ public class StudentProfileActivity extends AppCompatActivity {
 
                         // Load profile picture if available
                         if (!uri.toString().equals("none")) {
-                            Picasso.get().load(uri).into(profilePic);
+                            Picasso.get().load(uri).fit().centerCrop().into(profilePic);
                         }
 
                         // Set user details

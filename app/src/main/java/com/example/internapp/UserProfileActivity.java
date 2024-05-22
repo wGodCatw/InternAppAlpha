@@ -407,7 +407,7 @@ private void showUserProfile(FirebaseUser firebaseUser) {
                     // Load user's profile picture from Firebase Storage
                     Uri uri = firebaseUser.getPhotoUrl();
                     if(!(uri == null) &&!uri.toString().equals("none")){
-                        Picasso.get().load(uri).into(profilePic);
+                        Picasso.get().load(uri).fit().centerCrop().into(profilePic);
                     }
 
                     edt_username.setText("@" + username);
@@ -452,7 +452,7 @@ private void showUserProfile(FirebaseUser firebaseUser) {
 
                     // Load user's profile picture from Firebase Storage
                     Uri uri = firebaseUser.getPhotoUrl();
-                    Picasso.get().load(uri).into(profilePic);
+                    Picasso.get().load(uri).fit().centerCrop().into(profilePic);
 
                     edt_username.setText("@" + username);
                     edt_uniCompany.setText(uniCompany);

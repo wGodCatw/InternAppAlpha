@@ -48,7 +48,6 @@ public class FavoritesActivity extends AppCompatActivity {
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
-
         setContentView(R.layout.activity_favorites);
 
         ConstraintLayout constraintLayout = findViewById(R.id.parentConstraint); // Replace with your actual layout ID
@@ -110,7 +109,7 @@ public class FavoritesActivity extends AppCompatActivity {
                     ArrayList<String> favoritesUIDs = new ArrayList<>(Arrays.asList(favoritesStr.split(",")));
                     //if favoritesUIDs is empty txtNoStudentsFound will be visible
                     //else txtNoStudentsFound will be gone
-                    if (favoritesUIDs.isEmpty()) {
+                    if (favoritesUIDs.isEmpty() || favoritesStr.equals("")) {
                         txtNoStudentsFound.setVisibility(TextView.VISIBLE);
 
                     } else {

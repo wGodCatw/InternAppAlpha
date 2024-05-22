@@ -47,19 +47,7 @@
 
     </com.leinardi.android.speeddial.SpeedDialView>
 
-    <ImageView
-        android:id="@+id/btnCallStudent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="10dp"
-        android:padding="10dp"
-        android:src="@drawable/ic_incoming_accepted"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.913"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
@@ -100,17 +88,36 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
+
+                    <ImageView
+                        android:id="@+id/btnCallStudent"
+                        android:layout_width="86dp"
+                        android:layout_height="90dp"
+                        android:elevation="10dp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_incoming_accepted"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/btnProjectsStudent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:elevation="10dp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_projects"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <ImageView
                         android:id="@+id/profilePicture"
-                        android:layout_width="400dp"
-                        android:layout_height="400dp"
-                        android:layout_margin="20dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_width="225dp"
+                        android:layout_height="300dp"
                         android:padding="10dp"
                         android:src="@drawable/ic_profile"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.454"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/btnCallStudent"
+                        app:layout_constraintStart_toEndOf="@+id/btnProjectsStudent"
                         app:layout_constraintTop_toTopOf="parent" />
 
 
