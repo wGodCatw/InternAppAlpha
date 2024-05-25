@@ -25,51 +25,51 @@
         android:theme="@style/Theme.InternApp"
         tools:targetApi="34">
         <activity
-            android:name=".StudentProjectsActivity"
+            android:name=".StudentDir.StudentProjectsActivity"
             android:exported="false" />
         <activity
-            android:name=".UploadProjectActivity"
+            android:name=".MainDir.UploadProjectActivity"
             android:exported="false" />
         <activity
-            android:name=".StudentProfileActivity"
+            android:name=".StudentDir.StudentProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".VideoCallActivity"
+            android:name=".VideoCall.VideoCallActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".DeleteUserActivity"
+            android:name=".MainDir.DeleteUserActivity"
             android:exported="false" />
         <activity
-            android:name=".ChangePasswordActivity"
+            android:name=".MainDir.ChangePasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".UpdateEmailActivity"
+            android:name=".MainDir.UpdateEmailActivity"
             android:exported="false" />
         <activity
-            android:name=".UploadUserPicActivity"
+            android:name=".MainDir.UploadUserPicActivity"
             android:exported="false" />
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".MainDir.ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".MainDir.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".UserProfileActivity"
+            android:name=".MainDir.UserProfileActivity"
 
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".MainDir.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".MainDir.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".SearchStudents"
+            android:name=".HRDir.SearchStudents"
             android:exported="false" />
         <activity
-            android:name=".StartActivity"
+            android:name=".MainDir.StartActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -79,16 +79,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SearchActivity"
+            android:name=".HRDir.SearchActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".FavoritesActivity"
+            android:name=".HRDir.FavoritesActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
         <service
-            android:name=".BackgroundCheck"
+            android:name=".MainDir.BackgroundCheck"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 

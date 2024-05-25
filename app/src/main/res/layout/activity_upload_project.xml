@@ -6,7 +6,7 @@
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UploadProjectActivity">
+    tools:context=".MainDir.UploadProjectActivity">
 
 
     <ProgressBar
@@ -120,6 +120,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="20dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="50"
                 android:paddingVertical="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"

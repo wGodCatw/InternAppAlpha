@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:id="@+id/parentConstraint"
     android:layout_height="match_parent"
-    tools:context=".StartActivity"
+    tools:context=".MainDir.StartActivity"
     android:background="@drawable/ic_welcome">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

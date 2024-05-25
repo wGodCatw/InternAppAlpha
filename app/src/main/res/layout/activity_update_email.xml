@@ -6,7 +6,7 @@
     android:id="@+id/parentConstraint"
     android:background="@color/white"
     android:layout_height="match_parent"
-    tools:context=".UpdateEmailActivity">
+    tools:context=".MainDir.UpdateEmailActivity">
 
     <TextView
         android:id="@+id/updEmailTitle"

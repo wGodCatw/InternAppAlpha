@@ -7,7 +7,7 @@
     android:id="@+id/parentScroll"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".RegisterActivity">
+    tools:context=".MainDir.RegisterActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
