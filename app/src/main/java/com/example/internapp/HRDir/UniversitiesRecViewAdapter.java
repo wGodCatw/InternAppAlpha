@@ -4,6 +4,7 @@ import static com.example.internapp.HRDir.SearchActivity.filtersFaculties;
 import static com.example.internapp.HRDir.SearchActivity.filtersUniversities;
 
 import android.annotation.SuppressLint;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.internapp.R;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -75,8 +79,9 @@ public class UniversitiesRecViewAdapter extends RecyclerView.Adapter<Universitie
             }
         });
 
-        // Load university image using Picasso library
-        Picasso.get().load(universities.get(position).getImageUrl()).fit().centerCrop().into(holder.image);
+        RequestBuilder<Drawable> requestBuilder = Glide.with(holder.itemView.getContext()).asDrawable().sizeMultiplier(0.1f);
+
+        Glide.with(holder.image.getContext()).load(universities.get(position).getImageUrl()).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(requestBuilder).fitCenter().centerCrop().transition(DrawableTransitionOptions.withCrossFade()).into(holder.image);
     }
 
     @Override

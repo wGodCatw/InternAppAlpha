@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.internapp.MainDir.BackgroundCheck;
 import com.example.internapp.R;
 import com.example.internapp.databinding.ActivityVideoCallBinding;
@@ -28,7 +33,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 /**
  * Activity for handling video calls.
@@ -77,7 +81,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String studentUsername = extras.getString("studentUsername");
-            views.targetUserNameEt.setText(studentUsername);
+            views.targetUserName.setText(studentUsername);
             views.callBtn.performClick();
         }
 
@@ -99,7 +103,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
             // Start a call request
-            mainRepository.sendCallRequest(views.targetUserNameEt.getText().toString().trim(), () -> {
+            mainRepository.sendCallRequest(views.targetUserName.getText().toString().trim(), () -> {
                 Toast.makeText(this, "couldn't find the target", Toast.LENGTH_SHORT).show();
             });
         });
@@ -126,7 +130,8 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                                 for (DataSnapshot snap : snapshot.getChildren()) {
                                     Uri photo = Uri.parse(snap.child("userPic").getValue().toString());
                                     if (!(photo == null) && !photo.toString().equals("none")) {
-                                        Picasso.get().load(photo).into(views.callerPic);
+                                        RequestBuilder<Drawable> requestBuilder = Glide.with(VideoCallActivity.this).asDrawable().sizeMultiplier(0.1f);
+                                        Glide.with(VideoCallActivity.this).load(photo).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(requestBuilder).fitCenter().centerCrop().transition(DrawableTransitionOptions.withCrossFade()).into(views.callerPic);
                                     }
 
                                 }
@@ -139,7 +144,8 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                                             for (DataSnapshot snap : snapshot.getChildren()) {
                                                 Uri photo = Uri.parse(snap.child("userPic").getValue().toString());
                                                 if (!(photo == null) && !photo.toString().equals("none")) {
-                                                    Picasso.get().load(photo).into(views.callerPic);
+                                                    RequestBuilder<Drawable> requestBuilder = Glide.with(VideoCallActivity.this).asDrawable().sizeMultiplier(0.1f);
+                                                    Glide.with(VideoCallActivity.this).load(photo).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(requestBuilder).fitCenter().centerCrop().transition(DrawableTransitionOptions.withCrossFade()).into(views.callerPic);
                                                 }
                                             }
                                         } else {

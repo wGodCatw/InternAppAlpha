@@ -2,6 +2,7 @@ package com.example.internapp.StudentDir;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -17,8 +18,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.WindowCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.internapp.MainDir.ReadWriteUserDetails;
 import com.example.internapp.MainDir.SpeedDialinit;
+import com.example.internapp.MainDir.UserProfileActivity;
 import com.example.internapp.R;
 import com.example.internapp.VideoCall.VideoCallActivity;
 import com.google.android.material.textfield.TextInputEditText;
@@ -29,7 +35,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.leinardi.android.speeddial.SpeedDialView;
-import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
@@ -193,7 +198,8 @@ public class StudentProfileActivity extends AppCompatActivity {
 
                         // Load profile picture if available
                         if (!uri.toString().equals("none")) {
-                            Picasso.get().load(uri).fit().centerCrop().into(profilePic);
+                            RequestBuilder<Drawable> requestBuilder = Glide.with(StudentProfileActivity.this).asDrawable().sizeMultiplier(0.1f);
+                            Glide.with(StudentProfileActivity.this).load(uri).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(requestBuilder).fitCenter().centerCrop().transition(DrawableTransitionOptions.withCrossFade()).into(profilePic);
                         }
 
                         // Set user details

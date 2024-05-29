@@ -3,6 +3,7 @@ package com.example.internapp.MainDir;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +23,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.WindowCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.internapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,7 +39,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.leinardi.android.speeddial.SpeedDialView;
-import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
@@ -104,8 +108,8 @@ public class UploadUserPicActivity extends AppCompatActivity {
 
         // Loading current user's profile picture if available.
         Uri uri = firebaseUser.getPhotoUrl();
-        Picasso.get().load(uri).fit().centerCrop().into(profilePic);
-
+        RequestBuilder<Drawable> requestBuilder = Glide.with(UploadUserPicActivity.this).asDrawable().sizeMultiplier(0.1f);
+        Glide.with(UploadUserPicActivity.this).load(uri).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(requestBuilder).fitCenter().centerCrop().transition(DrawableTransitionOptions.withCrossFade()).into(profilePic);
         // Setting listeners for buttons.
         btnPicChoose.setOnClickListener(v -> openFileChooser());
         btnUploadPic.setOnClickListener(v -> {

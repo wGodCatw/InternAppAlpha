@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.Uri;
@@ -29,6 +30,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.WindowCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.internapp.R;
 import com.example.internapp.VideoCall.MainRepository;
 import com.example.internapp.VideoCall.VideoCallActivity;
@@ -44,7 +49,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.leinardi.android.speeddial.SpeedDialView;
 import com.permissionx.guolindev.PermissionX;
-import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
 import java.util.Objects;
@@ -56,7 +60,7 @@ import java.util.Objects;
 public class UserProfileActivity extends AppCompatActivity {
 
 
-    public static String ROLE = "";
+
     /**
      * BroadcastReceiver to monitor network state changes and update the WiFi icon accordingly.
      */
@@ -85,6 +89,8 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         }
     };
+
+
     private TextInputEditText edt_fullName, edt_email, edt_phone, edt_role, edt_dob, edt_uniCompany, edt_faculty, edt_username;
     private ProgressBar progressBar;
     private DatePickerDialog picker;
@@ -95,6 +101,8 @@ public class UserProfileActivity extends AppCompatActivity {
     private String dateBirth;
     private SwipeRefreshLayout swipeContainer;
     private MainRepository mainRepository;
+
+    public static String ROLE = "";
 
     /**
      * Creates a notification channel for incoming call notifications.
@@ -116,6 +124,8 @@ public class UserProfileActivity extends AppCompatActivity {
         }
         return 0; // Default value if not found
     }
+
+
 
 
     @Override
@@ -153,6 +163,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) constraintLayout.getLayoutParams();
         params.topMargin = getStatusBarHeight();
+
+
+        FirebaseAuth authProfile = FirebaseAuth.getInstance();
 
         createNotificationChannel();
 
@@ -269,9 +282,10 @@ public class UserProfileActivity extends AppCompatActivity {
             } else {
                 progressBar.setVisibility(View.VISIBLE);
                 UserProfileChangeRequest profileChangeRequest = new UserProfileChangeRequest.Builder().setDisplayName(textFullName).build();
+                assert firebaseUser != null;
                 firebaseUser.updateProfile(profileChangeRequest).addOnCompleteListener(task -> Toast.makeText(UserProfileActivity.this, "Name updated, it is now " + firebaseUser.getDisplayName(), Toast.LENGTH_LONG).show());
                 DatabaseReference referenceProfile;
-                if (ROLE.equals("HR")) {
+                if (TextUtils.equals(Objects.requireNonNull(edt_role.getText()).toString(), "HR Specialist")) {
                     referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid() + "/name");
                 } else {
                     referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid() + "/name");
@@ -320,8 +334,10 @@ public class UserProfileActivity extends AppCompatActivity {
                 dateBirth = edt_dob.getText().toString();
                 DatabaseReference referenceProfile;
                 if (TextUtils.equals(Objects.requireNonNull(edt_role.getText()).toString(), "HR Specialist")) {
+                    assert firebaseUser != null;
                     referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs/" + firebaseUser.getUid() + "/doB");
                 } else {
+                    assert firebaseUser != null;
                     referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid() + "/doB");
                 }
                 progressBar.setVisibility(View.VISIBLE);
@@ -368,7 +384,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
     /**
      * Checks if the user's email is verified, and displays an alert dialog prompting the user to verify their email if it is not verified.
-     *
      * @param firebaseUser The current FirebaseUser instance.
      */
     private void checkEmailVerified(FirebaseUser firebaseUser) {
@@ -396,74 +411,102 @@ public class UserProfileActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    /**
-     * Retrieves and displays the user's profile information from the Firebase Realtime Database.
-     *
-     * @param firebaseUser The current FirebaseUser instance.
-     */
-    private void showUserProfile(FirebaseUser firebaseUser) {
-        DatabaseReference referenceProfile;
-        if (ROLE.equals("HR")) {
-            referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
-        } else {
-            referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        }
-        String userID = firebaseUser.getUid();
-        referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
+/**
+ * Retrieves and displays the user's profile information from the Firebase Realtime Database.
+ * @param firebaseUser The current FirebaseUser instance.
+ */
+private void showUserProfile(FirebaseUser firebaseUser) {
+    DatabaseReference referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
+    String userID = firebaseUser.getUid();
+    referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if (snapshot.exists()) {
+                ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
 
-                    if (readUserDetails != null) {
-                        username = readUserDetails.username;
-                        fullName = firebaseUser.getDisplayName();
-                        email = firebaseUser.getEmail();
-                        dob = readUserDetails.doB;
-                        role = readUserDetails.role;
-                        phone = readUserDetails.mobile;
-                        uniCompany = readUserDetails.company;
+                if (readUserDetails != null) {
+                    username = readUserDetails.username;
+                    fullName = firebaseUser.getDisplayName();
+                    email = firebaseUser.getEmail();
+                    dob = readUserDetails.doB;
+                    role = readUserDetails.role;
+                    phone = readUserDetails.mobile;
+                    uniCompany = readUserDetails.company;
 
-                        // Load user's profile picture from Firebase Storage
-                        Uri uri = firebaseUser.getPhotoUrl();
-                        if (!(uri == null) && !uri.toString().equals("none")) {
-                            Picasso.get().load(uri).fit().centerCrop().into(profilePic);
-                        }
-
-
-                        edt_username.setText("@" + username);
-                        edt_fullName.setText(fullName);
-                        edt_email.setText(email);
-                        edt_dob.setText(dob);
-                        edt_role.setText(role);
-                        edt_phone.setText(phone);
-
-                        if (ROLE.equals("HR")) {
-                            layout_uniCompany.setHint("Company");
-                            edt_uniCompany.setText(uniCompany);
-                        } else {
-                            edt_uniCompany.setText(uniCompany);
-                            layout_uniCompany.setHint("University");
-                            layout_faculty.setVisibility(View.VISIBLE);
-                            edt_faculty.setText(faculty);
-
-                        }
-
-
-                    } else {
-                        Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
+                    // Load user's profile picture from Firebase Storage
+                    Uri uri = firebaseUser.getPhotoUrl();
+                    if(!(uri == null) &&!uri.toString().equals("none")){
+                        RequestBuilder<Drawable> requestBuilder = Glide.with(UserProfileActivity.this).asDrawable().sizeMultiplier(0.1f);
+                        Glide.with(UserProfileActivity.this).load(uri).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(requestBuilder).fitCenter().centerCrop().transition(DrawableTransitionOptions.withCrossFade()).into(profilePic);
                     }
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
+                    edt_username.setText("@" + username);
+                    layout_uniCompany.setHint("Company");
+                    edt_uniCompany.setText(uniCompany);
+                    edt_fullName.setText(fullName);
+                    edt_email.setText(email);
+                    edt_dob.setText(dob);
+                    edt_role.setText(role);
+                    edt_phone.setText(phone);
+
+                } else {
+                    Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
+                }
                 progressBar.setVisibility(View.GONE);
             }
-        });
-    }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
+            progressBar.setVisibility(View.GONE);
+        }
+    });
+
+    referenceProfile = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+    referenceProfile.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if (snapshot.exists()) {
+                ReadWriteUserDetails readUserDetails = snapshot.getValue(ReadWriteUserDetails.class);
+
+                if (readUserDetails != null) {
+                    username = readUserDetails.username;
+                    fullName = firebaseUser.getDisplayName();
+                    email = firebaseUser.getEmail();
+                    dob = readUserDetails.doB;
+                    role = readUserDetails.role;
+                    phone = readUserDetails.mobile;
+                    uniCompany = readUserDetails.university;
+                    faculty = readUserDetails.faculty;
+
+                    // Load user's profile picture from Firebase Storage
+                    Uri uri = firebaseUser.getPhotoUrl();
+                    RequestBuilder<Drawable> requestBuilder = Glide.with(UserProfileActivity.this).asDrawable().sizeMultiplier(0.1f);
+                    Glide.with(UserProfileActivity.this).load(uri).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(requestBuilder).fitCenter().centerCrop().transition(DrawableTransitionOptions.withCrossFade()).into(profilePic);
+
+                    edt_username.setText("@" + username);
+                    edt_uniCompany.setText(uniCompany);
+                    layout_uniCompany.setHint("University");
+                    layout_faculty.setVisibility(View.VISIBLE);
+                    edt_faculty.setText(faculty);
+                    edt_fullName.setText(fullName);
+                    edt_email.setText(email);
+                    edt_dob.setText(dob);
+                    edt_role.setText(role);
+                    edt_phone.setText(phone);
+                }
+                progressBar.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            Toast.makeText(UserProfileActivity.this, "Something went wrong!", Toast.LENGTH_LONG).show();
+            progressBar.setVisibility(View.GONE);
+        }
+    });
+}
 
     /**
      * Registers the broadcastReceiverWifi to listen for WiFi state changes when the activity starts.

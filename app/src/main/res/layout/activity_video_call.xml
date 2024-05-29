@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/parentRelative"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true">
 
@@ -28,10 +28,10 @@
             android:id="@+id/incomingNameTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
             android:text="someone is calling"
             android:textColor="@color/black"
             android:textSize="35sp"
-            android:fontFamily="@font/montserrat"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.466"
@@ -43,12 +43,12 @@
             android:id="@+id/callerPic"
             android:layout_width="400dp"
             android:layout_height="400dp"
+            android:src="@drawable/ic_profile"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.504"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_profile"
             app:layout_constraintVertical_bias="0.337" />
 
         <ImageView
@@ -83,39 +83,50 @@
         android:id="@+id/whoToCallLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:layout_below="@+id/incomingCallLayout">
+        android:layout_below="@+id/incomingCallLayout"
+        android:background="@color/white">
 
-        <EditText
-            android:id="@+id/targetUserNameEt"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:textColorHint="@color/black"
-            android:textColor="@color/black"
-            android:layout_margin="30dp"
-            android:hint="who to call ?" />
 
-        <Button
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/targetUserNameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/callBtn"
-            android:padding="20dp"
-            android:layout_margin="20dp"
-            android:textColor="@color/white"
-            android:layout_below="@id/targetUserNameEt"
-            android:layout_marginHorizontal="30dp"
-            android:background="@color/blue"
-            android:text="call"/>
+            android:layout_centerInParent="true"
+            android:layout_margin="30dp"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
+            app:endIconMode="custom"
+            app:endIconTint="@color/black">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/targetUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:hint="Who to call?"
+                android:textColor="@color/black" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/callBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20sp"
+            android:layout_marginTop="52dp"
+            android:fontFamily="@font/montserrat"
+            android:padding="10sp"
+            android:text="Call!"
+            android:textColor="@color/white" />
 
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/callLayout"
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -124,79 +135,99 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <org.webrtc.SurfaceViewRenderer
-            android:id="@+id/local_view"
-            android:layout_width="120dp"
-            android:layout_height="150dp"
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="105dp"
-            android:elevation="16dp" />
+            android:elevation="16dp"
+            app:cardCornerRadius="20dp">
 
-        <LinearLayout
-            android:id="@+id/controls"
-            android:layout_width="match_parent"
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/local_view"
+                android:layout_width="120dp"
+                android:layout_height="150dp" />
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@color/blue"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            app:cardCornerRadius="25dp">
 
-            <ImageView
-                android:id="@+id/mic_button"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/controls"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="6dp"
-                app:srcCompat="@drawable/ic_mic" />
+                android:layout_gravity="center"
+                android:background="@color/blue">
 
-            <ImageView
-                android:id="@+id/video_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="6dp"
-                app:srcCompat="@drawable/ic_video" />
+                <ImageView
+                    android:id="@+id/mic_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    app:srcCompat="@drawable/ic_mic" />
 
-            <ImageView
-                android:id="@+id/end_call_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="6dp"
-                android:background="@color/red"
-                app:srcCompat="@drawable/ic_call_declined" />
+                <ImageView
+                    android:id="@+id/video_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    app:srcCompat="@drawable/ic_video" />
 
-            <ImageView
-                android:id="@+id/switch_speaker_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="6dp"
-                app:srcCompat="@drawable/ic_speaker_off" />
+                <ImageView
+                    android:id="@+id/end_call_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    app:srcCompat="@drawable/ic_call_declined" />
 
-            <ImageView
-                android:id="@+id/switch_camera_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_video_switch"
-                android:padding="6dp"
-                app:srcCompat="@drawable/ic_video_switch" />
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/switch_speaker_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    app:srcCompat="@drawable/ic_speaker_off" />
+
+                <ImageView
+                    android:id="@+id/switch_camera_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_video_switch"
+                    app:srcCompat="@drawable/ic_video_switch" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
 
     </RelativeLayout>
 

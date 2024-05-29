@@ -69,13 +69,8 @@ public class BackgroundCheck extends Service {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mainRepository = MainRepository.getInstance();
 
-        DatabaseReference reference;
         // Retrieve the user's username from the Firebase Realtime Database
-        if (UserProfileActivity.ROLE.equals("HR")) {
-            reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
-        } else {
-            reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
-        }
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
         reference.orderByKey().equalTo(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -88,9 +83,27 @@ public class BackgroundCheck extends Service {
                         });
                     }
 
+                } else {
+                    // If the user is not found in the "HRs" node, check the "Students" node
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+                    reference.orderByKey().equalTo(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot snap : snapshot.getChildren()) {
+                                String username = Objects.requireNonNull(snap.child("username").getValue()).toString();
+                                Log.e("service", username);
+                                mainRepository.login(username, getApplicationContext(), () -> {
+                                });
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -104,7 +117,7 @@ public class BackgroundCheck extends Service {
             Runnable hand = new Runnable() {
                 @Override
                 public void run() {
-                    if (!madeNotification) {
+                    if(!madeNotification){
                         try {
                             Log.e("service", "service running");
                             // Subscribe to the latest event from the MainRepository
@@ -115,7 +128,11 @@ public class BackgroundCheck extends Service {
                                     // Display a notification when a call is received
                                     NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                                     String text = data.getSender() + " is calling you";
-                                    Notification notification = new Notification.Builder(getApplicationContext(), "1").setContentText(text).setSmallIcon(R.drawable.ic_launcher).setContentIntent(pendingIntent).setAutoCancel(true) // this will close the notification after it's clicked
+                                    Notification notification = new Notification.Builder(getApplicationContext(), "1")
+                                            .setContentText(text)
+                                            .setSmallIcon(R.drawable.ic_launcher)
+                                            .setContentIntent(pendingIntent)
+                                            .setAutoCancel(true) // this will close the notification after it's clicked
                                             .build();
 
                                     notificationManager.notify(1, notification);
