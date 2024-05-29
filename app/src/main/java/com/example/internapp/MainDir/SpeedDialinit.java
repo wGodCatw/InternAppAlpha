@@ -8,22 +8,16 @@ import android.widget.ActionMenuView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.example.internapp.HRDir.FavoritesActivity;
 import com.example.internapp.HRDir.SearchActivity;
 import com.example.internapp.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
+
+import java.util.Objects;
 
 /**
  * Utility class for initializing a speed dial menu.
@@ -38,57 +32,36 @@ public class SpeedDialinit {
      * @param activity The activity calling this method.
      */
     public static void fab_init(SpeedDialView fab, Context context, Activity activity) {
+        if (Objects.equals(UserProfileActivity.ROLE, "Student")) {
+            fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_settings, R.drawable.ic_settings).setLabel("Settings")
+                    .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
+                    .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid());
-
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-
-                    fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_settings, R.drawable.ic_settings).setLabel("Settings")
-                            .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
-                            .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
-
-                    fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_home, R.drawable.ic_home).setLabel("Home")
-                            .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
-                            .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
+            fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_home, R.drawable.ic_home).setLabel("Home")
+                    .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
+                    .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
 
 
-                    fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_projects, R.drawable.ic_project).setLabel("Projects")
-                            .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
-                            .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
+            fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_projects, R.drawable.ic_project).setLabel("Projects")
+                    .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
+                    .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
+        } else {
+            fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_settings, R.drawable.ic_settings).setLabel("Settings")
+                    .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
+                    .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
 
+            fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_home, R.drawable.ic_home).setLabel("Home")
+                    .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
+                    .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
 
-                } else {
+            fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_favorites, R.drawable.ic_favorites).setLabel("Favorite students")
+                    .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
+                    .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
 
-                    fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_settings, R.drawable.ic_settings).setLabel("Settings")
-                            .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
-                            .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
-
-                    fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_home, R.drawable.ic_home).setLabel("Home")
-                            .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
-                            .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
-
-                    fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_favorites, R.drawable.ic_favorites).setLabel("Favorite students")
-                            .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
-                            .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
-
-                    fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_search, R.drawable.ic_search).setLabel("Search")
-                            .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
-                            .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+            fab.addActionItem(new SpeedDialActionItem.Builder(R.id.action_search, R.drawable.ic_search).setLabel("Search")
+                    .setFabBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.white, context.getTheme()))
+                    .setFabImageTintColor(ResourcesCompat.getColor(context.getResources(), R.color.orange, context.getTheme())).create());
+        }
 
         // Adding action items to the speed dial menu
 
