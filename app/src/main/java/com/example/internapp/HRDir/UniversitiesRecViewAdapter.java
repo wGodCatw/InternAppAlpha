@@ -61,16 +61,17 @@ public class UniversitiesRecViewAdapter extends RecyclerView.Adapter<Universitie
 
         // Click listener to handle chip creation and highlighting
         holder.parent.setOnClickListener(v -> {
-            if (holder.txtName.getCurrentTextColor() == holder.itemView.getResources().getColor(R.color.white, null)) {
-                String text = universities.get(holder.getAdapterPosition()).getName();
+            String text = universities.get(holder.getAdapterPosition()).getName();
+            if (filtersUniversities.contains(text) || filtersFaculties.contains(text)) {
+                // Remove chip and update UI
                 SearchActivity.createChip(facultiesList, universitiesList, text, v, SearchActivity.uniAdapter, SearchActivity.facultyAdapter);
                 holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.black, null));
                 holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.lightblue, null));
             } else {
+                // Add chip and update UI
+                SearchActivity.createChip(facultiesList, universitiesList, text, v, SearchActivity.uniAdapter, SearchActivity.facultyAdapter);
                 holder.txtName.setTextColor(holder.itemView.getResources().getColor(R.color.white, null));
                 holder.parent.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.blue, null));
-                String text = universities.get(holder.getAdapterPosition()).getName();
-                SearchActivity.createChip(facultiesList, universitiesList, text, v, SearchActivity.uniAdapter, SearchActivity.facultyAdapter);
             }
         });
 

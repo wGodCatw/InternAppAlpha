@@ -39,8 +39,8 @@ import java.util.Objects;
 public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecViewAdapter.ViewHolder> {
 
     public static ArrayList<Project> projects = new ArrayList<>();
-    private final Context context;
     private static FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    private final Context context;
 
     /**
      * Constructor for the FavoritesRecViewAdapter.
@@ -87,16 +87,32 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
 
         });
 
-        // Set long click listener on the parent CardView
-        holder.parent.setOnLongClickListener(v -> {
-            new AlertDialog.Builder(context).setTitle("Delete Project").setMessage("Do you want to delete this project?").setPositiveButton("Yes", (dialog, which) -> {
-                Project projectToRemove = projects.get(position);
-                holder.removeProjectFromFirebase(projectToRemove);
-                projects.remove(position);
-                notifyItemRemoved(position);
-            }).setNegativeButton("No", null).show();
-            return true; // Indicates the callback consumed the long click
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Registered users/Students/" + firebaseUser.getUid());
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    holder.parent.setOnLongClickListener(v -> {
+                        new AlertDialog.Builder(context).setTitle("Delete Project").setMessage("Do you want to delete this project?").setPositiveButton("Yes", (dialog, which) -> {
+                            Project projectToRemove = projects.get(holder.getAdapterPosition());
+                            holder.removeProjectFromFirebase(projectToRemove);
+                            projects.remove(holder.getAdapterPosition());
+                            notifyItemRemoved(holder.getAdapterPosition());
+                        }).setNegativeButton("No", null).show();
+                        return true; // Indicates the callback consumed the long click
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
+        // Set long click listener on the parent CardView
 
         // Load the image using Picasso library
         if (!projects.get(position).getImageUrl().equals("none")) {
@@ -125,36 +141,6 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
         // Show the popup window
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
     }
-
-
-//    public void onButtonShowPopupWindowClick(View view, String text) {
-//
-//        // inflate the layout of the popup window
-//        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//
-//        View popupView = inflater.inflate(R.layout.popup_window, null);
-//
-//        TextView descriptionView = popupView.findViewById(R.id.descriptionText);
-//        descriptionView.setText(text);
-//
-//        // create the popup window
-//        int width = LinearLayout.LayoutParams.MATCH_PARENT;
-//        int height = LinearLayout.LayoutParams.MATCH_PARENT;
-//        boolean focusable = true; // lets taps outside the popup also dismiss it
-//        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-//
-//        // show the popup window
-//        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-//
-//        // dismiss the popup window when touched
-//        popupView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                popupWindow.dismiss();
-//                return true;
-//            }
-//        });
-//    }
 
 
     @Override
@@ -211,7 +197,7 @@ public class ProjectsRecViewAdapter extends RecyclerView.Adapter<ProjectsRecView
                                 if (snapshot.exists()) {
                                     for (DataSnapshot snap : snapshot.getChildren()) {
                                         Project project = snap.getValue(Project.class);
-                                        if(project != null && project.equals(projectToRemove)){
+                                        if (project != null && project.equals(projectToRemove)) {
                                             snap.getRef().removeValue();
                                             break;
                                         }
