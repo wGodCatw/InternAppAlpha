@@ -112,8 +112,9 @@
             android:id="@+id/callBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/targetUserNameLayout"
             android:layout_marginHorizontal="20sp"
-            android:layout_marginTop="52dp"
+            android:layout_marginTop="48dp"
             android:fontFamily="@font/montserrat"
             android:padding="10sp"
             android:text="Call!"
@@ -136,20 +137,39 @@
             android:layout_height="match_parent" />
 
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="120dp"
+            android:layout_height="150dp"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="105dp"
-            android:elevation="16dp"
-            app:cardCornerRadius="20dp">
+            android:layout_marginBottom="125dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@color/blue">
 
-            <org.webrtc.SurfaceViewRenderer
-                android:id="@+id/local_view"
-                android:layout_width="120dp"
-                android:layout_height="150dp" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/blue">
+
+                <org.webrtc.SurfaceViewRenderer
+                    android:id="@+id/local_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
         </androidx.cardview.widget.CardView>
 
 
@@ -159,6 +179,8 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@color/blue"
+            android:layout_margin="20dp"
+            android:padding="10dp"
             android:gravity="center"
             android:orientation="horizontal"
             app:cardCornerRadius="25dp">
@@ -172,10 +194,10 @@
 
                 <ImageView
                     android:id="@+id/mic_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_gravity="center"
-                    android:layout_margin="16dp"
+                    android:layout_margin="10dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="6dp"
@@ -183,10 +205,10 @@
 
                 <ImageView
                     android:id="@+id/video_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_gravity="center"
-                    android:layout_margin="16dp"
+                    android:layout_margin="10dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="6dp"
@@ -194,8 +216,8 @@
 
                 <ImageView
                     android:id="@+id/end_call_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:clickable="true"
@@ -205,10 +227,10 @@
 
                 <ImageView
                     android:id="@+id/switch_speaker_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:layout_margin="16dp"
+                    android:layout_margin="10dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="6dp"
@@ -216,10 +238,10 @@
 
                 <ImageView
                     android:id="@+id/switch_camera_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:layout_gravity="center"
-                    android:layout_margin="16dp"
+                    android:layout_margin="10dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="6dp"
