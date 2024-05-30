@@ -40,7 +40,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Activity for user registration.
@@ -183,10 +182,7 @@ public class RegisterActivity extends AppCompatActivity {
                             String textPassword = Objects.requireNonNull(editTextRegisterPwd.getText()).toString();
                             String textConfirmPassword = Objects.requireNonNull(editTextRegisterConfirmPwd.getText()).toString();
                             String textRole;
-                            String mobileRegex = "5[0-9]{7}";
                             Matcher mobileMatcher;
-                            Pattern mobilePattern = Pattern.compile(mobileRegex);
-                            mobileMatcher = mobilePattern.matcher(textMobile);
 
                             // Validating user input
                             if (TextUtils.isEmpty(textFullName)) {
@@ -229,15 +225,10 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.makeText(RegisterActivity.this, "Please enter your phone number", Toast.LENGTH_LONG).show();
                                 editTextRegisterPhone.setError("Phone number is required");
                                 editTextRegisterPhone.requestFocus();
-                            } else if (textMobile.length() != 9) {
+                            } else if (textMobile.length() < 11 || textMobile.length() > 13) {
                                 // Notify user about invalid phone number length
                                 Toast.makeText(RegisterActivity.this, "Please re-enter your phone number", Toast.LENGTH_LONG).show();
                                 editTextRegisterPhone.setError("Please enter valid phone number");
-                                editTextRegisterPhone.requestFocus();
-                            } else if (!mobileMatcher.find()) {
-                                // Notify user about invalid phone number format
-                                Toast.makeText(RegisterActivity.this, "Phone number is not valid", Toast.LENGTH_LONG).show();
-                                editTextRegisterPhone.setError("Not a valid phone number");
                                 editTextRegisterPhone.requestFocus();
                             } else if (TextUtils.isEmpty(textPassword)) {
                                 // Notify user about empty field
@@ -285,7 +276,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         // Proceed with student registration
                                         UniCompany = autoUniversity.getText().toString();
                                         Faculty = autoFaculty.getText().toString();
-                                        registerUser(textUsername.trim(), textFullName.trim(), textEmail, textDoB, textRole, "+972" + textMobile, textPassword, UniCompany, Faculty);
+                                        registerUser(textUsername.trim(), textFullName.trim(), textEmail, textDoB, textRole, textMobile, textPassword, UniCompany, Faculty);
                                     }
                                 }
                                 if (textRole.equals("HR Specialist")) {

@@ -121,6 +121,8 @@
             android:textColor="@color/white" />
 
 
+
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -136,53 +138,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <androidx.cardview.widget.CardView
+<!--        <org.webrtc.SurfaceViewRenderer-->
+<!--            android:id="@+id/local_view"-->
+<!--            android:layout_width="120dp"-->
+<!--            android:layout_height="150dp"-->
+<!--            android:layout_above="@id/cardView2"-->
+<!--            android:layout_marginStart="30dp"-->
+<!--            android:padding="5dp" />-->
+
+        <com.example.internapp.VideoCall.CustomSurfaceViewRenderer
+            android:id="@+id/local_view"
             android:layout_width="120dp"
             android:layout_height="150dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="125dp"
-            app:cardPreventCornerOverlap="true"
-            app:cardCornerRadius="20dp"
-            app:cardBackgroundColor="@color/blue">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/blue">
-
-                <org.webrtc.SurfaceViewRenderer
-                    android:id="@+id/local_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="5dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.5" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-        </androidx.cardview.widget.CardView>
-
+            android:layout_above="@id/cardView2"
+            android:layout_marginStart="30dp"
+            android:padding="5dp" />
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:background="@color/blue"
             android:layout_margin="20dp"
-            android:padding="10dp"
+            android:background="@color/blue"
             android:gravity="center"
             android:orientation="horizontal"
+            android:padding="10dp"
             app:cardCornerRadius="25dp">
 
             <LinearLayout

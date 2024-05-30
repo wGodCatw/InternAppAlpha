@@ -86,10 +86,9 @@
                 android:id="@+id/edt_register_mobile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_phonecode_txt"
                 android:drawablePadding="15dp"
                 android:fontFamily="@font/montserrat"
-                android:hint="Your phone number without code"
+                android:hint="Phone number with code (+972)"
                 android:inputType="phone"
                 android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>

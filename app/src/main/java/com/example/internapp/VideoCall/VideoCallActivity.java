@@ -114,7 +114,6 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
         mainRepository.listener = this;
 
 
-
         // Subscribing for latest event
         mainRepository.subscribeForLatestEvent(data -> {
             if (data.getType() == DataModelType.StartCall) {
