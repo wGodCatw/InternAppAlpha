@@ -108,6 +108,9 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
             });
         });
 
+        views.localView.setBackground(getDrawable(R.drawable.rounded_corners));
+        views.localView.setClipToOutline(true);
+
         // Initialization of local and remote views
         mainRepository.initLocalView(views.localView);
         mainRepository.initRemoteView(views.remoteView);

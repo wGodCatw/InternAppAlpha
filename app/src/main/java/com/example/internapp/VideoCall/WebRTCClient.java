@@ -135,12 +135,6 @@ public class WebRTCClient {
      *
      * @param view The SurfaceViewRenderer for local video display.
      */
-//    public void initLocalSurfaceView(SurfaceViewRenderer view) {
-//        view.setZOrderMediaOverlay(true);
-//        view.setClipToOutline(true);
-//        initSurfaceViewRenderer(view);
-//        startLocalVideoStreaming(view);
-//    }
 
     public void initLocalSurfaceView(SurfaceViewRenderer view) {
         view.setZOrderMediaOverlay(true);
