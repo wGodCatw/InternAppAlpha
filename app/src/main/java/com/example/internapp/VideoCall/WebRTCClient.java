@@ -5,10 +5,9 @@ import static android.content.ContentValues.TAG;
 import android.content.Context;
 import android.media.AudioManager;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 
-import com.example.internapp.VideoCall.DataModel;
-import com.example.internapp.VideoCall.DataModelType;
-import com.example.internapp.VideoCall.MySdpObserver;
 import com.google.gson.Gson;
 
 import org.webrtc.AudioSource;
@@ -136,8 +135,52 @@ public class WebRTCClient {
      *
      * @param view The SurfaceViewRenderer for local video display.
      */
+//    public void initLocalSurfaceView(SurfaceViewRenderer view) {
+//        view.setZOrderMediaOverlay(true);
+//        view.setClipToOutline(true);
+//        initSurfaceViewRenderer(view);
+//        startLocalVideoStreaming(view);
+//    }
+
     public void initLocalSurfaceView(SurfaceViewRenderer view) {
+        view.setZOrderMediaOverlay(true);
+        view.setClipToOutline(true);
         initSurfaceViewRenderer(view);
+
+        view.setOnTouchListener(new View.OnTouchListener() {
+            private int lastX, lastY;
+            private int initialX, initialY;
+            private boolean isDragging = false;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        isDragging = true;
+                        initialX = (int) event.getRawX();
+                        initialY = (int) event.getRawY();
+                        lastX = initialX;
+                        lastY = initialY;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (isDragging) {
+                            int dx = (int) event.getRawX() - lastX;
+                            int dy = (int) event.getRawY() - lastY;
+                            int newX = v.getLeft() + dx;
+                            int newY = v.getTop() + dy;
+                            v.layout(newX, newY, newX + v.getWidth(), newY + v.getHeight());
+                            lastX = (int) event.getRawX();
+                            lastY = (int) event.getRawY();
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        isDragging = false;
+                        break;
+                }
+                return true;
+            }
+        });
+
         startLocalVideoStreaming(view);
     }
 
