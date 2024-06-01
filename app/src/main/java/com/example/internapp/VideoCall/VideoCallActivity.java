@@ -132,8 +132,8 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                                 for (DataSnapshot snap : snapshot.getChildren()) {
                                     Uri photo = Uri.parse(snap.child("userPic").getValue().toString());
                                     if (!(photo == null) && !photo.toString().equals("none")) {
-                                        RequestBuilder<Drawable> requestBuilder = Glide.with(VideoCallActivity.this).asDrawable().sizeMultiplier(0.1f);
-                                        Glide.with(VideoCallActivity.this).load(photo).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(requestBuilder).fitCenter().centerCrop().transition(DrawableTransitionOptions.withCrossFade()).into(views.callerPic);
+                                        RequestBuilder<Drawable> requestBuilder = Glide.with(getApplicationContext()).asDrawable().sizeMultiplier(0.1f);
+                                        Glide.with(getApplicationContext()).load(photo).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(requestBuilder).fitCenter().centerCrop().transition(DrawableTransitionOptions.withCrossFade()).into(views.callerPic);
                                     }
 
                                 }

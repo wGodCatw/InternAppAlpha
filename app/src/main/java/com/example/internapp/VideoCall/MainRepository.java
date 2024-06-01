@@ -127,8 +127,18 @@ public class MainRepository implements WebRTCClient.Listener {
      *
      * @param view SurfaceViewRenderer for local video display.
      */
+//    public void initLocalView(SurfaceViewRenderer view) {
+//        webRTCClient.initLocalSurfaceView(view);
+//    }
+
+
     public void initLocalView(SurfaceViewRenderer view) {
-        webRTCClient.initLocalSurfaceView(view);
+        if (webRTCClient != null) {
+            webRTCClient.initLocalSurfaceView(view);
+        } else {
+            // Handle the case when webRTCClient is null
+            Log.e("TAG", "webRTCClient is null");
+        }
     }
 
     /**
