@@ -34,6 +34,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 /**
  * Activity for handling video calls.
  */
@@ -94,6 +96,10 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
         });
 
         views.callBtn.setOnClickListener(v -> {
+
+            views.whoToCallLayout.setVisibility(View.GONE);
+            views.outcomingCallLayout.setVisibility(View.VISIBLE);
+
             // Hide keyboard
             InputMethodManager imm = (InputMethodManager) VideoCallActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
             View view = VideoCallActivity.this.getCurrentFocus();
@@ -102,11 +108,87 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
             }
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
+            views.outcomingNameTV.setText(views.targetUserName.getText().toString().trim());
+            Log.e("here", views.targetUserName.getText().toString().trim());
+            // Loading caller's photo
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+            reference.orderByChild("username").equalTo(views.targetUserName.getText().toString().trim()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        for (DataSnapshot snap : snapshot.getChildren()) {
+                            Uri photo = Uri.parse(snap.child("userPic").getValue().toString());
+                            if (!(photo == null) && !photo.toString().equals("none")) {
+                                RequestBuilder<Drawable> requestBuilder = Glide.with(getApplicationContext()).asDrawable().sizeMultiplier(0.1f);
+                                Glide.with(getApplicationContext()).load(photo).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(requestBuilder).fitCenter().centerCrop().transition(DrawableTransitionOptions.withCrossFade()).into(views.receiverPic);
+                            }
+
+                        }
+                    } else {
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
+                        reference.orderByChild("username").equalTo(views.targetUserName.getText().toString().trim()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    for (DataSnapshot snap : snapshot.getChildren()) {
+                                        Uri photo = Uri.parse(snap.child("userPic").getValue().toString());
+                                        if (!(photo == null) && !photo.toString().equals("none")) {
+                                            RequestBuilder<Drawable> requestBuilder = Glide.with(getApplicationContext()).asDrawable().sizeMultiplier(0.1f);
+                                            Glide.with(getApplicationContext()).load(photo).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(requestBuilder).fitCenter().centerCrop().transition(DrawableTransitionOptions.withCrossFade()).into(views.receiverPic);
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+
+
+
+
             // Start a call request
             mainRepository.sendCallRequest(views.targetUserName.getText().toString().trim(), () -> {
                 Toast.makeText(this, "couldn't find the target", Toast.LENGTH_SHORT).show();
             });
+
+            Log.e("declined", mainRepository.currentUsername);
+
+            //wait for 5 seconds
+            final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
+            dbRef.orderByChild(mainRepository.currentUsername).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()){
+                        for (DataSnapshot snap : snapshot.getChildren()){
+                            String value = Objects.requireNonNull(snap.getValue()).toString();
+                            if(value.equals("declined")){
+                                Log.e("declined", "loser");
+                                views.whoToCallLayout.setVisibility(View.VISIBLE);
+                                views.outcomingCallLayout.setVisibility(View.GONE);
+                                Toast.makeText(VideoCallActivity.this, "The call did not succeed", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
         });
+
 
         views.localView.setBackground(getDrawable(R.drawable.rounded_corners));
         views.localView.setClipToOutline(true);
@@ -116,6 +198,71 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
         mainRepository.initRemoteView(views.remoteView);
         mainRepository.listener = this;
 
+        final DatabaseReference endCallRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
+        endCallRef.orderByChild(mainRepository.currentUsername).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for (DataSnapshot snap : snapshot.getChildren()){
+                        String value = Objects.requireNonNull(snap.getValue()).toString();
+                        if(value.equals("ended")){
+                            Intent backgroundCheck = new Intent(VideoCallActivity.this, BackgroundCheck.class);
+                            if (BackgroundCheck.isServiceRunning()) {
+                                startService(backgroundCheck);
+                            }
+
+                            mainRepository.endCall();
+
+                            final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
+
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/HRs");
+                            reference.orderByKey().equalTo(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        for (DataSnapshot snap : snapshot.getChildren()) {
+                                            String username = snap.child("username").getValue().toString();
+                                            dbRef.child(username).setValue("ended");
+                                        }
+                                    } else {
+                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
+                                        reference.orderByKey().equalTo(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists()) {
+                                                    for (DataSnapshot snap : snapshot.getChildren()) {
+                                                        String username = snap.child("username").getValue().toString();
+                                                        dbRef.child(username).setValue("ended");
+                                                    }
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                            }
+                                        });
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                }
+                            });
+
+                            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.cancelAll();
+
+                            finish();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         // Subscribing for latest event
         mainRepository.subscribeForLatestEvent(data -> {
@@ -146,8 +293,8 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                                             for (DataSnapshot snap : snapshot.getChildren()) {
                                                 Uri photo = Uri.parse(snap.child("userPic").getValue().toString());
                                                 if (!(photo == null) && !photo.toString().equals("none")) {
-                                                    RequestBuilder<Drawable> requestBuilder = Glide.with(VideoCallActivity.this).asDrawable().sizeMultiplier(0.1f);
-                                                    Glide.with(VideoCallActivity.this).load(photo).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(requestBuilder).fitCenter().centerCrop().transition(DrawableTransitionOptions.withCrossFade()).into(views.callerPic);
+                                                    RequestBuilder<Drawable> requestBuilder = Glide.with(getApplicationContext()).asDrawable().sizeMultiplier(0.1f);
+                                                    Glide.with(getApplicationContext()).load(photo).diskCacheStrategy(DiskCacheStrategy.ALL).thumbnail(requestBuilder).fitCenter().centerCrop().transition(DrawableTransitionOptions.withCrossFade()).into(views.callerPic);
                                                 }
                                             }
                                         } else {
@@ -182,7 +329,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                         // Remove call entries from database and finish activity
                         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
                         dbRef.child(data.getTarget()).setValue("");
-                        dbRef.child(data.getSender()).setValue("");
+                        dbRef.child(data.getSender()).setValue("declined");
                         views.incomingCallLayout.setVisibility(View.GONE);
                         finish();
                     });
@@ -246,7 +393,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                     if (snapshot.exists()) {
                         for (DataSnapshot snap : snapshot.getChildren()) {
                             String username = snap.child("username").getValue().toString();
-                            dbRef.child(username).setValue("");
+                            dbRef.child(username).setValue("ended");
                         }
                     } else {
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
@@ -256,7 +403,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                                 if (snapshot.exists()) {
                                     for (DataSnapshot snap : snapshot.getChildren()) {
                                         String username = snap.child("username").getValue().toString();
-                                        dbRef.child(username).setValue("");
+                                        dbRef.child(username).setValue("ended");
                                     }
                                 }
                             }

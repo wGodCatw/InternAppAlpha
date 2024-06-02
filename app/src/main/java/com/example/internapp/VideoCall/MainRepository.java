@@ -37,7 +37,7 @@ public class MainRepository implements WebRTCClient.Listener {
     /**
      * Username of the current user.
      */
-    private String currentUsername;
+    public String currentUsername;
     /**
      * SurfaceViewRenderer for remote video display.
      */
@@ -127,18 +127,8 @@ public class MainRepository implements WebRTCClient.Listener {
      *
      * @param view SurfaceViewRenderer for local video display.
      */
-//    public void initLocalView(SurfaceViewRenderer view) {
-//        webRTCClient.initLocalSurfaceView(view);
-//    }
-
-
     public void initLocalView(SurfaceViewRenderer view) {
-        if (webRTCClient != null) {
-            webRTCClient.initLocalSurfaceView(view);
-        } else {
-            // Handle the case when webRTCClient is null
-            Log.e("TAG", "webRTCClient is null");
-        }
+        webRTCClient.initLocalSurfaceView(view);
     }
 
     /**
