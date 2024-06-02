@@ -109,7 +109,6 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
             views.outcomingNameTV.setText(views.targetUserName.getText().toString().trim());
-            Log.e("here", views.targetUserName.getText().toString().trim());
             // Loading caller's photo
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
             reference.orderByChild("username").equalTo(views.targetUserName.getText().toString().trim()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -160,7 +159,6 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                 Toast.makeText(this, "couldn't find the target", Toast.LENGTH_SHORT).show();
             });
 
-            Log.e("declined", mainRepository.currentUsername);
 
             //wait for 5 seconds
             final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
@@ -171,7 +169,6 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                         for (DataSnapshot snap : snapshot.getChildren()){
                             String value = Objects.requireNonNull(snap.getValue()).toString();
                             if(value.equals("declined")){
-                                Log.e("declined", "loser");
                                 views.whoToCallLayout.setVisibility(View.VISIBLE);
                                 views.outcomingCallLayout.setVisibility(View.GONE);
                                 Toast.makeText(VideoCallActivity.this, "The call did not succeed", Toast.LENGTH_SHORT).show();
@@ -222,7 +219,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                                     if (snapshot.exists()) {
                                         for (DataSnapshot snap : snapshot.getChildren()) {
                                             String username = snap.child("username").getValue().toString();
-                                            dbRef.child(username).setValue("ended");
+                                            dbRef.child(username).setValue("");
                                         }
                                     } else {
                                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Registered users/Students");
@@ -232,7 +229,7 @@ public class VideoCallActivity extends AppCompatActivity implements MainReposito
                                                 if (snapshot.exists()) {
                                                     for (DataSnapshot snap : snapshot.getChildren()) {
                                                         String username = snap.child("username").getValue().toString();
-                                                        dbRef.child(username).setValue("ended");
+                                                        dbRef.child(username).setValue("");
                                                     }
                                                 }
                                             }
