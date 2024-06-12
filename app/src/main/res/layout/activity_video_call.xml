@@ -41,7 +41,7 @@
 
         <ImageView
             android:id="@+id/callerPic"
-            android:layout_width="400dp"
+            android:layout_width="300dp"
             android:layout_height="400dp"
             android:src="@drawable/ic_profile"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -105,7 +105,7 @@
 
         <ImageView
             android:id="@+id/receiverPic"
-            android:layout_width="400dp"
+            android:layout_width="300dp"
             android:layout_height="400dp"
             android:src="@drawable/ic_profile"
             app:layout_constraintBottom_toBottomOf="parent"
