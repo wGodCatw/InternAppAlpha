@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">InternSpace</string>
+    <string name="you_need_to_authenticate_before_changing_your_password">You need to authenticate before changing your password</string>
+    <!-- TODO: Remove or change this placeholder text -->
+</resources>

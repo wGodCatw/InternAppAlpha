@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/parentConstraint"
+    android:background="@color/white"
+    android:layout_height="match_parent"
+    tools:context=".MainDir.UpdateEmailActivity">
+
+    <TextView
+        android:id="@+id/updEmailTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="68dp"
+        android:fontFamily="@font/montserrat"
+        android:padding="10sp"
+        android:text="You need to authenticate before updating your email"
+        android:textAlignment="center"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_updEmailEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:layout_margin="20dp"
+        android:layout_marginTop="84dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/updEmailTitle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/updEmailEmail"
+            android:drawableStart="@drawable/ic_email_txt"
+            android:drawablePadding="15sp"
+            android:cursorVisible="false"
+            android:textColor="@color/black"
+            android:focusable="false"
+            android:fontFamily="@font/montserrat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter your current email"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_updEmailPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        app:endIconMode="password_toggle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_updEmailEmail">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/updEmailPassword"
+            android:layout_width="match_parent"
+            android:drawableStart="@drawable/ic_password"
+            android:drawablePadding="15sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/montserrat"
+            android:layout_height="wrap_content"
+            android:hint="Enter your password"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/updEmailBtnAuth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/montserrat"
+        android:text="Authenticate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_updEmailPassword" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <TextView
+        android:id="@+id/titleUpdEmailAuth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
+        android:padding="10sp"
+        android:text="You are not authenticated. You can't change your user email"
+        android:textAlignment="center"
+        android:fontFamily="@font/montserrat"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/updEmailBtnAuth" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_updEmailNewEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleUpdEmailAuth">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/updEmailNewEmail"
+            android:layout_width="match_parent"
+            android:drawableStart="@drawable/ic_email_txt"
+            android:drawablePadding="15sp"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            android:hint="Enter new email"
+            android:inputType="textEmailAddress"
+            tools:layout_editor_absoluteX="-1dp"
+            tools:layout_editor_absoluteY="689dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/updEmailBtnUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/white"
+        android:layout_margin="20dp"
+        android:text="Update email!"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_updEmailNewEmail" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

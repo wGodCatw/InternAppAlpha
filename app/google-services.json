@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1084322055281",
+    "firebase_url": "https://internapp-a014b-default-rtdb.firebaseio.com",
+    "project_id": "internapp-a014b",
+    "storage_bucket": "internapp-a014b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084322055281:android:e69545e7d070a4302e07d0",
+        "android_client_info": {
+          "package_name": "com.example.internapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084322055281-m7qvbc9urhtk30unhlt90pg6tvt1pp0o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.internapp",
+            "certificate_hash": "812d74936130e6d85322653e282f46f50d14a1f1"
+          }
+        },
+        {
+          "client_id": "1084322055281-rk1so85ivs3qb30tq3ak6pc2ct0d31oh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeyzHLfM2QyrdHljLuE7UzqypgppeybZw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1084322055281-rk1so85ivs3qb30tq3ak6pc2ct0d31oh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
